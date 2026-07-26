@@ -1,0 +1,1439 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#e7e0d6;font-family:'Hanken Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:#c24a3a;text-decoration:none}a:hover{color:#a63a2b}
+  ::-webkit-scrollbar{width:0;display:none}
+  .scr::-webkit-scrollbar{display:none}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes pop{0%{transform:scale(.8);opacity:0}60%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+  @keyframes barGrow{from{width:0}}
+  @keyframes ringDraw{from{stroke-dashoffset:534}}
+  @keyframes splashIn{0%{opacity:0;transform:scale(.9)}55%{opacity:1;transform:scale(1.02)}100%{opacity:1;transform:scale(1)}}
+  @keyframes splashOrbit{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  @keyframes breathe{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.12);opacity:.85}}
+  @keyframes slideIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes dotPulse{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px;background:radial-gradient(120% 120% at 50% 0%, #efe8dd 0%, #e2dacd 100%)">
+  <div style="width:394px;height:820px;background:#0e0c0b;border-radius:52px;padding:12px;box-shadow:0 40px 90px -30px rgba(40,30,20,.55), 0 0 0 1px rgba(0,0,0,.4), inset 0 0 0 2px #2a2521;position:relative">
+    <div style="position:absolute;top:26px;left:50%;transform:translateX(-50%);width:120px;height:30px;background:#0e0c0b;border-radius:0 0 18px 18px;z-index:40"></div>
+    <div style="width:100%;height:100%;background:#f2ece3;border-radius:41px;overflow:hidden;position:relative;display:flex;flex-direction:column">
+
+      <!-- ============ SPLASH ============ -->
+      <sc-if value="{{ isSplash }}" hint-placeholder-val="{{ true }}">
+      <div style="position:absolute;inset:0;z-index:60;background:radial-gradient(120% 90% at 50% 35%, #3a332c 0%, #241f1b 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px">
+        <div style="position:relative;width:150px;height:150px;display:flex;align-items:center;justify-content:center">
+          <div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(216,90,74,.35),transparent 65%);animation:breathe 2.6s ease-in-out infinite"></div>
+          <div style="position:absolute;inset:14px;border-radius:50%;border:1px solid rgba(200,145,47,.35);animation:splashOrbit 9s linear infinite">
+            <div style="position:absolute;top:-4px;left:50%;margin-left:-4px;width:8px;height:8px;border-radius:50%;background:#e0b25a"></div>
+          </div>
+          <div style="position:absolute;inset:32px;border-radius:50%;border:1px solid rgba(216,90,74,.4);animation:splashOrbit 6s linear infinite reverse">
+            <div style="position:absolute;bottom:-3px;left:50%;margin-left:-3px;width:6px;height:6px;border-radius:50%;background:#d85a4a"></div>
+          </div>
+          <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(145deg,#d85a4a,#c8912f);animation:splashIn .9s cubic-bezier(.2,.8,.3,1)"></div>
+        </div>
+        <div style="text-align:center;animation:splashIn 1s cubic-bezier(.2,.8,.3,1) .15s both">
+          <div style="font:400 40px/1 'Instrument Serif';color:#f2ece3;letter-spacing:.01em">Orbit</div>
+          <div style="font:600 11px 'Hanken Grotesk';letter-spacing:.22em;text-transform:uppercase;color:#a89c8f;margin-top:10px">Your dating life, observed</div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ INTRO ============ -->
+      <sc-if value="{{ isIntro }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:55;background:#f2ece3;display:flex;flex-direction:column">
+        <div style="height:46px;flex:none"></div>
+        <div style="padding:8px 24px 0;display:flex;justify-content:space-between;align-items:center">
+          <div style="display:flex;gap:6px">
+            <sc-for list="{{ introDots }}" as="d" hint-placeholder-count="4"><div style="{{ d.style }}"></div></sc-for>
+          </div>
+          <div onClick="{{ skipIntro }}" style="font:600 13px 'Hanken Grotesk';color:#a89c8f;cursor:pointer">Skip</div>
+        </div>
+
+        <div style="flex:1;overflow-y:auto;padding:0 26px" class="scr">
+          <!-- slides 1-3 -->
+          <sc-if value="{{ introIsStory }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;justify-content:center;min-height:100%;padding:20px 0;animation:slideIn .35s ease">
+            <div style="height:190px;display:flex;align-items:center;justify-content:center;margin-bottom:36px">{{ intro.art }}</div>
+            <div style="font:600 11px 'Hanken Grotesk';letter-spacing:.16em;text-transform:uppercase;color:#c8912f;margin-bottom:10px">{{ intro.kicker }}</div>
+            <div style="font:400 34px/1.1 'Instrument Serif';color:#241f1b;margin-bottom:14px;text-wrap:pretty">{{ intro.title }}</div>
+            <div style="font:400 16px/1.55 'Hanken Grotesk';color:#5a5148;text-wrap:pretty">{{ intro.body }}</div>
+          </div>
+          </sc-if>
+
+          <!-- intention step -->
+          <sc-if value="{{ introIsGoal }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:24px 0;animation:slideIn .35s ease">
+            <div style="font:600 11px 'Hanken Grotesk';letter-spacing:.16em;text-transform:uppercase;color:#c8912f;margin-bottom:10px">One question</div>
+            <div style="font:400 32px/1.1 'Instrument Serif';color:#241f1b;margin-bottom:8px">What are you after right now?</div>
+            <div style="font:400 15px/1.5 'Hanken Grotesk';color:#8a7d6d;margin-bottom:24px">This shapes how your score is weighted. You can change it any time.</div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <sc-for list="{{ goalOpts }}" as="g" hint-placeholder-count="4">
+                <button onClick="{{ g.onClick }}" style="{{ g.style }}">
+                  <span style="font:700 16px 'Hanken Grotesk';display:block">{{ g.label }}</span>
+                  <span style="font:500 13px 'Hanken Grotesk';opacity:.7;display:block;margin-top:2px">{{ g.sub }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+          </sc-if>
+
+          <!-- privacy step -->
+          <sc-if value="{{ introIsPrivacy }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:24px 0;animation:slideIn .35s ease">
+            <div style="font:600 11px 'Hanken Grotesk';letter-spacing:.16em;text-transform:uppercase;color:#c8912f;margin-bottom:10px">Last thing</div>
+            <div style="font:400 32px/1.1 'Instrument Serif';color:#241f1b;margin-bottom:8px">Lock it down?</div>
+            <div style="font:400 15px/1.5 'Hanken Grotesk';color:#8a7d6d;margin-bottom:24px">This is honest, private writing about real people. A passcode keeps it that way.</div>
+            <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:22px;padding:20px;margin-bottom:16px">
+              <div style="display:flex;flex-direction:column;gap:16px">
+                <sc-for list="{{ privacyToggles }}" as="t" hint-placeholder-count="3">
+                  <div style="display:flex;align-items:center;gap:14px">
+                    <div style="flex:1"><div style="font:600 15px 'Hanken Grotesk';color:#241f1b">{{ t.label }}</div><div style="font:500 12px/1.4 'Hanken Grotesk';color:#a89c8f;margin-top:2px">{{ t.sub }}</div></div>
+                    <button onClick="{{ t.onClick }}" style="{{ t.trackStyle }}"><span style="{{ t.knobStyle }}"></span></button>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="font:400 13px/1.5 'Hanken Grotesk';color:#a89c8f;text-align:center">Everything stays on your device. Nothing is uploaded, ever.</div>
+          </div>
+          </sc-if>
+        </div>
+
+        <div style="flex:none;padding:16px 26px 30px">
+          <button onClick="{{ introNext }}" style="{{ introCtaStyle }}">{{ introCta }}</button>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ LOCK ============ -->
+      <sc-if value="{{ isLock }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:58;background:radial-gradient(120% 90% at 50% 25%, #3a332c 0%, #241f1b 70%);display:flex;flex-direction:column;align-items:center;padding:90px 30px 34px">
+        <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(145deg,#d85a4a,#c8912f);margin-bottom:22px"></div>
+        <div style="font:400 26px/1.1 'Instrument Serif';color:#f2ece3;margin-bottom:6px">Welcome back</div>
+        <div style="font:500 13px 'Hanken Grotesk';color:#a89c8f;margin-bottom:30px">{{ lockHint }}</div>
+        <div style="display:flex;gap:16px;margin-bottom:auto">
+          <sc-for list="{{ pinDots }}" as="d" hint-placeholder-count="4"><div style="{{ d.style }}"></div></sc-for>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:100%;max-width:250px">
+          <sc-for list="{{ keypad }}" as="k" hint-placeholder-count="12"><button onClick="{{ k.onClick }}" style="{{ k.style }}">{{ k.label }}</button></sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- status bar -->
+      <div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 34px;font:600 15px 'Hanken Grotesk';color:#241f1b;position:relative;z-index:30">
+        <span>9:41</span>
+        <span style="display:flex;align-items:center;gap:7px">
+          <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" fill="#241f1b"/><rect x="5" y="5" width="3" height="7" rx="1" fill="#241f1b"/><rect x="10" y="2.5" width="3" height="9.5" rx="1" fill="#241f1b"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#241f1b"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 2.5c2.2 0 4.2.8 5.7 2.2l1.3-1.4C13.2 1.5 10.7.5 8 .5S2.8 1.5 1 3.3l1.3 1.4C3.8 3.3 5.8 2.5 8 2.5z" fill="#241f1b"/><path d="M8 6c1.2 0 2.3.5 3.1 1.3l1.3-1.4C11.2 4.7 9.7 4 8 4s-3.2.7-4.4 1.9l1.3 1.4C5.7 6.5 6.8 6 8 6z" fill="#241f1b"/><circle cx="8" cy="9.8" r="1.6" fill="#241f1b"/></svg>
+          <svg width="26" height="12" viewBox="0 0 26 12"><rect x="0.5" y="0.5" width="21" height="11" rx="3" fill="none" stroke="#241f1b" stroke-opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="1.5" fill="#241f1b"/><rect x="23" y="4" width="2" height="4" rx="1" fill="#241f1b" fill-opacity=".4"/></svg>
+        </span>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="scr" style="flex:1;overflow-y:auto;overflow-x:hidden">
+
+        <!-- ============ HOME ============ -->
+        <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:6px 20px 30px;animation:fadeUp .4s ease">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px">
+            <div>
+              <div style="font:500 13px 'Hanken Grotesk';color:#a89c8f;letter-spacing:.01em">Wednesday, July 23</div>
+              <div style="font:400 30px/1.05 'Instrument Serif';color:#241f1b;margin-top:3px">{{ greeting }}</div>
+            </div>
+            <div onClick="{{ goSettings }}" style="width:44px;height:44px;border-radius:50%;background:#e6ddd0;border:1px solid rgba(36,31,27,.08);display:flex;align-items:center;justify-content:center;font:600 16px 'Hanken Grotesk';color:#8a7d6d;cursor:pointer">R</div>
+          </div>
+
+          <!-- reminder nudge -->
+          <sc-if value="{{ showNudge }}" hint-placeholder-val="{{ true }}">
+          <div style="background:#fdf3e8;border:1px solid rgba(200,145,47,.35);border-radius:20px;padding:16px 18px;margin-bottom:14px;animation:fadeUp .45s ease">
+            <div style="display:flex;align-items:flex-start;gap:12px">
+              <div style="width:34px;height:34px;flex:none;border-radius:10px;background:rgba(200,145,47,.18);display:flex;align-items:center;justify-content:center">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c8912f" stroke-width="2" stroke-linecap="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8M13.7 21a2 2 0 01-3.4 0"/></svg>
+              </div>
+              <div style="flex:1">
+                <div style="font:700 14px 'Hanken Grotesk';color:#241f1b">Last night with Alex?</div>
+                <div style="font:500 13px/1.4 'Hanken Grotesk';color:#8a7d6d;margin-top:2px">Log it now â€” memory fades fast, and honest notes are the whole point.</div>
+                <div style="display:flex;gap:8px;margin-top:12px">
+                  <button onClick="{{ startLog }}" style="padding:9px 16px;border-radius:999px;border:none;background:#c8912f;color:#fff;font:700 13px 'Hanken Grotesk';cursor:pointer">Log it</button>
+                  <button onClick="{{ dismissNudge }}" style="padding:9px 16px;border-radius:999px;border:1.5px solid rgba(36,31,27,.14);background:transparent;color:#8a7d6d;font:600 13px 'Hanken Grotesk';cursor:pointer">Not tonight</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          </sc-if>
+
+          <!-- EMPTY / FIRST RUN -->
+          <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="animation:fadeUp .4s ease">
+            <div style="background:linear-gradient(145deg,#2a2521,#3a332c);border-radius:24px;padding:26px 22px;color:#f2ece3;text-align:center;margin-bottom:16px">
+              <div style="width:56px;height:56px;margin:0 auto 16px;border-radius:50%;border:1.5px dashed rgba(200,145,47,.5);display:flex;align-items:center;justify-content:center;font:400 26px 'Instrument Serif';color:#e0b25a">1</div>
+              <div style="font:400 25px/1.15 'Instrument Serif';margin-bottom:8px">Level 1 starts with one date</div>
+              <div style="font:400 14px/1.5 'Hanken Grotesk';color:rgba(242,236,227,.65)">Log your first one and Orbit starts building your picture. Three dates in, patterns appear.</div>
+            </div>
+            <button onClick="{{ startLog }}" style="width:100%;background:#d85a4a;color:#fff;border:none;border-radius:20px;padding:18px;font:700 16px 'Hanken Grotesk';cursor:pointer;box-shadow:0 10px 24px -10px rgba(216,90,74,.7)">Log your first date</button>
+            <div style="margin-top:26px;font:600 13px 'Hanken Grotesk';letter-spacing:.06em;text-transform:uppercase;color:#a89c8f;margin-bottom:12px">What unlocks as you go</div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <sc-for list="{{ unlockSteps }}" as="u" hint-placeholder-count="3">
+                <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:18px;padding:15px 16px;display:flex;align-items:center;gap:14px">
+                  <div style="width:32px;height:32px;flex:none;border-radius:50%;background:#efe6d8;display:flex;align-items:center;justify-content:center;font:700 13px 'Hanken Grotesk';color:#8a7d6d">{{ u.n }}</div>
+                  <div><div style="font:700 14px 'Hanken Grotesk';color:#241f1b">{{ u.title }}</div><div style="font:500 12px 'Hanken Grotesk';color:#a89c8f">{{ u.sub }}</div></div>
+                </div>
+              </sc-for>
+            </div>
+            <div onClick="{{ fillDemo }}" style="text-align:center;font:600 13px 'Hanken Grotesk';color:#c24a3a;margin-top:20px;cursor:pointer">Preview with sample data</div>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{ hasData }}" hint-placeholder-val="{{ true }}">
+          <!-- level card -->
+          <div style="background:linear-gradient(145deg,#2a2521,#3a332c);border-radius:24px;padding:22px 22px 20px;color:#f2ece3;position:relative;overflow:hidden;box-shadow:0 12px 30px -12px rgba(40,30,20,.5)">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <div style="font:600 12px 'Hanken Grotesk';letter-spacing:.09em;text-transform:uppercase;color:#c8912f">Level 4</div>
+                <div style="font:400 26px/1.1 'Instrument Serif';margin-top:2px">Finding your rhythm</div>
+              </div>
+              <div style="width:52px;height:52px;border-radius:50%;background:rgba(200,145,47,.16);border:1.5px solid rgba(200,145,47,.5);display:flex;align-items:center;justify-content:center;font:600 20px 'Hanken Grotesk';color:#e0b25a">4</div>
+            </div>
+            <div style="margin-top:18px">
+              <div style="display:flex;justify-content:space-between;font:500 12px 'Hanken Grotesk';color:rgba(242,236,227,.65);margin-bottom:7px"><span>320 XP</span><span>500 XP to Level 5</span></div>
+              <div style="height:8px;background:rgba(242,236,227,.15);border-radius:99px;overflow:hidden"><div style="width:64%;height:100%;background:linear-gradient(90deg,#c8912f,#e0b25a);border-radius:99px;animation:barGrow 1s ease"></div></div>
+            </div>
+          </div>
+
+          <!-- stat trio -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px">
+            <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:20px;padding:18px 18px 16px">
+              <div style="font:600 11px 'Hanken Grotesk';letter-spacing:.08em;text-transform:uppercase;color:#a89c8f">Dating Score</div>
+              <div style="display:flex;align-items:baseline;gap:6px;margin-top:6px"><span style="font:400 40px/1 'Instrument Serif';color:#241f1b">78</span><span style="font:600 13px 'Hanken Grotesk';color:#6d8a53">â–² 6</span></div>
+              <div style="font:500 12px 'Hanken Grotesk';color:#a89c8f;margin-top:4px">Trending up this month</div>
+            </div>
+            <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:20px;padding:18px 18px 16px;display:flex;flex-direction:column;justify-content:space-between">
+              <div style="font:600 11px 'Hanken Grotesk';letter-spacing:.08em;text-transform:uppercase;color:#a89c8f">Streak</div>
+              <div style="display:flex;align-items:baseline;gap:6px;margin-top:6px"><span style="font:400 40px/1 'Instrument Serif';color:#241f1b">3</span><span style="font:600 13px 'Hanken Grotesk';color:#c24a3a">weeks</span></div>
+              <div style="font:500 12px 'Hanken Grotesk';color:#a89c8f;margin-top:4px">Active & putting yourself out there</div>
+            </div>
+          </div>
+
+          <!-- log CTA -->
+          <button onClick="{{ startLog }}" style="width:100%;margin-top:16px;background:#d85a4a;color:#fff;border:none;border-radius:20px;padding:18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;box-shadow:0 10px 24px -10px rgba(216,90,74,.7);transition:transform .12s" style-hover="transform:translateY(-2px)">
+            <span style="display:flex;flex-direction:column;text-align:left"><span style="font:700 16px 'Hanken Grotesk'">Log a date</span><span style="font:500 12px 'Hanken Grotesk';opacity:.8">Just got back? Capture it while it's fresh</span></span>
+            <span style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font:400 24px 'Hanken Grotesk'">+</span>
+          </button>
+
+          <!-- recent -->
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin:26px 0 12px">
+            <span style="font:600 13px 'Hanken Grotesk';letter-spacing:.06em;text-transform:uppercase;color:#a89c8f">Recent dates</span>
+            <span onClick="{{ goHistory }}" style="font:600 13px 'Hanken Grotesk';color:#c24a3a;cursor:pointer">See all</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ recent }}" as="d" hint-placeholder-count="3">
+              <div onClick="{{ d.onClick }}" style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform .12s" style-hover="transform:translateY(-2px)">
+                <div style="width:42px;height:42px;border-radius:50%;background:#efe6d8;display:flex;align-items:center;justify-content:center;font:600 16px 'Hanken Grotesk';color:#8a7d6d;flex:none">{{ d.initial }}</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font:700 15px 'Hanken Grotesk';color:#241f1b">{{ d.name }}</div>
+                  <div style="font:500 12px 'Hanken Grotesk';color:#a89c8f">{{ d.meta }}</div>
+                </div>
+                <div style="{{ d.pillStyle }}">{{ d.score }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- insight teaser -->
+          <div onClick="{{ goInsights }}" style="margin-top:24px;background:linear-gradient(140deg,#efe6d8,#f7f1e7);border:1px solid rgba(36,31,27,.09);border-radius:22px;padding:20px;cursor:pointer;transition:transform .12s" style-hover="transform:translateY(-2px)">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <span style="display:flex;align-items:center;gap:8px;font:700 11px 'Hanken Grotesk';letter-spacing:.09em;text-transform:uppercase;color:#8a7d6d"><span style="width:7px;height:7px;border-radius:50%;background:#c8912f"></span>This month's pattern</span>
+              <span style="font:600 18px 'Hanken Grotesk';color:#a89c8f">â€º</span>
+            </div>
+            <div style="font:400 19px/1.35 'Instrument Serif';color:#3a332c">Your best dates are the low-key ones â€” walks and coffee out-score dinners by 14 points.</div>
+            <div style="font:600 12px 'Hanken Grotesk';color:#c24a3a;margin-top:10px">See all insights</div>
+          </div>
+
+          <!-- badges -->
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin:26px 0 12px">
+            <span style="font:600 13px 'Hanken Grotesk';letter-spacing:.06em;text-transform:uppercase;color:#a89c8f">Recent badges</span>
+            <span onClick="{{ goAwards }}" style="font:600 13px 'Hanken Grotesk';color:#c24a3a;cursor:pointer">See all</span>
+          </div>
+          <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:4px">
+            <sc-for list="{{ badges }}" as="b" hint-placeholder-count="3">
+              <div style="flex:none;width:104px;background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:18px;padding:16px 12px;text-align:center;opacity:{{ b.opacity }}">
+                <div style="width:44px;height:44px;margin:0 auto 8px;border-radius:12px;background:{{ b.bg }};display:flex;align-items:center;justify-content:center">{{ b.icon }}</div>
+                <div style="font:700 12px 'Hanken Grotesk';color:#241f1b;line-height:1.2">{{ b.name }}</div>
+                <div style="font:500 10px 'Hanken Grotesk';color:#a89c8f;margin-top:2px">{{ b.sub }}</div>
+              </div>
+            </sc-for>
+          </div>
+          </sc-if>
+        </div>
+        </sc-if>
+
+        <!-- ============ PERSON EDITOR ============ -->
+        <sc-if value="{{ isPersonEdit }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:6px 20px 30px;animation:fadeUp .35s ease">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <div onClick="{{ cancelPersonEdit }}" style="font:600 14px 'Hanken Grotesk';color:#a89c8f;cursor:pointer">Cancel</div>
+            <div style="font:600 12px 'Hanken Grotesk';letter-spacing:.06em;text-transform:uppercase;color:#c8912f">{{ pe.kicker }}</div>
+          </div>
+          <div style="font:400 28px/1.05 'Instrument Serif';color:#241f1b;margin-bottom:22px">{{ pe.heading }}</div>
+
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px">
+            <div style="width:64px;height:64px;flex:none;border-radius:50%;background:#efe6d8;display:flex;align-items:center;justify-content:center;font:600 24px 'Hanken Grotesk';color:#8a7d6d">{{ pe.initial }}</div>
+            <input value="{{ pe.name }}" onInput="{{ pe.onName }}" placeholder="Their name" style="flex:1;background:#fffdf9;border:1.5px solid rgba(36,31,27,.12);border-radius:16px;padding:15px;font:600 17px 'Hanken Grotesk';color:#241f1b;outline:none;min-width:0" />
+          </div>
+
+          <div style="font:600 15px 'Hanken Grotesk';color:#241f1b;margin-bottom:10px">Where did you meet?</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px">
+            <sc-for list="{{ pe.sources }}" as="c" hint-placeholder-count="6"><button style="{{ c.style }}" onClick="{{ c.onClick }}">{{ c.label }}</button></sc-for>
+          </div>
+
+          <div style="font:600 15px 'Hanken Grotesk';color:#241f1b;margin-bottom:4px">Where do things stand?</div>
+          <div style="font:400 13px/1.5 'Hanken Grotesk';color:#8a7d6d;margin-bottom:12px">Update this whenever it changes â€” it's how Orbit learns what actually works for you.</div>
+          <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:24px">
+            <sc-for list="{{ pe.statuses }}" as="s" hint-placeholder-count="6">
+              <button onClick="{{ s.onClick }}" style="{{ s.style }}">
+                <span style="display:flex;align-items:center;gap:11px">
+                  <span style="width:9px;height:9px;border-radius:50%;background:{{ s.dot }};flex:none"></span>
+                  <span style="text-align:left"><span style="font:700 15px 'Hanken Grotesk';display:block">{{ s.label }}</span><span style="font:500 12px 'Hanken Grotesk';opacity:.65;display:block;margin-top:1px">{{ s.sub }}</span></span>
+                </span>
+              </button>
+            </sc-for>
+          </div>
+
+          <div style="font:600 15px 'Hanken Grotesk';color:#241f1b;margin-bottom:10px">Private note</div>
+          <textarea placeholder="Anything you want to remember about them..." style="width:100%;min-height:76px;resize:none;background:#fffdf9;border:1px solid rgba(36,31,27,.12);border-radius:16px;padding:14px;font:400 14px/1.5 'Hanken Grotesk';color:#241f1b;outline:none;margin-bottom:20px"></textarea>
+
+          <button onClick="{{ pe.onSave }}" style="{{ pe.saveStyle }}">{{ pe.saveLabel }}</button>
+          <sc-if value="{{ pe.canDelete }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ pe.onDelete }}" style="text-align:center;font:600 13px 'Hanken Grotesk';color:#c24a3a;margin-top:16px;cursor:pointer;padding:8px">Delete {{ pe.name }} and all their dates</div>
+          </sc-if>
+        </div>
+        </sc-if>
+
+        <!-- ============ DATE DETAIL ============ -->
+        <sc-if value="{{ isDateDetail }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:6px 20px 30px;animation:fadeUp .35s ease">
+          <div onClick="{{ closeDetail }}" style="font:600 13px 'Hanken Grotesk';color:#c24a3a;cursor:pointer;margin-bottom:16px">â€¹ Back</div>
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px">
+            <div>
+              <div style="font:600 12px 'Hanken Grotesk';letter-spacing:.07em;text-transform:uppercase;color:#a89c8f;margin-bottom:4px">{{ dd.date }}</div>
+              <div style="font:400 28px/1.1 'Instrument Serif';color:#241f1b">{{ dd.activity }}</div>
+              <div style="font:600 14px 'Hanken Grotesk';color:#8a7d6d;margin-top:4px">with {{ dd.person }}</div>
+            </div>
+            <div style="text-align:center;flex:none">
+              <div style="font:400 40px/1 'Instrument Serif';color:{{ dd.color }}">{{ dd.score }}</div>
+              <div style="font:600 10px 'Hanken Grotesk';color:#a89c8f;letter-spacing:.06em;margin-top:2px">SCORE</div>
+            </div>
+          </div>
+
+          <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:22px;padding:20px 18px;margin-bottom:14px">
+            <div style="font:600 12px 'Hanken Grotesk';letter-spacing:.07em;text-transform:uppercase;color:#a89c8f;margin-bottom:16px">How you rated it</div>
+            <div style="display:flex;flex-direction:column;gap:13px">
+              <sc-for list="{{ dd.ratings }}" as="r" hint-placeholder-count="4">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <span style="flex:1;font:600 14px 'Hanken Grotesk';color:#241f1b">{{ r.label }}</span>
+                  <span style="display:flex;gap:5px"><sc-for list="{{ r.dots }}" as="d" hint-placeholder-count="5"><span style="{{ d }}"></span></sc-for></span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;margin-bottom:14px">
+            <div style="flex:1;background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:18px;padding:16px"><div style="font:600 10px 'Hanken Grotesk';letter-spacing:.06em;color:#a89c8f">SEE AGAIN</div><div style="font:700 16px 'Hanken Grotesk';color:{{ dd.seeAgainColor }};margin-top:4px">{{ dd.seeAgain }}</div></div>
+            <div style="flex:1;background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:18px;padding:16px"><div style="font:600 10px 'Hanken Grotesk';letter-spacing:.06em;color:#a89c8f">WHO PAID</div><div style="font:700 16px 'Hanken Grotesk';color:#241f1b;margin-top:4px">{{ dd.whoPaid }}</div></div>
+          </div>
+
+          <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:22px;padding:20px 18px;margin-bottom:14px">
+            <div style="font:600 12px 'Hanken Grotesk';letter-spacing:.07em;text-transform:uppercase;color:#a89c8f;margin-bottom:12px">Flags</div>
+            <div style="display:flex;flex-wrap:wrap;gap:7px">
+              <sc-for list="{{ dd.flags }}" as="f" hint-placeholder-count="4"><span style="{{ f.style }}">{{ f.label }}</span></sc-for>
+            </div>
+          </div>
+
+          <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:22px;padding:20px 18px;margin-bottom:22px">
+            <div style="font:600 12px 'Hanken Grotesk';letter-spacing:.07em;text-transform:uppercase;color:#a89c8f;margin-bottom:8px">Your note</div>
+            <div style="font:400 16px/1.5 'Instrument Serif';color:#3a332c">{{ dd.note }}</div>
+          </div>
+
+          <div style="display:flex;gap:10px">
+            <button onClick="{{ editDate }}" style="flex:1;background:#241f1b;color:#f2ece3;border:none;border-radius:18px;padding:16px;font:700 14px 'Hanken Grotesk';cursor:pointer">Edit answers</button>
+            <button onClick="{{ askDelete }}" style="flex:none;padding:16px 20px;background:transparent;border:1.5px solid rgba(194,74,58,.35);border-radius:18px;font:600 14px 'Hanken Grotesk';color:#c24a3a;cursor:pointer">Delete</button>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- ============ SETTINGS ============ -->
+        <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:6px 20px 30px;animation:fadeUp .4s ease">
+          <div onClick="{{ goHome }}" style="font:600 13px 'Hanken Grotesk';color:#c24a3a;cursor:pointer;margin-bottom:16px">â€¹ Home</div>
+          <div style="font:400 30px/1.05 'Instrument Serif';color:#241f1b;margin-bottom:20px">Settings</div>
+
+          <div style="font:600 13px 'Hanken Grotesk';letter-spacing:.06em;text-transform:uppercase;color:#a89c8f;margin-bottom:10px">What you track</div>
+          <div style="font:400 13px/1.5 'Hanken Grotesk';color:#8a7d6d;margin-bottom:14px">Turn off what doesn't matter to you. Your score only counts what's on.</div>
+          <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:22px;padding:6px 18px;margin-bottom:14px">
+            <sc-for list="{{ questionToggles }}" as="q" hint-placeholder-count="8">
+              <div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid {{ q.divider }}">
+                <div style="flex:1"><div style="font:600 15px 'Hanken Grotesk';color:#241f1b">{{ q.label }}</div><div style="font:500 12px 'Hanken Grotesk';color:#a89c8f;margin-top:1px">{{ q.sub }}</div></div>
+                <button onClick="{{ q.onClick }}" style="{{ q.trackStyle }}"><span style="{{ q.knobStyle }}"></span></button>
+              </div>
+            </sc-for>
+          </div>
+          <button onClick="{{ addQuestion }}" style="width:100%;background:transparent;border:1.5px dashed rgba(36,31,27,.18);border-radius:18px;padding:15px;font:600 14px 'Hanken Grotesk';color:#8a7d6d;cursor:pointer;margin-bottom:26px">+ Add your own question</button>
+
+          <div style="font:600 13px 'Hanken Grotesk';letter-spacing:.06em;text-transform:uppercase;color:#a89c8f;margin-bottom:10px">Reminders</div>
+          <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:22px;padding:6px 18px;margin-bottom:26px">
+            <sc-for list="{{ reminderToggles }}" as="t" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid {{ t.divider }}">
+                <div style="flex:1"><div style="font:600 15px 'Hanken Grotesk';color:#241f1b">{{ t.label }}</div><div style="font:500 12px/1.4 'Hanken Grotesk';color:#a89c8f;margin-top:1px">{{ t.sub }}</div></div>
+                <button onClick="{{ t.onClick }}" style="{{ t.trackStyle }}"><span style="{{ t.knobStyle }}"></span></button>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="font:600 13px 'Hanken Grotesk';letter-spacing:.06em;text-transform:uppercase;color:#a89c8f;margin-bottom:10px">Privacy</div>
+          <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:22px;padding:6px 18px;margin-bottom:14px">
+            <sc-for list="{{ settingsPrivacy }}" as="t" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid {{ t.divider }}">
+                <div style="flex:1"><div style="font:600 15px 'Hanken Grotesk';color:#241f1b">{{ t.label }}</div><div style="font:500 12px/1.4 'Hanken Grotesk';color:#a89c8f;margin-top:1px">{{ t.sub }}</div></div>
+                <button onClick="{{ t.onClick }}" style="{{ t.trackStyle }}"><span style="{{ t.knobStyle }}"></span></button>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:26px">
+            <button onClick="{{ lockNow }}" style="width:100%;background:#241f1b;color:#f2ece3;border:none;border-radius:18px;padding:16px;font:700 14px 'Hanken Grotesk';cursor:pointer">Lock now</button>
+            <button style="width:100%;background:transparent;border:1.5px solid rgba(36,31,27,.14);border-radius:18px;padding:16px;font:600 14px 'Hanken Grotesk';color:#4a423b;cursor:pointer">Export my data</button>
+          </div>
+
+          <div style="font:600 13px 'Hanken Grotesk';letter-spacing:.06em;text-transform:uppercase;color:#a89c8f;margin-bottom:10px">Your intention</div>
+          <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:22px;padding:18px;margin-bottom:26px">
+            <div style="font:400 19px/1.2 'Instrument Serif';color:#241f1b;margin-bottom:3px">{{ goalLabel }}</div>
+            <div style="font:500 13px 'Hanken Grotesk';color:#a89c8f">Scores weight comfort and depth higher</div>
+          </div>
+
+          <div onClick="{{ restartOnboarding }}" style="text-align:center;font:600 13px 'Hanken Grotesk';color:#c24a3a;cursor:pointer;padding:8px">Replay the intro</div>
+          <div onClick="{{ resetData }}" style="text-align:center;font:600 13px 'Hanken Grotesk';color:#a89c8f;cursor:pointer;padding:8px">Reset to empty state</div>
+        </div>
+        </sc-if>
+
+        <!-- ============ PEOPLE ============ -->
+        <sc-if value="{{ isPeople }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:6px 20px 30px;animation:fadeUp .4s ease">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+            <div>
+              <div style="font:400 30px/1.05 'Instrument Serif';color:#241f1b;margin-bottom:4px">People</div>
+              <div style="font:500 13px 'Hanken Grotesk';color:#a89c8f">Everyone you've been keeping track of</div>
+            </div>
+            <button onClick="{{ newPerson }}" style="flex:none;width:40px;height:40px;border-radius:50%;background:#241f1b;border:none;color:#f2ece3;font:400 22px 'Hanken Grotesk';cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1">+</button>
+          </div>
+          <sc-if value="{{ peopleEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fffdf9;border:1px dashed rgba(36,31,27,.16);border-radius:20px;padding:30px 22px;text-align:center">
+            <div style="font:400 20px/1.25 'Instrument Serif';color:#3a332c;margin-bottom:6px">Nobody here yet</div>
+            <div style="font:500 13px/1.5 'Hanken Grotesk';color:#a89c8f">Add someone with the + button, or they'll appear here once you log a date with them.</div>
+          </div>
+          </sc-if>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ people }}" as="p" hint-placeholder-count="4">
+              <div onClick="{{ p.onClick }}" style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:20px;padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform .12s" style-hover="transform:translateY(-2px)">
+                <div style="width:52px;height:52px;border-radius:50%;background:{{ p.avBg }};display:flex;align-items:center;justify-content:center;font:600 20px 'Hanken Grotesk';color:{{ p.avFg }};flex:none">{{ p.initial }}</div>
+                <div style="flex:1;min-width:0">
+                  <div style="display:flex;align-items:center;gap:8px"><span style="font:700 16px 'Hanken Grotesk';color:#241f1b">{{ p.name }}</span><span style="font:600 10px 'Hanken Grotesk';color:#a89c8f;background:#efe6d8;padding:2px 7px;border-radius:99px">{{ p.tag }}</span></div>
+                  <div style="font:500 13px 'Hanken Grotesk';color:{{ p.statusColor }};margin-top:2px">{{ p.status }}</div>
+                  <div style="font:500 12px 'Hanken Grotesk';color:#a89c8f;margin-top:1px">{{ p.datesLabel }}</div>
+                </div>
+                <div style="text-align:center;flex:none">
+                  <div style="font:400 26px/1 'Instrument Serif';color:{{ p.scoreColor }}">{{ p.avg }}</div>
+                  <div style="font:600 10px 'Hanken Grotesk';color:#a89c8f;letter-spacing:.05em">AVG</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- ============ PROFILE ============ -->
+        <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:6px 20px 30px;animation:fadeUp .35s ease">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <div onClick="{{ backToPeople }}" style="font:600 13px 'Hanken Grotesk';color:#c24a3a;cursor:pointer">â€¹ People</div>
+            <div onClick="{{ editPerson }}" style="font:600 13px 'Hanken Grotesk';color:#8a7d6d;cursor:pointer">Edit</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+            <div style="width:66px;height:66px;border-radius:50%;background:{{ prof.avBg }};display:flex;align-items:center;justify-content:center;font:600 26px 'Hanken Grotesk';color:{{ prof.avFg }}">{{ prof.initial }}</div>
+            <div>
+              <div style="font:400 28px/1 'Instrument Serif';color:#241f1b">{{ prof.name }}</div>
+              <div style="font:500 13px 'Hanken Grotesk';color:{{ prof.statusColor }};margin-top:3px">{{ prof.status }} Â· {{ prof.tag }}</div>
+            </div>
+          </div>
+          <button onClick="{{ editPerson }}" style="width:100%;background:transparent;border:1.5px solid rgba(36,31,27,.14);border-radius:16px;padding:13px;font:600 13px 'Hanken Grotesk';color:#4a423b;cursor:pointer;margin-bottom:18px">Update where things stand</button>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:22px">
+            <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:16px;padding:14px;text-align:center"><div style="font:400 24px/1 'Instrument Serif';color:#241f1b">{{ prof.count }}</div><div style="font:600 10px 'Hanken Grotesk';color:#a89c8f;letter-spacing:.05em;margin-top:3px">DATES</div></div>
+            <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:16px;padding:14px;text-align:center"><div style="font:400 24px/1 'Instrument Serif';color:{{ prof.scoreColor }}">{{ prof.avg }}</div><div style="font:600 10px 'Hanken Grotesk';color:#a89c8f;letter-spacing:.05em;margin-top:3px">AVG</div></div>
+            <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:16px;padding:14px;text-align:center"><div style="font:400 24px/1 'Instrument Serif';color:#241f1b">{{ prof.trend }}</div><div style="font:600 10px 'Hanken Grotesk';color:#a89c8f;letter-spacing:.05em;margin-top:3px">TREND</div></div>
+          </div>
+          <div style="font:600 13px 'Hanken Grotesk';letter-spacing:.06em;text-transform:uppercase;color:#a89c8f;margin-bottom:12px">Date history</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ prof.dates }}" as="d" hint-placeholder-count="3">
+              <div onClick="{{ d.onClick }}" style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:18px;padding:14px 16px;display:flex;align-items:flex-start;gap:14px;cursor:pointer;transition:transform .12s" style-hover="transform:translateY(-2px)">
+                <div style="{{ d.pillStyle }}">{{ d.score }}</div>
+                <div style="flex:1"><div style="font:700 14px 'Hanken Grotesk';color:#241f1b">{{ d.activity }}</div><div style="font:500 12px 'Hanken Grotesk';color:#a89c8f;margin-top:1px">{{ d.date }}</div><div style="font:400 13px/1.4 'Hanken Grotesk';color:#5a5148;margin-top:6px;font-style:italic">{{ d.note }}</div></div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin-top:22px;background:linear-gradient(140deg,#efe6d8,#f2ece3);border:1px dashed rgba(36,31,27,.16);border-radius:20px;padding:18px">
+            <div style="display:flex;align-items:center;gap:8px;font:700 13px 'Hanken Grotesk';color:#8a7d6d;margin-bottom:6px"><span style="width:8px;height:8px;border-radius:50%;background:#c8912f"></span>AI INSIGHT Â· COMING SOON</div>
+            <div style="font:400 16px/1.4 'Instrument Serif';color:#3a332c">"You rate {{ prof.name }} highest on conversation but lowest on comfort â€” worth noticing before date four."</div>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- ============ HISTORY ============ -->
+        <sc-if value="{{ isHistory }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:6px 20px 30px;animation:fadeUp .4s ease">
+          <div style="font:400 30px/1.05 'Instrument Serif';color:#241f1b;margin-bottom:4px">Timeline</div>
+          <div style="font:500 13px 'Hanken Grotesk';color:#a89c8f;margin-bottom:22px">Every date, in order</div>
+          <sc-for list="{{ history }}" as="g" hint-placeholder-count="2">
+            <div style="margin-bottom:24px">
+              <div style="font:600 12px 'Hanken Grotesk';letter-spacing:.08em;text-transform:uppercase;color:#a89c8f;margin-bottom:12px">{{ g.month }}</div>
+              <div style="display:flex;flex-direction:column;gap:0;position:relative;padding-left:22px;border-left:2px solid rgba(36,31,27,.09)">
+                <sc-for list="{{ g.items }}" as="d" hint-placeholder-count="3">
+                  <div style="position:relative;padding-bottom:16px">
+                    <div style="position:absolute;left:-29px;top:4px;width:12px;height:12px;border-radius:50%;background:{{ d.dotColor }};border:2.5px solid #f2ece3"></div>
+                    <div onClick="{{ d.onClick }}" style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:16px;padding:13px 15px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:transform .12s" style-hover="transform:translateY(-2px)">
+                      <div style="flex:1"><div style="font:700 14px 'Hanken Grotesk';color:#241f1b">{{ d.name }}</div><div style="font:500 12px 'Hanken Grotesk';color:#a89c8f">{{ d.meta }}</div></div>
+                      <div style="{{ d.pillStyle }}">{{ d.score }}</div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        </sc-if>
+
+        <!-- ============ AWARDS ============ -->
+        <sc-if value="{{ isAwards }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:6px 20px 30px;animation:fadeUp .4s ease">
+          <div style="font:400 30px/1.05 'Instrument Serif';color:#241f1b;margin-bottom:4px">Awards</div>
+          <div style="font:500 13px 'Hanken Grotesk';color:#a89c8f;margin-bottom:20px">Progress you've earned by showing up</div>
+
+          <!-- level roadmap -->
+          <div style="background:linear-gradient(145deg,#2a2521,#3a332c);border-radius:24px;padding:22px 20px;color:#f2ece3;margin-bottom:22px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px">
+              <span style="font:400 24px/1 'Instrument Serif'">Level 4</span>
+              <span style="font:500 12px 'Hanken Grotesk';color:rgba(242,236,227,.6)">320 / 500 XP</span>
+            </div>
+            <div style="height:8px;background:rgba(242,236,227,.15);border-radius:99px;overflow:hidden;margin-bottom:20px"><div style="width:64%;height:100%;background:linear-gradient(90deg,#c8912f,#e0b25a);border-radius:99px;animation:barGrow 1s ease"></div></div>
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <sc-for list="{{ levels }}" as="l" hint-placeholder-count="5">
+                <div style="display:flex;align-items:center;gap:14px;opacity:{{ l.opacity }}">
+                  <div style="width:34px;height:34px;flex:none;border-radius:50%;border:1.5px solid {{ l.ringColor }};background:{{ l.bg }};display:flex;align-items:center;justify-content:center;font:600 14px 'Hanken Grotesk';color:{{ l.fg }}">{{ l.n }}</div>
+                  <div style="flex:1"><div style="font:600 14px 'Hanken Grotesk';color:#f2ece3">{{ l.name }}</div><div style="font:500 11px 'Hanken Grotesk';color:rgba(242,236,227,.5)">{{ l.req }}</div></div>
+                  <div style="font:600 11px 'Hanken Grotesk';color:{{ l.tagColor }}">{{ l.tag }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- badge collection -->
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px">
+            <span style="font:600 13px 'Hanken Grotesk';letter-spacing:.06em;text-transform:uppercase;color:#a89c8f">Badge collection</span>
+            <span style="font:600 13px 'Hanken Grotesk';color:#a89c8f">{{ badgeCount }}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px">
+            <sc-for list="{{ allBadges }}" as="b" hint-placeholder-count="9">
+              <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:18px;padding:14px 8px;text-align:center;opacity:{{ b.opacity }}">
+                <div style="width:40px;height:40px;margin:0 auto 8px;border-radius:12px;background:{{ b.bg }};display:flex;align-items:center;justify-content:center">{{ b.icon }}</div>
+                <div style="font:700 11px/1.2 'Hanken Grotesk';color:#241f1b">{{ b.name }}</div>
+                <div style="font:500 10px/1.2 'Hanken Grotesk';color:#a89c8f;margin-top:3px">{{ b.sub }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- streak calendar -->
+          <div style="font:600 13px 'Hanken Grotesk';letter-spacing:.06em;text-transform:uppercase;color:#a89c8f;margin-bottom:12px">Streak Â· last 12 weeks</div>
+          <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:20px;padding:18px;margin-bottom:24px">
+            <div style="display:flex;gap:6px;justify-content:space-between;margin-bottom:10px">
+              <sc-for list="{{ streakWeeks }}" as="w" hint-placeholder-count="12">
+                <div style="flex:1;height:38px;border-radius:8px;background:{{ w.bg }};border:1px solid {{ w.border }}"></div>
+              </sc-for>
+            </div>
+            <div style="display:flex;justify-content:space-between;font:500 11px 'Hanken Grotesk';color:#a89c8f"><span>12 weeks ago</span><span>This week</span></div>
+          </div>
+
+          <!-- leaderboard -->
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <span style="font:600 13px 'Hanken Grotesk';letter-spacing:.06em;text-transform:uppercase;color:#a89c8f">Friends</span>
+            <button onClick="{{ toggleBoard }}" style="{{ boardToggleStyle }}">{{ boardToggleLabel }}</button>
+          </div>
+          <sc-if value="{{ boardOn }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ board }}" as="f" hint-placeholder-count="4">
+              <div style="background:{{ f.cardBg }};border:1px solid {{ f.cardBorder }};border-radius:16px;padding:13px 16px;display:flex;align-items:center;gap:13px">
+                <div style="font:600 13px 'Hanken Grotesk';color:#a89c8f;width:16px">{{ f.rank }}</div>
+                <div style="width:36px;height:36px;border-radius:50%;background:#efe6d8;display:flex;align-items:center;justify-content:center;font:600 14px 'Hanken Grotesk';color:#8a7d6d">{{ f.initial }}</div>
+                <div style="flex:1"><div style="font:700 14px 'Hanken Grotesk';color:#241f1b">{{ f.name }}</div><div style="font:500 11px 'Hanken Grotesk';color:#a89c8f">{{ f.sub }}</div></div>
+                <div style="font:600 13px 'Hanken Grotesk';color:#c8912f">Lv {{ f.level }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="font:500 11px/1.4 'Hanken Grotesk';color:#a89c8f;margin-top:12px;text-align:center">Only levels and streaks are shared â€” never names, scores, or notes.</div>
+          </sc-if>
+          <sc-if value="{{ boardOff }}" hint-placeholder-val="{{ true }}">
+          <div style="background:#fffdf9;border:1px dashed rgba(36,31,27,.16);border-radius:20px;padding:24px 20px;text-align:center">
+            <div style="font:400 18px/1.3 'Instrument Serif';color:#3a332c;margin-bottom:6px">Compare progress with friends</div>
+            <div style="font:500 13px/1.5 'Hanken Grotesk';color:#a89c8f">Share only your level and streak â€” never who you dated or how you rated them.</div>
+          </div>
+          </sc-if>
+        </div>
+        </sc-if>
+
+        <!-- ============ INSIGHTS ============ -->
+        <sc-if value="{{ isInsights }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:6px 20px 30px;animation:fadeUp .4s ease">
+          <div style="font:400 30px/1.05 'Instrument Serif';color:#241f1b;margin-bottom:4px">Insights</div>
+          <div style="font:500 13px 'Hanken Grotesk';color:#a89c8f;margin-bottom:20px">What 10 logged dates say about you</div>
+
+          <!-- AI card -->
+          <div style="background:linear-gradient(145deg,#2a2521,#3a332c);border-radius:24px;padding:22px 20px;color:#f2ece3;margin-bottom:22px">
+            <div style="display:flex;align-items:center;gap:8px;font:700 11px 'Hanken Grotesk';letter-spacing:.09em;text-transform:uppercase;color:#c8912f;margin-bottom:10px"><span style="width:7px;height:7px;border-radius:50%;background:#c8912f"></span>AI reflection</div>
+            <div style="font:400 21px/1.35 'Instrument Serif';margin-bottom:14px">"You rate chemistry high early, then drop comfort by date three. That pattern usually means you're performing, not relaxing."</div>
+            <div style="font:400 14px/1.5 'Hanken Grotesk';color:rgba(242,236,227,.7);margin-bottom:16px">Try: pick the second date yourself, somewhere you already feel like yourself.</div>
+            <div style="display:flex;gap:8px">
+              <div style="flex:1;background:rgba(242,236,227,.09);border-radius:12px;padding:10px;text-align:center"><div style="font:600 12px 'Hanken Grotesk';color:#f2ece3">Helpful</div></div>
+              <div style="flex:1;background:rgba(242,236,227,.09);border-radius:12px;padding:10px;text-align:center"><div style="font:600 12px 'Hanken Grotesk';color:rgba(242,236,227,.6)">Not for me</div></div>
+            </div>
+          </div>
+
+          <!-- score over time -->
+          <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:22px;padding:20px 18px;margin-bottom:14px">
+            <div style="font:600 13px 'Hanken Grotesk';letter-spacing:.06em;text-transform:uppercase;color:#a89c8f;margin-bottom:4px">Score over time</div>
+            <div style="font:500 12px 'Hanken Grotesk';color:#6d8a53;margin-bottom:16px">â–² 6 points vs last month</div>
+            {{ trendChart }}
+          </div>
+
+          <!-- by activity -->
+          <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:22px;padding:20px 18px;margin-bottom:14px">
+            <div style="font:600 13px 'Hanken Grotesk';letter-spacing:.06em;text-transform:uppercase;color:#a89c8f;margin-bottom:16px">Average by activity</div>
+            <div style="display:flex;flex-direction:column;gap:13px">
+              <sc-for list="{{ byActivity }}" as="a" hint-placeholder-count="5">
+                <div>
+                  <div style="display:flex;justify-content:space-between;font:600 13px 'Hanken Grotesk';color:#241f1b;margin-bottom:6px"><span>{{ a.name }}</span><span style="color:{{ a.color }}">{{ a.score }}</span></div>
+                  <div style="height:7px;background:rgba(36,31,27,.07);border-radius:99px;overflow:hidden"><div style="width:{{ a.pct }};height:100%;background:{{ a.color }};border-radius:99px;animation:barGrow .8s ease"></div></div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- dimension averages -->
+          <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:22px;padding:20px 18px;margin-bottom:14px">
+            <div style="font:600 13px 'Hanken Grotesk';letter-spacing:.06em;text-transform:uppercase;color:#a89c8f;margin-bottom:14px">Your averages</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <sc-for list="{{ dimAvgs }}" as="d" hint-placeholder-count="4">
+                <div><div style="font:400 26px/1 'Instrument Serif';color:{{ d.color }}">{{ d.val }}</div><div style="font:600 11px 'Hanken Grotesk';color:#a89c8f;margin-top:3px">{{ d.label }}</div></div>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- flags -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+            <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:20px;padding:18px 16px">
+              <div style="font:600 11px 'Hanken Grotesk';letter-spacing:.07em;text-transform:uppercase;color:#6d8a53;margin-bottom:12px">Top green flags</div>
+              <div style="display:flex;flex-direction:column;gap:9px">
+                <sc-for list="{{ topGreen }}" as="f" hint-placeholder-count="3">
+                  <div style="display:flex;justify-content:space-between;font:600 12px 'Hanken Grotesk';color:#241f1b"><span>{{ f.name }}</span><span style="color:#a89c8f">{{ f.n }}Ã—</span></div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:20px;padding:18px 16px">
+              <div style="font:600 11px 'Hanken Grotesk';letter-spacing:.07em;text-transform:uppercase;color:#c24a3a;margin-bottom:12px">Recurring red flags</div>
+              <div style="display:flex;flex-direction:column;gap:9px">
+                <sc-for list="{{ topRed }}" as="f" hint-placeholder-count="3">
+                  <div style="display:flex;justify-content:space-between;font:600 12px 'Hanken Grotesk';color:#241f1b"><span>{{ f.name }}</span><span style="color:#a89c8f">{{ f.n }}Ã—</span></div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <!-- mood lift -->
+          <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:22px;padding:20px 18px">
+            <div style="font:600 13px 'Hanken Grotesk';letter-spacing:.06em;text-transform:uppercase;color:#a89c8f;margin-bottom:14px">Mood lift</div>
+            <div style="display:flex;align-items:center;gap:16px">
+              <div style="text-align:center"><div style="font:400 30px/1 'Instrument Serif';color:#a89c8f">3.1</div><div style="font:600 10px 'Hanken Grotesk';color:#a89c8f;margin-top:3px">BEFORE</div></div>
+              <div style="flex:1;height:2px;background:linear-gradient(90deg,#d8c9bd,#6d8a53);position:relative"><div style="position:absolute;right:-4px;top:-4px;width:10px;height:10px;border-radius:50%;background:#6d8a53"></div></div>
+              <div style="text-align:center"><div style="font:400 30px/1 'Instrument Serif';color:#6d8a53">4.0</div><div style="font:600 10px 'Hanken Grotesk';color:#a89c8f;margin-top:3px">AFTER</div></div>
+            </div>
+            <div style="font:400 14px/1.5 'Hanken Grotesk';color:#5a5148;margin-top:14px;font-style:italic">Dating is lifting your mood 8 times out of 10 â€” that's a good sign to keep going.</div>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- ============ LOG FLOW ============ -->
+        <sc-if value="{{ isLog }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:6px 20px 120px;animation:fadeUp .35s ease">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <div onClick="{{ cancelLog }}" style="font:600 14px 'Hanken Grotesk';color:#a89c8f;cursor:pointer">Cancel</div>
+            <div style="font:600 12px 'Hanken Grotesk';letter-spacing:.06em;text-transform:uppercase;color:#c8912f">{{ logKicker }}</div>
+          </div>
+          <div style="font:400 28px/1.05 'Instrument Serif';color:#241f1b;margin-bottom:2px">{{ logHeading }}</div>
+          <div style="font:500 13px 'Hanken Grotesk';color:#a89c8f;margin-bottom:22px">{{ logSub }}</div>
+
+          <!-- who -->
+          <div style="font:600 15px 'Hanken Grotesk';color:#241f1b;margin-bottom:10px">Who did you see?</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px">
+            <sc-for list="{{ personOpts }}" as="c" hint-placeholder-count="5"><button style="{{ c.style }}" onClick="{{ c.onClick }}">{{ c.label }}</button></sc-for>
+          </div>
+
+          <!-- where -->
+          <div style="font:600 15px 'Hanken Grotesk';color:#241f1b;margin-bottom:10px">Where / what?</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px">
+            <sc-for list="{{ activityOpts }}" as="c" hint-placeholder-count="6"><button style="{{ c.style }}" onClick="{{ c.onClick }}">{{ c.label }}</button></sc-for>
+          </div>
+
+          <!-- scales -->
+          <div style="display:flex;flex-direction:column;gap:20px;background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:22px;padding:20px 18px;margin-bottom:20px">
+            <sc-for list="{{ scaleRows }}" as="row" hint-placeholder-count="4">
+              <div style="display:flex;flex-direction:column;gap:11px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:600 15px 'Hanken Grotesk';color:#241f1b">{{ row.label }}</span><span style="font:500 12px 'Hanken Grotesk';color:#a89c8f">{{ row.hint }}</span></div>
+                <div style="display:flex;gap:11px">
+                  <sc-for list="{{ row.dots }}" as="d" hint-placeholder-count="5"><button style="{{ d.style }}" onClick="{{ d.onClick }}"></button></sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- mood shift -->
+          <sc-if value="{{ qMood }}" hint-placeholder-val="{{ true }}">
+          <div style="background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:22px;padding:20px 18px;margin-bottom:20px;display:flex;flex-direction:column;gap:18px">
+            <div style="font:600 15px 'Hanken Grotesk';color:#241f1b">Mood shift</div>
+            <sc-for list="{{ moodRows }}" as="row" hint-placeholder-count="2">
+              <div style="display:flex;flex-direction:column;gap:11px">
+                <span style="font:500 13px 'Hanken Grotesk';color:#8a7d6d">{{ row.label }}</span>
+                <div style="display:flex;gap:11px"><sc-for list="{{ row.dots }}" as="d" hint-placeholder-count="5"><button style="{{ d.style }}" onClick="{{ d.onClick }}"></button></sc-for></div>
+              </div>
+            </sc-for>
+          </div>
+          </sc-if>
+
+          <!-- would see again -->
+          <sc-if value="{{ qSeeAgain }}" hint-placeholder-val="{{ true }}">
+          <div style="font:600 15px 'Hanken Grotesk';color:#241f1b;margin-bottom:10px">Would you see them again?</div>
+          <div style="display:flex;gap:8px;margin-bottom:22px">
+            <sc-for list="{{ seeAgainOpts }}" as="c" hint-placeholder-count="3"><button style="{{ c.style }}" onClick="{{ c.onClick }}">{{ c.label }}</button></sc-for>
+          </div>
+          </sc-if>
+
+          <!-- who paid -->
+          <sc-if value="{{ qWhoPaid }}" hint-placeholder-val="{{ true }}">
+          <div style="font:600 15px 'Hanken Grotesk';color:#241f1b;margin-bottom:10px">Who paid?</div>
+          <div style="display:flex;gap:8px;margin-bottom:22px">
+            <sc-for list="{{ whoPaidOpts }}" as="c" hint-placeholder-count="3"><button style="{{ c.style }}" onClick="{{ c.onClick }}">{{ c.label }}</button></sc-for>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{ qFlags }}" hint-placeholder-val="{{ true }}">
+          <!-- green flags -->
+          <div style="font:600 15px 'Hanken Grotesk';color:#241f1b;margin-bottom:10px">Green flags <span style="color:#6d8a53">âœ“</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">
+            <sc-for list="{{ greenChips }}" as="c" hint-placeholder-count="7"><button style="{{ c.style }}" onClick="{{ c.onClick }}">{{ c.label }}</button></sc-for>
+          </div>
+          <!-- red flags -->
+          <div style="font:600 15px 'Hanken Grotesk';color:#241f1b;margin-bottom:10px">Red flags <span style="color:#c24a3a">âš‘</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px">
+            <sc-for list="{{ redChips }}" as="c" hint-placeholder-count="7"><button style="{{ c.style }}" onClick="{{ c.onClick }}">{{ c.label }}</button></sc-for>
+          </div>
+          </sc-if>
+
+          <!-- notes -->
+          <div style="font:600 15px 'Hanken Grotesk';color:#241f1b;margin-bottom:10px">Anything else?</div>
+          <textarea placeholder="A moment you want to remember, a thought, an ick..." style="width:100%;min-height:80px;resize:none;background:#fffdf9;border:1px solid rgba(36,31,27,.12);border-radius:16px;padding:14px;font:400 14px/1.5 'Hanken Grotesk';color:#241f1b;outline:none"></textarea>
+        </div>
+        <!-- sticky reveal -->
+        <div style="position:absolute;left:0;right:0;bottom:0;padding:16px 20px 26px;background:linear-gradient(to top,#f2ece3 55%,rgba(242,236,227,0));z-index:20">
+          <button onClick="{{ reveal }}" style="{{ revealStyle }}">{{ revealLabel }}</button>
+        </div>
+        </sc-if>
+
+        <!-- ============ RESULT ============ -->
+        <sc-if value="{{ isResult }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:14px 20px 40px;text-align:center;animation:fadeUp .4s ease">
+          <div style="font:600 12px 'Hanken Grotesk';letter-spacing:.1em;text-transform:uppercase;color:#c8912f;margin-bottom:6px">Date logged Â· {{ res.personName }}</div>
+          <div style="font:400 26px/1.1 'Instrument Serif';color:#241f1b;margin-bottom:22px">{{ res.verdictTitle }}</div>
+
+          <!-- switcher -->
+          <div style="display:flex;gap:6px;background:#e9e0d3;border-radius:14px;padding:4px;margin-bottom:24px">
+            <sc-for list="{{ resStyleTabs }}" as="t" hint-placeholder-count="4"><button style="{{ t.style }}" onClick="{{ t.onClick }}">{{ t.label }}</button></sc-for>
+          </div>
+
+          <!-- SCORE view -->
+          <sc-if value="{{ showScore }}" hint-placeholder-val="{{ true }}">
+          <div style="animation:pop .5s ease;margin-bottom:8px">
+            <div style="position:relative;width:200px;height:200px;margin:0 auto">
+              <svg width="200" height="200" viewBox="0 0 200 200" style="transform:rotate(-90deg)"><circle cx="100" cy="100" r="85" fill="none" stroke="rgba(36,31,27,.08)" stroke-width="14"/><circle cx="100" cy="100" r="85" fill="none" stroke="{{ res.ringColor }}" stroke-width="14" stroke-linecap="round" stroke-dasharray="534" stroke-dashoffset="{{ res.ringOffset }}" style="transition:stroke-dashoffset .9s ease"/></svg>
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font:400 64px/1 'Instrument Serif';color:#241f1b">{{ res.displayScore }}</span><span style="font:600 11px 'Hanken Grotesk';letter-spacing:.08em;color:#a89c8f;margin-top:2px">OUT OF 100</span></div>
+            </div>
+          </div>
+          </sc-if>
+
+          <!-- GRADE view -->
+          <sc-if value="{{ showGrade }}" hint-placeholder-val="{{ false }}">
+          <div style="animation:pop .5s ease;padding:16px 0 8px">
+            <div style="font:400 120px/1 'Instrument Serif';color:{{ res.ringColor }}">{{ res.grade }}</div>
+            <div style="font:500 13px 'Hanken Grotesk';color:#a89c8f">{{ res.displayScore }} / 100 Â· {{ res.gradeWord }}</div>
+          </div>
+          </sc-if>
+
+          <!-- VERDICT view -->
+          <sc-if value="{{ showVerdict }}" hint-placeholder-val="{{ false }}">
+          <div style="animation:pop .5s ease;padding:8px 0">
+            <div style="width:80px;height:80px;margin:0 auto 16px;border-radius:24px;background:{{ res.chipBg }};display:flex;align-items:center;justify-content:center;font:400 40px 'Instrument Serif';color:{{ res.ringColor }}">{{ res.grade }}</div>
+            <div style="font:400 30px/1.1 'Instrument Serif';color:#241f1b;max-width:280px;margin:0 auto">{{ res.verdictTitle }}</div>
+          </div>
+          </sc-if>
+
+          <!-- RADAR view -->
+          <sc-if value="{{ showRadar }}" hint-placeholder-val="{{ false }}">
+          <div style="animation:pop .5s ease;padding:4px 0 8px">{{ res.radar }}</div>
+          </sc-if>
+
+          <div style="font:400 16px/1.5 'Hanken Grotesk';color:#5a5148;margin:14px auto 0;max-width:270px;font-style:italic">"{{ res.verdictSub }}"</div>
+
+          <!-- rewards -->
+          <div style="display:flex;gap:12px;margin:26px 0 8px">
+            <div style="flex:1;background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:18px;padding:16px"><div style="font:400 30px/1 'Instrument Serif';color:#c8912f">+{{ res.xp }}</div><div style="font:600 11px 'Hanken Grotesk';color:#a89c8f;letter-spacing:.05em;margin-top:3px">XP EARNED</div></div>
+            <div style="flex:1;background:#fffdf9;border:1px solid rgba(36,31,27,.07);border-radius:18px;padding:16px"><div style="font:400 30px/1 'Instrument Serif';color:#c24a3a">3</div><div style="font:600 11px 'Hanken Grotesk';color:#a89c8f;letter-spacing:.05em;margin-top:3px">WEEK STREAK</div></div>
+          </div>
+
+          <!-- badge unlock -->
+          <sc-if value="{{ res.showBadge }}" hint-placeholder-val="{{ true }}">
+          <div style="background:linear-gradient(135deg,#2a2521,#3a332c);border-radius:20px;padding:18px;display:flex;align-items:center;gap:14px;margin-top:12px;animation:fadeUp .6s ease .3s both;text-align:left">
+            <div style="width:48px;height:48px;border-radius:14px;background:rgba(200,145,47,.2);display:flex;align-items:center;justify-content:center;font:400 24px 'Instrument Serif';color:#e0b25a;flex:none">â˜…</div>
+            <div><div style="font:600 11px 'Hanken Grotesk';letter-spacing:.08em;color:#c8912f;text-transform:uppercase">Badge unlocked</div><div style="font:400 19px/1.1 'Instrument Serif';color:#f2ece3;margin-top:2px">{{ res.badgeName }}</div></div>
+          </div>
+          </sc-if>
+
+          <button onClick="{{ finish }}" style="width:100%;margin-top:22px;background:#241f1b;color:#f2ece3;border:none;border-radius:18px;padding:17px;font:700 15px 'Hanken Grotesk';cursor:pointer">Save to journal</button>
+          <div onClick="{{ finish }}" style="font:600 14px 'Hanken Grotesk';color:#a89c8f;margin-top:14px;cursor:pointer">Done</div>
+        </div>
+        </sc-if>
+
+      </div>
+
+      <!-- DELETE CONFIRM -->
+      <sc-if value="{{ confirmOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:56;background:rgba(20,16,13,.5);display:flex;align-items:flex-end;animation:fadeUp .2s ease">
+        <div style="width:100%;background:#f7f2ea;border-radius:28px 28px 41px 41px;padding:28px 24px 34px;animation:fadeUp .3s cubic-bezier(.2,.8,.3,1)">
+          <div style="width:38px;height:4px;border-radius:99px;background:rgba(36,31,27,.15);margin:0 auto 20px"></div>
+          <div style="font:400 24px/1.2 'Instrument Serif';color:#241f1b;margin-bottom:8px">{{ confirm.title }}</div>
+          <div style="font:400 15px/1.5 'Hanken Grotesk';color:#5a5148;margin-bottom:24px">{{ confirm.body }}</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <button onClick="{{ confirm.onConfirm }}" style="width:100%;background:#c24a3a;color:#fff;border:none;border-radius:18px;padding:17px;font:700 15px 'Hanken Grotesk';cursor:pointer">{{ confirm.cta }}</button>
+            <button onClick="{{ closeConfirm }}" style="width:100%;background:transparent;border:1.5px solid rgba(36,31,27,.14);border-radius:18px;padding:17px;font:600 15px 'Hanken Grotesk';color:#4a423b;cursor:pointer">Keep it</button>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- BOTTOM NAV -->
+      <sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}">
+      <div style="flex:none;height:78px;background:rgba(255,253,249,.9);backdrop-filter:blur(12px);border-top:1px solid rgba(36,31,27,.07);display:flex;align-items:flex-start;padding:12px 24px 0;position:relative">
+        <button onClick="{{ goHome }}" style="flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:0">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{ nav.home }}" stroke-width="1.9" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></svg>
+          <span style="font:600 10px 'Hanken Grotesk';color:{{ nav.home }}">Home</span>
+        </button>
+        <button onClick="{{ goPeople }}" style="flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:0">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{ nav.people }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M16 5.5a3 3 0 0 1 0 5.6M17 14c2.3.4 4 2.3 4 5"/></svg>
+          <span style="font:600 10px 'Hanken Grotesk';color:{{ nav.people }}">People</span>
+        </button>
+        <div style="flex:1;display:flex;justify-content:center"><button onClick="{{ startLog }}" style="width:56px;height:56px;margin-top:-16px;border-radius:50%;background:#d85a4a;border:none;cursor:pointer;box-shadow:0 8px 20px -6px rgba(216,90,74,.7);display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        <button onClick="{{ goHistory }}" style="flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:0">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{ nav.history }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></svg>
+          <span style="font:600 10px 'Hanken Grotesk';color:{{ nav.history }}">Timeline</span>
+        </button>
+        <button onClick="{{ goAwards }}" style="flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:0">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{ nav.awards }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5.5"/><path d="M8.5 13.5 7 22l5-3 5 3-1.5-8.5"/></svg>
+          <span style="font:600 10px 'Hanken Grotesk';color:{{ nav.awards }}">Awards</span>
+        </button>
+      </div>
+      </sc-if>
+
+      <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;background:#241f1b;border-radius:99px;opacity:.25;z-index:50;pointer-events:none"></div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:474,&quot;height&quot;:900},&quot;startAt&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Splash&quot;,&quot;Onboarding&quot;,&quot;Lock&quot;,&quot;App&quot;],&quot;default&quot;:&quot;Splash&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;startEmpty&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;userName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Riley&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;defaultResultStyle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;score&quot;,&quot;grade&quot;,&quot;verdict&quot;,&quot;radar&quot;],&quot;default&quot;:&quot;score&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Result&quot;},&quot;verdictTone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Gentle&quot;,&quot;Playful&quot;,&quot;Blunt&quot;],&quot;default&quot;:&quot;Playful&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Result&quot;}}">
+class Component extends DCLogic {
+  constructor(p){
+    super(p);
+    this.state = {
+      tab:'home', mode:'browse', selectedPerson:null,
+      resultStyle: this.props.defaultResultStyle || 'score',
+      boardOn: false,
+      phase: this.props.startAt==='App' ? 'app' : this.props.startAt==='Lock' ? 'lock' : this.props.startAt==='Onboarding' ? 'intro' : 'splash',
+      introStep: 0, goal: null, pin: '', hasData: this.props.startEmpty!==true, nudge: this.props.startEmpty!==true,
+      privacy: {lock:true, hide:false, biometric:false},
+      reminders: {postDate:true, weekly:true, calendar:false},
+      questions: {chemistry:true, conversation:true, comfort:true, fun:true, mood:true, seeAgain:true, whoPaid:true, flags:true},
+      editing:null, draft:{name:'', source:null, status:'Talking'},
+      openDateObj:null, returnTo:'history', confirm:null,
+      people: this.props.startEmpty===true ? [] : this.seedPeople(), editingDate:null, personReturn:null, seq:100,
+      displayScore:0,
+      log: this.freshLog(),
+    };
+  }
+  freshLog(){ return { person:null, activity:null, ratings:{chemistry:0,conversation:0,comfort:0,fun:0,moodBefore:0,moodAfter:0}, seeAgain:null, whoPaid:null, green:[], red:[] }; }
+
+  componentDidMount(){
+    if(this.state.phase==='splash') this._t=setTimeout(()=>this.setState({phase:'intro'}), 2100);
+  }
+  componentWillUnmount(){ clearTimeout(this._t); }
+
+  // ---- onboarding / lock ----
+  introSlides(){
+    return [
+      {kicker:'Why bother', title:'Dating is data you never write down.', body:'Every date teaches you something â€” then it evaporates. Orbit catches it in two minutes while it is still fresh.', art:this.artOrbit()},
+      {kicker:'How it works', title:'Answer a few honest questions.', body:'Chemistry, conversation, comfort, mood. No essays. Tap through it on the walk home and you are done.', art:this.artDots()},
+      {kicker:'What you get', title:'Patterns you cannot see from inside one date.', body:'Levels and streaks for showing up. Then, once there is enough to read, reflections on what you keep choosing â€” and why.', art:this.artChart()},
+    ];
+  }
+  artOrbit(){
+    const c=[];
+    for(let i=0;i<3;i++) c.push(React.createElement('circle',{key:'r'+i,cx:100,cy:100,r:34+i*24,fill:'none',stroke:'rgba(36,31,27,.13)',strokeWidth:1,strokeDasharray:i===1?'4 6':'none'}));
+    c.push(React.createElement('circle',{key:'core',cx:100,cy:100,r:20,fill:'#d85a4a'}));
+    [[100,42,7,'#c8912f'],[158,118,6,'#6d8a53'],[52,128,5,'#8a7d6d']].forEach((p,i)=>c.push(React.createElement('circle',{key:'p'+i,cx:p[0],cy:p[1],r:p[2],fill:p[3]})));
+    return React.createElement('svg',{viewBox:'0 0 200 200',style:{width:'185px',height:'185px'}},c);
+  }
+  artDots(){
+    const rows=[5,4,3,5];
+    const el=[];
+    rows.forEach((filled,r)=>{
+      for(let i=0;i<5;i++){
+        const on=i<filled;
+        el.push(React.createElement('circle',{key:r+'-'+i,cx:30+i*35,cy:38+r*40,r:12,fill:on?'#d85a4a':'none',stroke:on?'#d85a4a':'rgba(36,31,27,.18)',strokeWidth:1.5}));
+      }
+    });
+    return React.createElement('svg',{viewBox:'0 0 200 200',style:{width:'185px',height:'185px'}},el);
+  }
+  artChart(){
+    const pts=[[20,150],[60,120],[100,128],[140,74],[180,48]];
+    const d=pts.map((p,i)=>`${i?'L':'M'}${p[0]},${p[1]}`).join(' ');
+    return React.createElement('svg',{viewBox:'0 0 200 200',style:{width:'185px',height:'185px'}},[
+      React.createElement('path',{key:'a',d:d+' L180,175 L20,175 Z',fill:'rgba(216,90,74,.12)'}),
+      React.createElement('path',{key:'l',d,fill:'none',stroke:'#d85a4a',strokeWidth:3,strokeLinecap:'round',strokeLinejoin:'round'}),
+      ...pts.map((p,i)=>React.createElement('circle',{key:'c'+i,cx:p[0],cy:p[1],r:5,fill:'#fffdf9',stroke:'#d85a4a',strokeWidth:2.5})),
+      React.createElement('path',{key:'s',d:'M150 30l3 7 7 .7-5.3 5 1.6 7-6.3-3.7-6.3 3.7 1.6-7-5.3-5 7-.7z',fill:'#c8912f'}),
+    ]);
+  }
+  introNext(){
+    const s=this.state.introStep;
+    if(s===3 && !this.state.goal) return;
+    if(s>=4){ this.setState({phase: this.state.privacy.lock?'lock':'app', tab:'home'}); return; }
+    this.setState({introStep:s+1});
+    this.scrollTop();
+  }
+  skipIntro(){ this.setState({phase:'app', tab:'home', introStep:0}); }
+  pressKey(k){
+    if(k==='del'){ this.setState(s=>({pin:s.pin.slice(0,-1)})); return; }
+    if(k==='bio'){ this.setState({pin:'', phase:'app'}); return; }
+    const pin=(this.state.pin+k).slice(0,4);
+    this.setState({pin});
+    if(pin.length===4) setTimeout(()=>this.setState({pin:'', phase:'app', tab:'home'}), 260);
+  }
+  lockNow(){ this.setState({phase:'lock', pin:''}); }
+  restartOnboarding(){ this.setState({phase:'intro', introStep:0, tab:'home'}); this.scrollTop(); }
+  resetData(){ this.setState({hasData:false, people:[], tab:'home', nudge:false, selectedPerson:null}); this.scrollTop(); }
+  fillDemo(){ this.setState({hasData:true, people:this.seedPeople(), nudge:true}); this.scrollTop(); }
+  dismissNudge(){ this.setState({nudge:false}); }
+  goSettings(){ this.setState({tab:'settings', mode:'browse'}); this.scrollTop(); }
+  toggleIn(group,key){ this.setState(s=>({[group]:{...s[group], [key]:!s[group][key]}})); }
+  addQuestion(){ /* opens a composer in a real build */ }
+
+  // ---- person editor ----
+  statusDefs(){ return [
+    ['Talking','Early days, still texting','#c8912f'],
+    ['Seeing again','Another date on the books','#6d8a53'],
+    ['Exclusive?','Heading somewhere real','#6d8a53'],
+    ['On the fence','Not sure yet','#c8912f'],
+    ['Faded out','It quietly ended','#b8a99a'],
+    ['Ended it','You called it','#c24a3a'],
+  ]; }
+  sourceDefs(){ return ['Hinge','Bumble','Tinder','IRL','Through friends','Work','Coffee shop']; }
+
+  newPerson(){ this.setState(s=>({mode:'browse', tab:'personEdit', editing:null,
+    personReturn: s.mode==='log' ? 'log' : s.tab,
+    draft:{name:'', source:null, status:'Talking'}})); this.scrollTop(); }
+  editPerson(){ const p=this.peopleData().find(x=>x.id===this.state.selectedPerson);
+    this.setState({tab:'personEdit', editing:p.id, personReturn:'profile', draft:{name:p.name, source:p.tag, status:p.status}}); this.scrollTop(); }
+  leaveEditor(extra){
+    const back=this.state.personReturn||'people';
+    if(back==='log'){ this.setState({mode:'log', tab:'home', personReturn:null, ...(extra||{})}); }
+    else { this.setState({mode:'browse', tab:back, personReturn:null, ...(extra||{})}); }
+    this.scrollTop();
+  }
+  cancelPersonEdit(){ this.leaveEditor(); }
+  setDraft(k,v){ this.setState(s=>({draft:{...s.draft,[k]:v}})); }
+  savePerson(){
+    const d=this.state.draft, name=d.name.trim();
+    if(!name) return;
+    if(this.state.editing){
+      this.setState(s=>({people:s.people.map(p=>p.id===s.editing?{...p, name, initial:name[0].toUpperCase(), tag:d.source||p.tag, status:d.status}:p)}));
+      this.leaveEditor({editing:null});
+    } else {
+      const id='p'+this.state.seq;
+      this.setState(s=>({seq:s.seq+1, people:[...s.people, {id, name, initial:name[0].toUpperCase(), tag:d.source||'Added by you', status:d.status, dates:[]}]}));
+      const back=this.state.personReturn;
+      if(back==='log') this.setState(s=>({log:{...s.log, person:id}}));
+      this.leaveEditor();
+    }
+  }
+
+  // ---- date detail ----
+  openDate(d){ this.setState({tab:'dateDetail', openDateObj:d, returnTo:this.state.tab}); this.scrollTop(); }
+  closeDetail(){ this.setState({tab:this.state.returnTo||'history'}); this.scrollTop(); }
+  editDate(){
+    const d=this.state.openDateObj||{};
+    const r=d.ratings||{chemistry:4,conversation:5,comfort:4,fun:4,moodBefore:3,moodAfter:4};
+    this.setState({mode:'log', editingDate:d.id||null,
+      log:{...this.freshLog(), person:d.personId||null, activity:d.activity||null, ratings:{...r},
+        seeAgain:d.seeAgain||'Yes', whoPaid:d.whoPaid||'Split', green:d.green||[], red:d.red||[]}});
+    this.scrollTop();
+  }
+  askDelete(kind){ this.setState({confirm:kind||'date'}); }
+  closeConfirm(){ this.setState({confirm:null}); }
+  doDelete(){
+    const S=this.state;
+    if(S.confirm==='person'){
+      const id=S.editing;
+      this.setState(s=>({people:s.people.filter(p=>p.id!==id), confirm:null, editing:null, personReturn:null, selectedPerson:null, mode:'browse', tab:'people'}));
+    } else {
+      const did=(S.openDateObj||{}).id;
+      this.setState(s=>({people:s.people.map(p=>({...p, dates:p.dates.filter(d=>d.id!==did)})),
+        confirm:null, openDateObj:null, tab:(s.returnTo==='dateDetail'?'history':s.returnTo)||'history'}));
+    }
+    this.scrollTop();
+  }
+
+  toggle(on, onClick){
+    return { onClick,
+      trackStyle:`width:48px;height:28px;flex:none;border-radius:999px;border:none;padding:3px;cursor:pointer;display:flex;justify-content:${on?'flex-end':'flex-start'};background:${on?'#6d8a53':'rgba(36,31,27,.16)'};transition:background .18s`,
+      knobStyle:`width:22px;height:22px;border-radius:50%;background:#fffdf9;display:block;box-shadow:0 1px 3px rgba(0,0,0,.2)` };
+  }
+
+  // ---- sample data ----
+  seedPeople(){
+    const mk=(id,name,tag,status,dates)=>({id, name, initial:name[0].toUpperCase(), tag, status, dates});
+    return [
+      mk('maya','Maya','Bumble','Seeing again',[
+        {id:'d1', activity:'Wine bar downtown', date:'Jul 18', month:'July 2026', iso:'2026-07-18', score:91, note:'Talked until they closed. Genuinely funny.'},
+        {id:'d2', activity:'Coffee & a walk', date:'Jul 9', month:'July 2026', iso:'2026-07-09', score:86, note:'Easy. A little nervous but warmed up fast.'},
+        {id:'d3', activity:'First â€” dinner', date:'Jun 28', month:'June 2026', iso:'2026-06-28', score:87, note:'Great first impression, split the bill.'},
+      ]),
+      mk('alex','Alex','Coffee shop','Exclusive?',[
+        {id:'d4', activity:'Cooked dinner in', date:'Jul 20', month:'July 2026', iso:'2026-07-20', score:94, note:'Felt like it clicked. No phones out once.'},
+        {id:'d5', activity:'Gallery + drinks', date:'Jul 11', month:'July 2026', iso:'2026-07-11', score:90, note:'Curious about everything. Good listener.'},
+      ]),
+      mk('jordan','Jordan','Hinge','On the fence',[
+        {id:'d6', activity:'Drinks after work', date:'Jul 15', month:'July 2026', iso:'2026-07-15', score:68, note:'Fun but a bit self-focused.'},
+        {id:'d7', activity:'Mini golf', date:'Jul 5', month:'July 2026', iso:'2026-07-05', score:76, note:'Competitive in a cute way.'},
+      ]),
+      mk('sam','Sam','IRL','Faded out',[
+        {id:'d8', activity:'Coffee', date:'Jul 2', month:'July 2026', iso:'2026-07-02', score:54, note:'Pleasant, no spark. On their phone.'},
+      ]),
+    ];
+  }
+  statusColor(s){ const f=this.statusDefs().find(x=>x[0]===s); return f?f[2]:'#8a7d6d'; }
+  peopleData(){
+    return this.state.people.map(p=>{
+      const ds=p.dates, n=ds.length;
+      const avg = n ? Math.round(ds.reduce((a,d)=>a+d.score,0)/n) : 0;
+      let trend='â€”';
+      if(n>1){ const sorted=[...ds].sort((a,b)=>a.iso.localeCompare(b.iso)); trend = sorted[n-1].score>sorted[n-2].score?'â–²':sorted[n-1].score<sorted[n-2].score?'â–¼':'â€”'; }
+      return {...p, count:n, avg, trend, statusColor:this.statusColor(p.status),
+        dates:[...ds].sort((a,b)=>b.iso.localeCompare(a.iso))};
+    });
+  }
+  allDates(){
+    const out=[];
+    this.peopleData().forEach(p=>p.dates.forEach(d=>out.push({...d, name:p.name, initial:p.initial, personId:p.id, meta:`${d.activity} Â· ${d.date}`})));
+    return out.sort((a,b)=>b.iso.localeCompare(a.iso));
+  }
+  greenList(){ return ['Made me laugh','Great listener','On time','Curious','Kind to staff','Good energy','Honest']; }
+  redList(){ return ['On their phone','One-sided','Bragging','No questions','Bad vibes','Ran late','Talked over me']; }
+  activityList(){ return ['Coffee','Dinner','Drinks','A walk','Activity','Movie']; }
+
+  // ---- helpers ----
+  scoreColor(s){ return s>=80?'#6d8a53': s>=62?'#c8912f':'#c24a3a'; }
+  pill(s){ const c=this.scoreColor(s); return `flex:none;min-width:40px;text-align:center;padding:6px 4px;border-radius:12px;background:${c}1f;color:${c};font:700 15px 'Hanken Grotesk'`; }
+  chip(sel, color){ color=color||'#d85a4a'; return `padding:9px 15px;border-radius:999px;border:1.5px solid ${sel?color:'rgba(36,31,27,.14)'};background:${sel?color+'1a':'transparent'};color:${sel?color:'#4a423b'};font:600 13px 'Hanken Grotesk';cursor:pointer;white-space:nowrap;transition:all .12s`; }
+  seg(sel, color){ color=color||'#d85a4a'; return `flex:1;padding:12px 8px;border-radius:12px;border:1.5px solid ${sel?color:'rgba(36,31,27,.12)'};background:${sel?color+'1a':'transparent'};color:${sel?color:'#4a423b'};font:600 14px 'Hanken Grotesk';cursor:pointer;transition:all .12s`; }
+  dotStyle(on){ return `width:32px;height:32px;border-radius:50%;padding:0;cursor:pointer;border:1.5px solid ${on?'#d85a4a':'rgba(36,31,27,.18)'};background:${on?'#d85a4a':'transparent'};transition:all .12s`; }
+
+  // ---- handlers ----
+  goHome(){ this.setState({tab:'home', mode:'browse', selectedPerson:null}); }
+  goPeople(){ this.setState({tab:'people', mode:'browse', selectedPerson:null}); }
+  goHistory(){ this.setState({tab:'history', mode:'browse', selectedPerson:null}); }
+  goAwards(){ this.setState({tab:'awards', mode:'browse', selectedPerson:null}); this.scrollTop(); }
+  goInsights(){ this.setState({tab:'insights', mode:'browse', selectedPerson:null}); this.scrollTop(); }
+  toggleBoard(){ this.setState(s=>({boardOn:!s.boardOn})); }
+  startLog(){ this.setState({mode:'log', editingDate:null, log:this.freshLog()}); this.scrollTop(); }
+  cancelLog(){ this.setState({mode:'browse', editingDate:null, tab:'home', log:this.freshLog()}); }
+  scrollTop(){ setTimeout(()=>{ const el=document.querySelector('.scr'); if(el) el.scrollTop=0; },30); }
+  openPerson(id){ this.setState({tab:'profile', selectedPerson:id, mode:'browse'}); this.scrollTop(); }
+  backToPeople(){ this.setState({tab:'people', selectedPerson:null}); }
+
+  setRate(key,v){ this.setState(s=>({log:{...s.log, ratings:{...s.log.ratings,[key]:v}}})); }
+  setField(f,v){ this.setState(s=>({log:{...s.log,[f]:v}})); }
+  toggleFlag(kind,item){ this.setState(s=>{ const arr=s.log[kind]; const has=arr.includes(item); return {log:{...s.log,[kind]: has?arr.filter(x=>x!==item):[...arr,item]}}; }); }
+  setResultStyle(v){ this.setState({resultStyle:v}); }
+
+  computeScore(){ const r=this.state.log.ratings; const k=['chemistry','conversation','comfort','fun']; const filled=k.filter(x=>r[x]>0); if(!filled.length) return 0; const avg=filled.reduce((a,x)=>a+r[x],0)/filled.length; let s=avg*20; if(this.state.log.seeAgain==='Yes') s+=4; if(this.state.log.seeAgain==='No') s-=6; s+=this.state.log.green.length*1.2 - this.state.log.red.length*2; return Math.max(8, Math.min(99, Math.round(s))); }
+
+  reveal(){
+    if(!this.canReveal()) return;
+    const target=this.computeScore();
+    this.setState({mode:'result', displayScore:0, resultStyle:this.props.defaultResultStyle||'score'});
+    this.scrollTop();
+    const start=performance.now(), dur=950;
+    const step=(t)=>{ const p=Math.min(1,(t-start)/dur); const e=1-Math.pow(1-p,3); this.setState({displayScore:Math.round(e*target)}); if(p<1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+  finish(){
+    const S=this.state, L=S.log, score=this.computeScore();
+    const pid=L.person;
+    const entry={ activity:L.activity||'A date', score, ratings:{...L.ratings}, seeAgain:L.seeAgain, whoPaid:L.whoPaid, green:L.green, red:L.red,
+      date:'Jul 23', month:'July 2026', iso:'2026-07-23', note:'' };
+    this.setState(s=>{
+      let people=s.people;
+      if(pid && people.some(p=>p.id===pid)){
+        people=people.map(p=>{
+          if(p.id!==pid) return p;
+          if(s.editingDate) return {...p, dates:p.dates.map(d=>d.id===s.editingDate?{...d, ...entry, date:d.date, month:d.month, iso:d.iso, note:d.note}:d)};
+          return {...p, dates:[{...entry, id:'d'+s.seq}, ...p.dates]};
+        });
+      }
+      return {people, seq:s.seq+1, editingDate:null, mode:'browse', tab:'home', hasData:true, nudge:false};
+    });
+    this.scrollTop();
+  }
+  canReveal(){ const r=this.state.log.ratings, Q=this.state.questions;
+    const need=['chemistry','conversation','comfort','fun'].filter(k=>Q[k]);
+    if(!need.length) return !!this.state.log.person;
+    return need.slice(0,2).every(k=>r[k]>0); }
+
+  grade(s){ return s>=93?'A+':s>=88?'A':s>=83?'A-':s>=78?'B+':s>=72?'B':s>=66?'B-':s>=58?'C+':s>=50?'C':s>=42?'C-':'D'; }
+  gradeWord(s){ return s>=88?'Exceptional':s>=78?'Strong':s>=66?'Solid':s>=50?'Mixed':'Rough'; }
+  verdict(s){
+    const seeAgain=this.state.log.seeAgain;
+    let band = s>=85?0:s>=74?1:s>=60?2:s>=45?3:4;
+    if(seeAgain==='No' && band<2) band=2;
+    const titles=['A rare spark','Real potential','Pleasant, not electric','Lukewarm','One and done'];
+    const tone=this.props.verdictTone||'Playful';
+    const subs={
+      Gentle:['Something worth nurturing here.','A promising start â€” give it room.','Nice company, no pressure to force it.','It was fine. That is allowed to be enough.','Not the one, and that is okay.'],
+      Playful:['Cancel your other plans.','Worth a second round, clearly.','Good, but the fireworks stayed home.','The conversation carried it. Barely.','Trust the ick and move on.'],
+      Blunt:['This one matters â€” do not fumble it.','Follow up within 48 hours.','Do not overinvest in a maybe.','You are settling if you go again.','Delete the number. Next.'],
+    };
+    return { title:titles[band], sub:(subs[tone]||subs.Playful)[band] };
+  }
+
+  icon(d,color,fill){ return React.createElement('svg',{width:20,height:20,viewBox:'0 0 24 24',stroke:color,fill:'none',strokeWidth:2,strokeLinecap:'round',strokeLinejoin:'round'},React.createElement('path',{d})); }
+
+  badgeDefs(){
+    const G='#6d8a53', A='#c8912f', R='#d85a4a', N='#a89c8f';
+    return [
+      {name:'First Date', sub:'Logged one', c:A, d:'M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z', got:true},
+      {name:'On a Roll', sub:'3-week streak', c:R, d:'M12 3c1 3-1 4-1 6a3 3 0 006 0c0 4-2 6-2 8a5 5 0 01-10 0c0-4 4-5 4-9 1 1 2 2 3 2 1-3 0-5 0-7z', got:true},
+      {name:'Sky High', sub:'Scored 90+', c:G, d:'M4 14l5-5 4 4 7-7', got:true},
+      {name:'Second Round', sub:'Same person twice', c:A, d:'M4 12a8 8 0 0113.7-5.7M20 12a8 8 0 01-13.7 5.7', got:true},
+      {name:'Open Book', sub:'10 notes written', c:G, d:'M4 5.5A2 2 0 016 4h5v16H6a2 2 0 01-2-2zM20 5.5A2 2 0 0018 4h-5v16h5a2 2 0 002-2z', got:true},
+      {name:'Honest Eye', sub:'Logged a red flag', c:R, d:'M5 21V4h11l-1.5 3.5L16 11H5', got:true},
+      {name:'Explorer', sub:'5 people', c:N, d:'M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11z', got:false},
+      {name:'Deep Dive', sub:'Date five', c:N, d:'M12 4v16M6 10l6-6 6 6', got:false},
+      {name:'Steady', sub:'8-week streak', c:N, d:'M4 18h4v-6H4zM10 18h4V7h-4zM16 18h4V3h-4z', got:false},
+    ];
+  }
+
+  trendChart(){
+    const pts=[54,76,68,86,87,90,91,94];
+    const W=280,H=110,pad=8;
+    const x=i=>pad+(i*(W-pad*2))/(pts.length-1);
+    const y=v=>H-pad-((v-40)/60)*(H-pad*2);
+    const line=pts.map((v,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+    const area=`${line} L${x(pts.length-1).toFixed(1)},${H} L${x(0).toFixed(1)},${H} Z`;
+    const grid=[40,70,100].map((v,i)=>React.createElement('line',{key:'g'+i,x1:0,x2:W,y1:y(v),y2:y(v),stroke:'rgba(36,31,27,.07)',strokeWidth:1}));
+    return React.createElement('svg',{viewBox:`0 0 ${W} ${H}`,style:{width:'100%',height:'110px',display:'block'}},[
+      ...grid,
+      React.createElement('path',{key:'a',d:area,fill:'rgba(216,90,74,.12)'}),
+      React.createElement('path',{key:'l',d:line,fill:'none',stroke:'#d85a4a',strokeWidth:2.5,strokeLinecap:'round',strokeLinejoin:'round'}),
+      ...pts.map((v,i)=>React.createElement('circle',{key:'c'+i,cx:x(i),cy:y(v),r:i===pts.length-1?4.5:3,fill:i===pts.length-1?'#d85a4a':'#fffdf9',stroke:'#d85a4a',strokeWidth:2})),
+    ]);
+  }
+
+  radar(){
+    const r=this.state.log.ratings;
+    const axes=[['Chem',r.chemistry],['Talk',r.conversation],['Ease',r.comfort],['Fun',r.fun],['Mood',r.moodAfter]];
+    const cx=100,cy=100,R=70;
+    const pt=(i,rad)=>{const a=(-90+i*72)*Math.PI/180;return [cx+Math.cos(a)*rad, cy+Math.sin(a)*rad];};
+    const grid=[0.34,0.67,1].map((lvl,gi)=>React.createElement('polygon',{key:'g'+gi,points:axes.map((_,i)=>pt(i,R*lvl).join(',')).join(' '),fill:'none',stroke:'rgba(36,31,27,.1)',strokeWidth:1}));
+    const spokes=axes.map((_,i)=>{const[x,y]=pt(i,R);return React.createElement('line',{key:'s'+i,x1:cx,y1:cy,x2:x,y2:y,stroke:'rgba(36,31,27,.08)',strokeWidth:1});});
+    const dp=axes.map((a,i)=>pt(i,R*(Math.max(a[1],0.4)/5)));
+    const poly=React.createElement('polygon',{key:'poly',points:dp.map(p=>p.join(',')).join(' '),fill:'rgba(216,90,74,.18)',stroke:'#d85a4a',strokeWidth:2,strokeLinejoin:'round'});
+    const dots=dp.map((p,i)=>React.createElement('circle',{key:'d'+i,cx:p[0],cy:p[1],r:3.2,fill:'#d85a4a'}));
+    const labels=axes.map((a,i)=>{const[x,y]=pt(i,R+18);return React.createElement('text',{key:'t'+i,x,y,fontSize:10,fontWeight:700,fill:'#8a7d6d',textAnchor:'middle',dominantBaseline:'middle',fontFamily:"'Hanken Grotesk',sans-serif"},a[0]);});
+    return React.createElement('svg',{viewBox:'0 0 200 200',style:{width:'210px',height:'210px'}},[...grid,...spokes,poly,...dots,...labels]);
+  }
+
+  renderVals(){
+    const S=this.state, L=S.log;
+    const browse = S.mode==='browse';
+    const isHome = browse && S.tab==='home';
+    const isPeople = browse && S.tab==='people';
+    const isHistory = browse && S.tab==='history';
+    const isProfile = browse && S.tab==='profile';
+    const isAwards = browse && S.tab==='awards';
+    const isInsights = browse && S.tab==='insights';
+    const isSettings = browse && S.tab==='settings';
+    const isPersonEdit = browse && S.tab==='personEdit';
+    const isDateDetail = browse && S.tab==='dateDetail';
+
+    // ---- person editor ----
+    const D=S.draft;
+    const pe={ kicker:S.editing?'Edit person':'New person',
+      heading:S.editing?'Where do things stand?':'Who did you meet?',
+      name:D.name, initial:(D.name.trim()[0]||'?').toUpperCase(),
+      onName:(e)=>this.setDraft('name', e.target.value),
+      sources:this.sourceDefs().map(s=>({label:s, style:this.chip(D.source===s,'#c8912f'), onClick:()=>this.setDraft('source',s)})),
+      statuses:this.statusDefs().map(st=>{ const on=D.status===st[0];
+        return { label:st[0], sub:st[1], dot:st[2], onClick:()=>this.setDraft('status',st[0]),
+          style:`width:100%;padding:14px 16px;border-radius:16px;cursor:pointer;transition:all .12s;border:1.5px solid ${on?st[2]:'rgba(36,31,27,.12)'};background:${on?st[2]+'14':'#fffdf9'};color:#241f1b;display:flex;align-items:center` }; }),
+      canDelete:!!S.editing, onDelete:()=>this.askDelete('person'),
+      onSave:()=>this.savePerson(), saveLabel:S.editing?'Save changes':'Add person',
+      saveStyle:`width:100%;border:none;border-radius:18px;padding:17px;font:700 15px 'Hanken Grotesk';color:#fff;transition:all .15s;cursor:${D.name.trim()?'pointer':'not-allowed'};background:${D.name.trim()?'#d85a4a':'#d8c9bd'};box-shadow:${D.name.trim()?'0 10px 26px -10px rgba(216,90,74,.7)':'none'}` };
+
+    // ---- date detail ----
+    const od=S.openDateObj||{};
+    const orat=od.ratings||{chemistry:4,conversation:5,comfort:4,fun:4};
+    const ratingSpec=[['Chemistry',orat.chemistry||0],['Conversation',orat.conversation||0],['Comfort & safety',orat.comfort||0],['Fun',orat.fun||0]];
+    const ddFlags=[...(od.green||['Made me laugh','Great listener','Curious']).map(g=>[g,1]), ...(od.red||[]).map(r=>[r,0])];
+    const dd={ date:od.date||'Jul 18', activity:od.activity||'Wine bar downtown',
+      person:od.name||'Maya', score:od.score||91, color:this.scoreColor(od.score||91),
+      note:od.note||'No note on this one.',
+      seeAgain:od.seeAgain||'Yes', seeAgainColor:(od.seeAgain==='No')?'#c24a3a':(od.seeAgain==='Maybe')?'#c8912f':'#6d8a53',
+      whoPaid:od.whoPaid||'Split',
+      ratings:ratingSpec.map(r=>({label:r[0], dots:[1,2,3,4,5].map(n=>`width:9px;height:9px;border-radius:50%;background:${n<=r[1]?'#d85a4a':'rgba(36,31,27,.13)'}`)})),
+      flags:ddFlags.map(f=>({label:f[1]?'âœ“ '+f[0]:'âš‘ '+f[0],
+        style:`padding:7px 13px;border-radius:999px;font:600 12px 'Hanken Grotesk';background:${f[1]?'rgba(109,138,83,.13)':'rgba(194,74,58,.11)'};color:${f[1]?'#6d8a53':'#c24a3a'}`})) };
+
+    const confirmDefs={
+      date:{title:'Delete this date?', body:'The answers, notes, and score all go. Your level and streak stay as they are.', cta:'Delete date'},
+      person:{title:`Delete ${D.name||'this person'}?`, body:'Every date logged with them is deleted too. This cannot be undone.', cta:'Delete everything'},
+    };
+    const confirm={...(confirmDefs[S.confirm]||confirmDefs.date), onConfirm:()=>this.doDelete()};
+    const inApp = S.phase==='app';
+
+    // ---- onboarding ----
+    const slides=this.introSlides();
+    const step=S.introStep;
+    const introIsStory=step<3, introIsGoal=step===3, introIsPrivacy=step===4;
+    const intro=slides[Math.min(step,2)];
+    const introDots=[0,1,2,3,4].map(i=>({style:`width:${i===step?'20px':'6px'};height:6px;border-radius:99px;background:${i<=step?'#d85a4a':'rgba(36,31,27,.15)'};transition:all .25s`}));
+    const goals=[['Something serious','Looking for a real relationship'],['Open to anything','See where things go'],['Dating casually','Fun, low pressure'],['Getting back out there','Rebuilding confidence']];
+    const goalOpts=goals.map(g=>({label:g[0], sub:g[1], onClick:()=>this.setState({goal:g[0]}),
+      style:`width:100%;text-align:left;padding:16px 18px;border-radius:18px;cursor:pointer;transition:all .12s;border:1.5px solid ${S.goal===g[0]?'#d85a4a':'rgba(36,31,27,.12)'};background:${S.goal===g[0]?'#d85a4a12':'#fffdf9'};color:${S.goal===g[0]?'#c24a3a':'#241f1b'}`}));
+    const privacyToggles=[
+      {label:'Passcode lock', sub:'Ask for a code every time you open Orbit', on:S.privacy.lock, k:'lock'},
+      {label:'Hide names', sub:'Show initials only in lists and widgets', on:S.privacy.hide, k:'hide'},
+      {label:'Face ID', sub:'Unlock without typing', on:S.privacy.biometric, k:'biometric'},
+    ].map(t=>({label:t.label, sub:t.sub, ...this.toggle(t.on, ()=>this.toggleIn('privacy',t.k))}));
+    const introBlocked = step===3 && !S.goal;
+    const introCta=introBlocked?'Pick one to continue':step===4?'Start tracking':'Continue';
+    const introCtaStyle=`width:100%;border:none;border-radius:18px;padding:18px;font:700 16px 'Hanken Grotesk';color:#fff;transition:all .15s;cursor:${introBlocked?'not-allowed':'pointer'};background:${introBlocked?'#d8c9bd':'#d85a4a'};box-shadow:${introBlocked?'none':'0 10px 26px -10px rgba(216,90,74,.7)'}`;
+
+    // ---- lock ----
+    const pinDots=[0,1,2,3].map(i=>({style:`width:13px;height:13px;border-radius:50%;background:${i<S.pin.length?'#e0b25a':'transparent'};border:1.5px solid ${i<S.pin.length?'#e0b25a':'rgba(242,236,227,.35)'};transition:all .15s`}));
+    const keyBase=`height:62px;border-radius:50%;border:none;background:rgba(242,236,227,.08);color:#f2ece3;font:400 26px 'Instrument Serif';cursor:pointer;transition:background .12s`;
+    const keypad=['1','2','3','4','5','6','7','8','9','bio','0','del'].map(k=>({
+      label: k==='del'?'âŒ«' : k==='bio'?'â˜º' : k,
+      onClick:()=>this.pressKey(k),
+      style: (k==='del'||k==='bio') ? keyBase+";background:transparent;font-size:20px;color:#a89c8f" : keyBase }));
+
+    // ---- settings ----
+    const qDefs=[['chemistry','Chemistry','The spark'],['conversation','Conversation','Flow and depth'],['comfort','Comfort & safety','Did you feel at ease'],['fun','Fun','Did you enjoy it'],['mood','Mood before / after','Track the lift'],['seeAgain','See them again','Yes / maybe / no'],['whoPaid','Who paid','Logistics'],['flags','Green & red flags','Tag what stood out']];
+    const questionToggles=qDefs.map((q,i)=>({label:q[1], sub:q[2], divider:i===qDefs.length-1?'transparent':'rgba(36,31,27,.06)', ...this.toggle(S.questions[q[0]], ()=>this.toggleIn('questions',q[0]))}));
+    const rDefs=[['postDate','Post-date nudge','A gentle ping two hours after an evening out'],['weekly','Weekly reflection','Sunday summary of your week'],['calendar','Read my calendar','Auto-detect dates and pre-fill who and where']];
+    const reminderToggles=rDefs.map((r,i)=>({label:r[1], sub:r[2], divider:i===rDefs.length-1?'transparent':'rgba(36,31,27,.06)', ...this.toggle(S.reminders[r[0]], ()=>this.toggleIn('reminders',r[0]))}));
+    const pDefs=[['lock','Passcode lock','Required to open the app'],['hide','Hide names','Initials only outside a profile'],['biometric','Face ID','Skip the keypad']];
+    const settingsPrivacy=pDefs.map((p,i)=>({label:p[1], sub:p[2], divider:i===pDefs.length-1?'transparent':'rgba(36,31,27,.06)', ...this.toggle(S.privacy[p[0]], ()=>this.toggleIn('privacy',p[0]))}));
+    const unlockSteps=[
+      {n:'1', title:'Your first result', sub:'A score and a read on how it went'},
+      {n:'3', title:'Streaks and badges', sub:'Credit for putting yourself out there'},
+      {n:'5', title:'Patterns and AI reflections', sub:'What you keep choosing, and why'},
+    ];
+    const isLog = S.mode==='log';
+    const isResult = S.mode==='result';
+    const ACT='#d85a4a', OFF='#a89c8f';
+    const nav = { home:(isHome||isInsights)?ACT:OFF, people:(isPeople||isProfile)?ACT:OFF, history:isHistory?ACT:OFF, awards:isAwards?ACT:OFF };
+
+    // ---- awards data ----
+    const levelDefs=[['Getting out there','First date logged'],['Warming up','3 dates'],['In the mix','6 dates'],['Finding your rhythm','10 dates'],['Knowing your type','16 dates'],['Clear-eyed','25 dates']];
+    const CUR=4;
+    const levels=levelDefs.map((l,i)=>{ const n=i+1, done=n<CUR, cur=n===CUR;
+      return { n, name:l[0], req:l[1], opacity:n<=CUR?1:.4,
+        ringColor:cur?'#e0b25a':done?'rgba(200,145,47,.45)':'rgba(242,236,227,.22)',
+        bg:cur?'rgba(200,145,47,.22)':'transparent', fg:cur?'#e0b25a':done?'rgba(224,178,90,.8)':'rgba(242,236,227,.45)',
+        tag:cur?'YOU':done?'âœ“':'', tagColor:cur?'#e0b25a':'rgba(242,236,227,.4)' };
+    });
+    const defs=this.badgeDefs();
+    const allBadges=defs.map(b=>({ name:b.name, sub:b.got?b.sub:'Locked', bg:b.got?b.c+'22':'rgba(168,156,143,.12)',
+      icon:this.icon(b.d, b.got?b.c:'#c4b8aa'), opacity:b.got?1:.45 }));
+    const badgeCount=`${defs.filter(b=>b.got).length} of ${defs.length}`;
+    const weeks=[0,1,0,2,1,1,0,2,1,2,1,1];
+    const streakWeeks=weeks.map(w=>({ bg:w===0?'rgba(36,31,27,.05)':w===1?'rgba(216,90,74,.35)':'#d85a4a', border:w===0?'rgba(36,31,27,.07)':'transparent' }));
+    const board=[
+      {rank:1, initial:'K', name:'Kai', sub:'5-week streak', level:6},
+      {rank:2, initial:'R', name:'You', sub:'3-week streak', level:4},
+      {rank:3, initial:'T', name:'Tess', sub:'2-week streak', level:4},
+      {rank:4, initial:'N', name:'Noor', sub:'Paused', level:2},
+    ].map(f=>({...f, cardBg:f.name==='You'?'#fdf3e8':'#fffdf9', cardBorder:f.name==='You'?'rgba(200,145,47,.4)':'rgba(36,31,27,.07)'}));
+    const boardToggleStyle=`padding:7px 14px;border-radius:999px;border:1.5px solid ${S.boardOn?'#d85a4a':'rgba(36,31,27,.14)'};background:${S.boardOn?'#d85a4a1a':'transparent'};color:${S.boardOn?'#d85a4a':'#4a423b'};font:600 12px 'Hanken Grotesk';cursor:pointer`;
+
+    // ---- insights data ----
+    const actData=[['A walk',92],['Coffee',88],['Activity',84],['Dinner',74],['Drinks',66]];
+    const byActivity=actData.map(a=>({name:a[0], score:a[1], pct:a[1]+'%', color:this.scoreColor(a[1])}));
+    const dimAvgs=[['Chemistry',4.1,'#6d8a53'],['Conversation',4.4,'#6d8a53'],['Comfort',3.5,'#c8912f'],['Fun',4.0,'#6d8a53']]
+      .map(d=>({label:d[0], val:d[1].toFixed(1), color:d[2]}));
+    const topGreen=[{name:'Great listener',n:7},{name:'Made me laugh',n:6},{name:'Curious',n:5}];
+    const topRed=[{name:'On their phone',n:4},{name:'One-sided',n:3},{name:'No questions',n:2}];
+
+    // scales
+    const mkRow=(key,label,hint)=>({label,hint,dots:[1,2,3,4,5].map(n=>({style:this.dotStyle((L.ratings[key]||0)>=n), onClick:()=>this.setRate(key,n)}))});
+    const Q=S.questions;
+    const scaleRows=[
+      Q.chemistry && mkRow('chemistry','Chemistry','The spark'),
+      Q.conversation && mkRow('conversation','Conversation','Flow & depth'),
+      Q.comfort && mkRow('comfort','Comfort & safety','At ease?'),
+      Q.fun && mkRow('fun','Fun','Good time?'),
+    ].filter(Boolean);
+    const moodRows=[ mkRow('moodBefore','Before the date'), mkRow('moodAfter','After the date') ];
+
+    // option chips
+    const personOpts=[ ...this.peopleData().map(p=>({label:p.name, style:this.chip(L.person===p.id), onClick:()=>this.setField('person',p.id)})), {label:'+ New person', style:this.chip(false,'#c8912f'), onClick:()=>this.newPerson()} ];
+    const acts=this.activityList();
+    if(L.activity && !acts.includes(L.activity)) acts.unshift(L.activity);
+    const activityOpts=acts.map(a=>({label:a, style:this.chip(L.activity===a,'#c8912f'), onClick:()=>this.setField('activity',a)}));
+    const seeAgainOpts=['Yes','Maybe','No'].map(o=>({label:o, style:this.seg(L.seeAgain===o), onClick:()=>this.setField('seeAgain',o)}));
+    const whoPaidOpts=['I did','They did','Split'].map(o=>({label:o, style:this.seg(L.whoPaid===o,'#c8912f'), onClick:()=>this.setField('whoPaid',o)}));
+    const greenChips=this.greenList().map(g=>({label:g, style:this.chip(L.green.includes(g),'#6d8a53'), onClick:()=>this.toggleFlag('green',g)}));
+    const redChips=this.redList().map(g=>({label:g, style:this.chip(L.red.includes(g),'#c24a3a'), onClick:()=>this.toggleFlag('red',g)}));
+
+    const canReveal=this.canReveal();
+    const revealStyle=`width:100%;border:none;border-radius:18px;padding:18px;font:700 16px 'Hanken Grotesk';cursor:${canReveal?'pointer':'not-allowed'};transition:all .15s;background:${canReveal?'#d85a4a':'#d8c9bd'};color:#fff;box-shadow:${canReveal?'0 10px 26px -10px rgba(216,90,74,.7)':'none'}`;
+    const revealLabel=canReveal?'Reveal my result â†’':'Rate the first two to continue';
+
+    // recent / history / people
+    const allDates=this.allDates();
+    const recent=allDates.slice(0,3).map(d=>({...d, pillStyle:this.pill(d.score), onClick:()=>this.openDate(d)}));
+    const badges=[
+      {name:'First Date', sub:'Logged one', icon:React.createElement('svg',{width:22,height:22,viewBox:'0 0 24 24',stroke:'#e0b25a',fill:'none',strokeWidth:2},React.createElement('path',{d:'M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z',strokeLinejoin:'round'})), bg:'rgba(200,145,47,.15)', opacity:1},
+      {name:'On a Roll', sub:'3-week streak', icon:React.createElement('svg',{width:22,height:22,viewBox:'0 0 24 24',stroke:'#d85a4a',fill:'none',strokeWidth:2},React.createElement('path',{d:'M12 3c1 3-1 4-1 6a3 3 0 006 0c0 4-2 6-2 8a5 5 0 01-10 0c0-4 4-5 4-9 1 1 2 2 3 2 1-3 0-5 0-7z',strokeLinejoin:'round'})), bg:'rgba(216,90,74,.13)', opacity:1},
+      {name:'Sky High', sub:'Score 90+', icon:React.createElement('svg',{width:22,height:22,viewBox:'0 0 24 24',stroke:'#6d8a53',fill:'none',strokeWidth:2},React.createElement('path',{d:'M4 14l5-5 4 4 7-7',strokeLinecap:'round',strokeLinejoin:'round'})), bg:'rgba(109,138,83,.14)', opacity:1},
+      {name:'Explorer', sub:'5 people', icon:React.createElement('svg',{width:22,height:22,viewBox:'0 0 24 24',stroke:'#a89c8f',fill:'none',strokeWidth:2},React.createElement('circle',{cx:12,cy:12,r:8})), bg:'rgba(168,156,143,.14)', opacity:.5},
+    ];
+    const people=this.peopleData().map(p=>{
+      const fresh=p.count===0;
+      return {...p,
+        avg: fresh?'â€”':p.avg,
+        avBg: fresh?'#e9e0d3':p.avg>=80?'#e3ead9':p.avg>=62?'#f2e6cd':'#efe0dc',
+        avFg: fresh?'#8a7d6d':p.avg>=80?'#6d8a53':p.avg>=62?'#c8912f':'#c24a3a',
+        scoreColor: fresh?'#b8a99a':this.scoreColor(p.avg),
+        datesLabel: fresh?'No dates yet':`${p.count} date${p.count===1?'':'s'} logged`,
+        onClick:()=>this.openPerson(p.id)};
+    });
+
+    const months=[];
+    allDates.forEach(d=>{ let g=months.find(m=>m.month===d.month); if(!g){ g={month:d.month, items:[]}; months.push(g);} g.items.push(d); });
+    const history=months.map(g=>({month:g.month, items:g.items.map(d=>({...d, pillStyle:this.pill(d.score), dotColor:this.scoreColor(d.score), onClick:()=>this.openDate(d)}))}));
+
+    // profile
+    let prof=null;
+    if(isProfile){ const p=this.peopleData().find(x=>x.id===S.selectedPerson)||this.peopleData()[0];
+      if(p){ const fresh=p.count===0;
+        prof={...p, avg:fresh?'â€”':p.avg,
+          avBg:fresh?'#e9e0d3':p.avg>=80?'#e3ead9':p.avg>=62?'#f2e6cd':'#efe0dc',
+          avFg:fresh?'#8a7d6d':p.avg>=80?'#6d8a53':p.avg>=62?'#c8912f':'#c24a3a',
+          scoreColor:fresh?'#b8a99a':this.scoreColor(p.avg),
+          dates:p.dates.map(d=>({...d, pillStyle:this.pill(d.score), onClick:()=>this.openDate({...d, name:p.name, personId:p.id})})) };
+      }
+    }
+
+    // result
+    let res=null;
+    if(isResult){ const sc=this.computeScore(); const v=this.verdict(sc); const pName=L.person==='new'||!L.person?'Someone new':(this.peopleData().find(p=>p.id===L.person)||{}).name;
+      const ring=this.scoreColor(sc); const badge = sc>=88;
+      res={ personName:pName, displayScore:S.displayScore, score:sc, ringColor:ring,
+        ringOffset: 534 - 534*(S.displayScore/100),
+        grade:this.grade(sc), gradeWord:this.gradeWord(sc), verdictTitle:v.title, verdictSub:v.sub,
+        chipBg:ring+'1f', xp:40+Math.round(sc*0.35), radar:this.radar(),
+        showBadge:badge, badgeName:sc>=93?'Rare Spark':'Sky High' };
+    }
+    const rs=S.resultStyle;
+    const resStyleTabs=[['score','Score'],['grade','Grade'],['verdict','Verdict'],['radar','Radar']].map(([k,lb])=>({label:lb, onClick:()=>this.setResultStyle(k), style:`flex:1;padding:9px 4px;border-radius:10px;border:none;cursor:pointer;font:600 12px 'Hanken Grotesk';transition:all .12s;background:${rs===k?'#fffdf9':'transparent'};color:${rs===k?'#241f1b':'#8a7d6d'};box-shadow:${rs===k?'0 1px 3px rgba(36,31,27,.12)':'none'}`}));
+
+    return {
+      isSplash:S.phase==='splash', isIntro:S.phase==='intro', isLock:S.phase==='lock',
+      intro, introDots, introIsStory, introIsGoal, introIsPrivacy, introCta, introCtaStyle,
+      introNext:()=>this.introNext(), skipIntro:()=>this.skipIntro(),
+      goalOpts, privacyToggles, pinDots, keypad,
+      lockHint: S.privacy.biometric ? 'Face ID or enter your code' : 'Enter your code',
+      isSettings, questionToggles, reminderToggles, settingsPrivacy,
+      addQuestion:()=>this.addQuestion(), lockNow:()=>this.lockNow(),
+      restartOnboarding:()=>this.restartOnboarding(), resetData:()=>this.resetData(),
+      goSettings:()=>this.goSettings(), fillDemo:()=>this.fillDemo(),
+      goalLabel: S.goal || 'Open to anything',
+      greeting: this.props.userName ? 'Hey, '+this.props.userName : 'Hey, Riley',
+      hasData:S.hasData, isEmpty:!S.hasData, unlockSteps,
+      showNudge: S.hasData && S.nudge,
+      dismissNudge:()=>this.dismissNudge(),
+      isPersonEdit, isDateDetail, pe, dd, confirm,
+      confirmOpen:!!S.confirm, closeConfirm:()=>this.closeConfirm(),
+      newPerson:()=>this.newPerson(), editPerson:()=>this.editPerson(),
+      cancelPersonEdit:()=>this.cancelPersonEdit(),
+      closeDetail:()=>this.closeDetail(), editDate:()=>this.editDate(), askDelete:()=>this.askDelete('date'),
+      isHome,isPeople,isHistory,isProfile,isLog,isResult,isAwards,isInsights, showNav:browse&&inApp, nav,
+      startLog:()=>this.startLog(), cancelLog:()=>this.cancelLog(),
+      goHome:()=>this.goHome(), goPeople:()=>this.goPeople(), goHistory:()=>this.goHistory(),
+      goAwards:()=>this.goAwards(), goInsights:()=>this.goInsights(),
+      backToPeople:()=>this.backToPeople(),
+      levels, allBadges, badgeCount, streakWeeks, board,
+      boardOn:S.boardOn, boardOff:!S.boardOn, toggleBoard:()=>this.toggleBoard(),
+      boardToggleStyle, boardToggleLabel:S.boardOn?'Sharing on':'Turn on',
+      byActivity, dimAvgs, topGreen, topRed, trendChart:this.trendChart(),
+      recent, badges, people, history, prof,
+      scaleRows, moodRows, personOpts, activityOpts, seeAgainOpts, whoPaidOpts, greenChips, redChips,
+      reveal:()=>this.reveal(), finish:()=>this.finish(), revealStyle, revealLabel,
+      qMood:Q.mood, qSeeAgain:Q.seeAgain, qWhoPaid:Q.whoPaid, qFlags:Q.flags,
+      logKicker: S.editingDate?'Editing':'New entry',
+      logHeading: S.editingDate?'Update your answers':'How was it?',
+      logSub: S.editingDate?'Change anything that no longer feels true.':'Be honest â€” this is just for you.',
+      peopleEmpty: !this.state.people.length,
+      res, resStyleTabs,
+      showScore:rs==='score', showGrade:rs==='grade', showVerdict:rs==='verdict', showRadar:rs==='radar',
+    };
+  }
+}
+</script>
+</body>
+</html>

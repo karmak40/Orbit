@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(\"---\")",
+      "PowerShell(\"--- tsconfig ---\")",
+      "PowerShell(npx tsc --noEmit)",
+      "PowerShell(npm install --no-audit --no-fund)",
+      "PowerShell(if \\($?\\) { \"OK\" })",
+      "PowerShell(npx expo start --android --port 8081)",
+      "Bash(grep -qE 'Opening|Android Bundled|error|Error|Failed|failed' C:/Temp/claude/E--projects-Orbit/85edf260-246f-4538-9fb3-1588cf396062/tasks/bsq5grv5v.output)",
+      "Bash(sleep 2)",
+      "Bash(cat C:/Temp/claude/E--projects-Orbit/85edf260-246f-4538-9fb3-1588cf396062/tasks/bsq5grv5v.output)"
+    ]
+  }
+}

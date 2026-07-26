@@ -1,17 +1,21 @@
 {
   "expo": {
     "name": "Orbit",
-    "slug": "Orbit",
+    "slug": "orbit",
+    "scheme": "orbit",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "backgroundColor": "#f2ece3",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "app.orbit.tracker"
     },
     "android": {
+      "package": "app.orbit.tracker",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#241f1b",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -19,7 +23,43 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-sqlite",
+      "expo-secure-store",
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#241f1b",
+          "imageWidth": 150
+        }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Orbit uses Face ID so only you can open your journal."
+        }
+      ],
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "Orbit reads your calendar only to pre-fill who and where a date was. Nothing leaves your device."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#d85a4a"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
     }
   }
 }

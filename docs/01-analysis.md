@@ -1,7 +1,6 @@
 # Orbit — Project Analysis & Technology Decision
 
-Source of truth: `design/Dating Tracker.dc.html` (imported from Claude Design project
-`93a1ab77-045b-4098-a427-722a75c0e929`, "Dating life tracker app design").
+Source of truth: `design/Dating Tracker.dc.html`
 
 ---
 
