@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text } from 'react-native';
 
 import { GOALS } from '../src/core/model';
 import { GOAL_WEIGHT_BLURB } from '../src/core/scoring';
@@ -7,6 +7,7 @@ import { useOrbitData } from '../src/data/store';
 import { BackButton } from '../src/ui/BackButton';
 import { Card } from '../src/ui/Card';
 import { Screen } from '../src/ui/Screen';
+import { ToggleRow } from '../src/ui/Toggle';
 import { color, radius, space, type } from '../src/ui/theme';
 
 /**
@@ -29,19 +30,15 @@ export default function SettingsScreen() {
       <Text style={styles.sectionLabel}>What you track</Text>
       <Card style={{ marginBottom: space.xl, gap: 0 }}>
         {data.questions.map((q, i, arr) => (
-            <View key={q.id} style={[styles.toggleRow, i < arr.length - 1 && styles.toggleDivider]}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.toggleLabel}>{q.label}</Text>
-                <Text style={styles.toggleSub}>{q.sub}</Text>
-              </View>
-              <Switch
-                value={q.enabled}
-                onValueChange={(v) => data.setQuestionEnabled(q.id, v)}
-                trackColor={{ false: color.cardBorderStrong, true: color.olive }}
-                thumbColor="#fffdf9"
-              />
-            </View>
-          ))}
+          <ToggleRow
+            key={q.id}
+            label={q.label}
+            sub={q.sub}
+            value={q.enabled}
+            onChange={(v) => data.setQuestionEnabled(q.id, v)}
+            last={i === arr.length - 1}
+          />
+        ))}
       </Card>
 
       <Text style={styles.sectionLabel}>Reminders</Text>
@@ -88,37 +85,9 @@ export default function SettingsScreen() {
   );
 }
 
-function ToggleRow({
-  label,
-  sub,
-  value,
-  onChange,
-  last,
-}: {
-  label: string;
-  sub: string;
-  value: boolean;
-  onChange: (v: boolean) => void;
-  last?: boolean;
-}) {
-  return (
-    <View style={[styles.toggleRow, !last && styles.toggleDivider]}>
-      <View style={{ flex: 1 }}>
-        <Text style={styles.toggleLabel}>{label}</Text>
-        <Text style={styles.toggleSub}>{sub}</Text>
-      </View>
-      <Switch value={value} onValueChange={onChange} trackColor={{ false: color.cardBorderStrong, true: color.olive }} thumbColor="#fffdf9" />
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   title: { ...type.screenTitle, color: color.ink, marginTop: space.md, marginBottom: space.xl },
   sectionLabel: { ...type.sectionLabel, color: color.faint, marginBottom: space.md },
-  toggleRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: 14 },
-  toggleDivider: { borderBottomWidth: 1, borderBottomColor: color.cardBorder },
-  toggleLabel: { ...type.label, color: color.ink },
-  toggleSub: { ...type.metaSm, color: color.faint, marginTop: 1 },
   goalLabel: { ...type.quote, fontSize: 19, color: color.ink },
   goalSub: { ...type.meta, color: color.faint, marginTop: 3 },
   linkRow: { alignItems: 'center', paddingVertical: space.sm },

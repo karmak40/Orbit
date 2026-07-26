@@ -14,6 +14,7 @@ against an Expo API.
 | `design/Dating Tracker.dc.html` | The design prototype — **the visual and copy source of truth**. A `.dc.html` design-container file: React 18 + a `sc-if`/`sc-for` template DSL, all logic in one `DCLogic` class. Read it, don't run it. |
 | `design/support.js` | The prototype's generated runtime. Reference only; nothing in `src/` uses it. |
 | `docs/01-analysis.md` | Project analysis, technology decision, the gaps in the prototype, and how the deferred features are prepared. **Read this first.** |
+| `docs/02-architecture.md` | How the app is actually built: layers, launch sequence, data flow, the question-schema pattern, encryption, navigation. **Read this before touching `src/` or `app/`.** |
 | `src/core/` | Pure TypeScript domain: model, scoring, progress, feature flags. No React, no React Native, no `data/` imports. Unit-tested. |
 | `src/data/` | Encrypted SQLite repositories, migrations, export/import. |
 | `src/ui/` | Design tokens (`theme.ts`) and shared primitives. |
@@ -52,6 +53,15 @@ npx expo export --platform ios --output-dir ../orbit-export-check
 
 ## Notes / gotchas
 
+- **`error TS17004: Cannot use JSX unless the '--jsx' flag is provided`** (or a
+  flood of unrelated `node_modules` type errors) means tsc was invoked in
+  **files mode** — `tsc somefile.tsx` or a shell-expanded glob like
+  `tsc src/**/*.tsx`. Passing an explicit file argument makes tsc ignore
+  `tsconfig.json` **entirely**, including its `jsx` setting, and fall back to
+  bare compiler defaults. This is not a project misconfiguration — verified by
+  reproducing it (`npx tsc src/ui/Onboarding.tsx --noEmit` throws exactly this;
+  `npm run typecheck`, no file arguments, is clean). Always typecheck via
+  `npm run typecheck`; never call `tsc` with a specific file path.
 - Node 25 is ahead of Expo's tested LTS range. It mostly works, but config-plugin
   resolution during `expo export`/`expo prebuild` can hit
   `ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING` walking into a `.ts` file inside

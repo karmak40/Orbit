@@ -11,13 +11,70 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { OrbitDataProvider } from '../src/data/store';
+import { OrbitDataProvider, useOrbitData } from '../src/data/store';
+import { Onboarding, type OnboardingResult } from '../src/ui/Onboarding';
+import { Splash } from '../src/ui/Splash';
 import { color } from '../src/ui/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
+
+/** How long the design's splash (design/Dating Tracker.dc.html:37-53) holds before advancing. */
+const SPLASH_HOLD_MS = 2100;
+
+/**
+ * Inside `OrbitDataProvider` (needs `useOrbitData`), so the animated splash's
+ * minimum hold and the database's actual startup work — opening SQLite,
+ * seeding built-in questions — run concurrently rather than back to back.
+ */
+function RootNavigator() {
+  const data = useOrbitData();
+  const [holdElapsed, setHoldElapsed] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setHoldElapsed(true), SPLASH_HOLD_MS);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const showSplash = !holdElapsed || !data.ready;
+  const showOnboarding = !showSplash && !data.settings.onboardedAt;
+
+  if (showSplash) {
+    return (
+      <>
+        <StatusBar style="light" />
+        <Splash />
+      </>
+    );
+  }
+
+  if (showOnboarding) {
+    const finishOnboarding = (result: OnboardingResult) => {
+      data.saveSettings({ ...result, onboardedAt: new Date().toISOString() });
+    };
+    return (
+      <>
+        <StatusBar style="dark" />
+        <Onboarding onComplete={finishOnboarding} />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <StatusBar style="dark" />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: color.surface },
+        }}>
+        <Stack.Screen name="(tabs)" />
+      </Stack>
+    </>
+  );
+}
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -41,14 +98,7 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <OrbitDataProvider>
-        <StatusBar style="dark" />
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: color.surface },
-          }}>
-          <Stack.Screen name="(tabs)" />
-        </Stack>
+        <RootNavigator />
       </OrbitDataProvider>
     </SafeAreaProvider>
   );
