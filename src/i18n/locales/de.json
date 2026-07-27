@@ -1,0 +1,325 @@
+{
+  "common": {
+    "loading": "Wird geladen…",
+    "cancel": "Abbrechen",
+    "done": "Fertig",
+    "delete": "Löschen",
+    "save": "Speichern",
+    "edit": "Bearbeiten",
+    "keepIt": "Behalten",
+    "addPerson": "Person hinzufügen",
+    "dash": "—",
+    "close": "Schließen",
+    "backTo": "Zurück zu {{label}}",
+    "ratingOf5": "{{label}}: {{n}} von 5"
+  },
+  "nav": {
+    "home": "Start",
+    "people": "Personen",
+    "timeline": "Timeline",
+    "awards": "Erfolge",
+    "logDate": "Date loggen",
+    "settings": "Einstellungen"
+  },
+  "splash": {
+    "tagline": "Dein Dating-Leben, beobachtet"
+  },
+  "onboarding": {
+    "skip": "Überspringen",
+    "continue": "Weiter",
+    "pickOneToContinue": "Wähl eins aus, um weiterzumachen",
+    "startTracking": "Los geht's",
+    "slide1": {
+      "kicker": "Warum überhaupt",
+      "title": "Dating ist Datenmaterial, das du nie aufschreibst.",
+      "body": "Jedes Date bringt dir etwas bei — und dann verpufft es. Orbit hält es in zwei Minuten fest, solange es noch frisch ist."
+    },
+    "slide2": {
+      "kicker": "So funktioniert's",
+      "title": "Beantworte ein paar ehrliche Fragen.",
+      "body": "Chemie, Gespräch, Wohlgefühl, Stimmung. Keine Aufsätze. Tipp dich auf dem Nachhauseweg durch, und du bist fertig."
+    },
+    "slide3": {
+      "kicker": "Was du davon hast",
+      "title": "Muster, die du innerhalb eines einzelnen Dates nicht erkennen kannst.",
+      "body": "Level und Streaks dafür, dass du dranbleibst. Und sobald genug zusammenkommt, Reflexionen darüber, wofür du dich immer wieder entscheidest — und warum."
+    },
+    "goal": {
+      "kicker": "Eine Frage",
+      "title": "Wonach suchst du gerade?",
+      "sub": "Das beeinflusst, wie deine Punktzahl gewichtet wird. Du kannst es jederzeit ändern."
+    },
+    "privacy": {
+      "kicker": "Noch eine Sache",
+      "title": "Absichern?",
+      "sub": "Das hier sind ehrliche, private Notizen über echte Menschen. Ein Code sorgt dafür, dass es so bleibt.",
+      "passcodeLock": { "label": "Code-Sperre", "sub": "Fragt jedes Mal nach einem Code, wenn du Orbit öffnest" },
+      "hideNames": { "label": "Namen verbergen", "sub": "Zeigt in Listen und Widgets nur Initialen" },
+      "faceId": { "label": "Face ID", "sub": "Entsperren ohne Tippen" },
+      "reassurance": "Alles bleibt auf deinem Gerät. Nichts wird jemals hochgeladen."
+    }
+  },
+  "home": {
+    "greeting": "Hey du",
+    "greetingNamed": "Hey, {{name}}",
+    "nudge": {
+      "title": "Gestern Abend mit {{name}}?",
+      "body": "Trag's jetzt ein — Erinnerungen verblassen schnell, und ehrliche Notizen sind der ganze Sinn der Sache.",
+      "logIt": "Eintragen",
+      "notTonight": "Heute nicht"
+    },
+    "empty": {
+      "title": "Level 1 beginnt mit einem Date",
+      "body": "Trag dein erstes ein, und Orbit fängt an, dein Bild zusammenzusetzen. Nach drei Dates zeigen sich erste Muster.",
+      "cta": "Trag dein erstes Date ein",
+      "unlocksHeading": "Was du unterwegs freischaltest",
+      "unlock1": { "title": "Dein erstes Ergebnis", "sub": "Eine Punktzahl und eine Einschätzung, wie's gelaufen ist" },
+      "unlock2": { "title": "Streaks und Abzeichen", "sub": "Anerkennung dafür, dass du dich traust" },
+      "unlock3": { "title": "Muster und KI-Reflexionen", "sub": "Wofür du dich immer wieder entscheidest, und warum" },
+      "previewSampleData": "Mit Beispieldaten ansehen"
+    },
+    "levelKicker": "Level {{level}}",
+    "xp": "{{xp}} XP",
+    "nextLevelXp": "{{xp}} XP bis Level {{level}}",
+    "maxLevel": "Max. Level",
+    "datingScore": "Dating-Score",
+    "datesLogged_one": "{{count}} Date eingetragen",
+    "datesLogged_other": "{{count}} Dates eingetragen",
+    "streak": "Streak",
+    "weeks": "Wochen",
+    "streakActiveSub": "Aktiv & du traust dich",
+    "streakInactiveSub": "Trag diese Woche ein, um einen zu starten",
+    "logCta": "Date loggen",
+    "logCtaSub": "Gerade zurück? Halt's fest, solange es frisch ist",
+    "recentDates": "Letzte Dates",
+    "seeAll": "Alle ansehen",
+    "addSomeoneNew": "+ Jemand Neues hinzufügen",
+    "badges": "Abzeichen"
+  },
+  "log": {
+    "cancel": "Abbrechen",
+    "newEntry": "Neuer Eintrag",
+    "editing": "Bearbeiten",
+    "howWasIt": "Wie war's?",
+    "updateAnswers": "Aktualisiere deine Antworten",
+    "beHonestSub": "Sei ehrlich — das hier ist nur für dich.",
+    "changeAnythingSub": "Ändere alles, was sich nicht mehr richtig anfühlt.",
+    "whoDidYouSee": "Wen hast du getroffen?",
+    "newPersonChip": "+ Neue Person",
+    "whereWhat": "Wo / was?",
+    "moodShift": "Stimmungswechsel",
+    "beforeTheDate": "Vor dem Date",
+    "afterTheDate": "Nach dem Date",
+    "wouldSeeAgain": "Würdest du die Person wiedersehen?",
+    "whoPaid": "Wer hat gezahlt?",
+    "greenFlags": "Green Flags ✓",
+    "redFlags": "Red Flags ⚑",
+    "anythingElse": "Sonst noch was?",
+    "notePlaceholder": "Ein Moment, den du festhalten willst, ein Gedanke, ein Ick...",
+    "revealResult": "Mein Ergebnis zeigen →",
+    "pickWhoYouSaw": "Wähl aus, wen du getroffen hast",
+    "rateFirstTwo": "Bewerte die ersten zwei, um weiterzumachen"
+  },
+  "result": {
+    "dateLogged": "Date eingetragen · {{name}}",
+    "someoneNew": "Jemand Neues",
+    "tabScore": "Score",
+    "tabGrade": "Note",
+    "tabVerdict": "Urteil",
+    "tabRadar": "Radar",
+    "outOf100": "VON 100",
+    "xpEarned": "XP VERDIENT",
+    "weekStreak": "WOCHEN-STREAK",
+    "badgeUnlocked": "Abzeichen freigeschaltet",
+    "saveToJournal": "Im Journal speichern",
+    "done": "Fertig"
+  },
+  "people": {
+    "title": "Personen",
+    "sub": "Alle, die du im Blick behältst",
+    "addedByYou": "Von dir hinzugefügt",
+    "noDatesYet": "Noch keine Dates",
+    "avg": "Ø",
+    "nobodyHereYet": "Noch niemand hier",
+    "nobodyHereBody": "Füg jemanden über den +-Button hinzu, oder die Person taucht hier automatisch auf, sobald du ein Date mit ihr einträgst.",
+    "dateCount_one": "{{count}} Date eingetragen",
+    "dateCount_other": "{{count}} Dates eingetragen"
+  },
+  "personProfile": {
+    "back": "Personen",
+    "edit": "Bearbeiten",
+    "updateWhereThingsStand": "Aktualisiere den Stand der Dinge",
+    "dates": "DATES",
+    "avg": "Ø",
+    "trend": "TREND",
+    "dateHistory": "Date-Verlauf",
+    "noDatesLoggedWith": "Noch keine Dates mit {{name}} eingetragen.",
+    "notFound": "Diese Person wurde gelöscht.",
+    "deleteConfirm": {
+      "title": "{{name}} löschen?",
+      "body": "Alle mit ihr eingetragenen Dates werden ebenfalls gelöscht. Das kann nicht rückgängig gemacht werden.",
+      "cta": "Alles löschen"
+    }
+  },
+  "dateDetail": {
+    "back": "Zurück",
+    "withPerson": "mit {{name}}",
+    "score": "SCORE",
+    "howYouRatedIt": "So hast du es bewertet",
+    "seeAgain": "WIEDERSEHEN",
+    "whoPaid": "WER ZAHLTE",
+    "flags": "Flags",
+    "yourNote": "Deine Notiz",
+    "noNote": "Keine Notiz zu diesem hier.",
+    "editAnswers": "Antworten bearbeiten",
+    "delete": "Löschen",
+    "notFound": "Dieses Date wurde gelöscht.",
+    "deleteConfirm": {
+      "title": "Dieses Date löschen?",
+      "body": "Antworten, Notizen und Punktzahl sind dann weg. Dein Level und Streak bleiben unverändert.",
+      "cta": "Date löschen"
+    }
+  },
+  "timeline": {
+    "title": "Timeline",
+    "sub": "Jedes Date, der Reihe nach",
+    "empty": "Noch nichts eingetragen — dein erstes Date startet die Timeline."
+  },
+  "awards": {
+    "title": "Erfolge",
+    "sub": "Fortschritt, den du dir durch Dranbleiben verdient hast",
+    "levelHeading": "Level {{level}}",
+    "xpOfNext": "{{xp}} / {{next}} XP",
+    "you": "DU",
+    "badgeCollection": "Abzeichen-Sammlung",
+    "badgeCountOf": "{{earned}} von {{total}}",
+    "badgeLocked": "Gesperrt",
+    "streakLast12Weeks": "Streak · letzte 12 Wochen",
+    "weeksAgo12": "Vor 12 Wochen",
+    "thisWeek": "Diese Woche",
+    "friends": "Freunde",
+    "friendsTitle": "Fortschritt mit Freunden vergleichen",
+    "friendsBody": "Teile nur dein Level und deinen Streak — nie, mit wem du warst oder wie du sie bewertet hast. Kommt, sobald Sync verfügbar ist."
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "whatYouTrack": "Was du trackst",
+    "reminders": "Erinnerungen",
+    "postDateNudge": { "label": "Nach-Date-Erinnerung", "sub": "Ein sanfter Hinweis zwei Stunden nach einem Abend unterwegs" },
+    "weeklyReflection": { "label": "Wochenrückblick", "sub": "Sonntags eine Zusammenfassung deiner Woche" },
+    "privacy": "Privatsphäre",
+    "hideNames": { "label": "Namen verbergen", "sub": "Außerhalb eines Profils nur Initialen" },
+    "yourIntention": "Deine Absicht",
+    "language": "Sprache",
+    "languageSystem": "Systemstandard",
+    "data": "Daten",
+    "previewSampleData": "Mit Beispieldaten ansehen",
+    "resetToEmpty": "Auf leeren Zustand zurücksetzen",
+    "exportData": "Meine Daten exportieren",
+    "exportDataSub": "Speichere eine unverschlüsselte Kopie als Datei, die du selbst kontrollierst",
+    "about": "Über",
+    "version": "Version {{version}}",
+    "sendFeedback": "Feedback senden",
+    "sendFeedbackSub": "Melde einen Fehler oder teile eine Idee",
+    "feedbackEmailSubject": "Orbit-Feedback"
+  },
+  "personSheet": {
+    "editPerson": "Person bearbeiten",
+    "newPerson": "Neue Person",
+    "namePlaceholder": "Name der Person",
+    "whereDidYouMeet": "Wo habt ihr euch kennengelernt?",
+    "whereDoThingsStand": "Wo steht ihr gerade?",
+    "privateNote": "Private Notiz",
+    "notePlaceholder": "Alles, was du dir über diese Person merken willst...",
+    "saveChanges": "Änderungen speichern",
+    "addPerson": "Person hinzufügen",
+    "thisPerson": "diese Person",
+    "deletePersonAndDates": "{{name}} und alle zugehörigen Dates löschen"
+  },
+  "goal": {
+    "serious": { "label": "Etwas Ernstes", "sub": "Auf der Suche nach einer echten Beziehung" },
+    "open": { "label": "Offen für alles", "sub": "Schauen, wohin es sich entwickelt" },
+    "casual": { "label": "Lockeres Dating", "sub": "Spaß, ohne Druck" },
+    "rebuilding": { "label": "Wieder reinkommen", "sub": "Selbstvertrauen zurückgewinnen" }
+  },
+  "goalWeightBlurb": {
+    "serious": "Punktzahl gewichtet Wohlgefühl und Tiefe stärker",
+    "open": "Jede Frage zählt gleich",
+    "casual": "Punktzahl gewichtet Spaß und Chemie stärker",
+    "rebuilding": "Punktzahl gewichtet dein Wohlgefühl am stärksten"
+  },
+  "status": {
+    "talking": { "label": "Kennenlernen", "sub": "Frühe Phase, ihr schreibt noch" },
+    "seeing": { "label": "Wiedersehen", "sub": "Ein weiteres Date ist geplant" },
+    "exclusive": { "label": "Exklusiv?", "sub": "Es wird ernst" },
+    "fence": { "label": "Unentschlossen", "sub": "Noch nicht sicher" },
+    "faded": { "label": "Verlaufen", "sub": "Ist still und leise eingeschlafen" },
+    "ended": { "label": "Beendet", "sub": "Du hast Schluss gemacht" }
+  },
+  "source": ["Hinge", "Bumble", "Tinder", "IRL", "Über Freunde", "Arbeit", "Café"],
+  "activity": ["Kaffee", "Abendessen", "Drinks", "Ein Spaziergang", "Aktivität", "Kino"],
+  "seeAgainOption": ["Ja", "Vielleicht", "Nein"],
+  "whoPaidOption": ["Ich", "Die andere Person", "Geteilt"],
+  "greenFlag": ["Hat mich zum Lachen gebracht", "Hört gut zu", "Pünktlich", "Neugierig", "Nett zum Personal", "Gute Energie", "Ehrlich"],
+  "redFlag": ["Ständig am Handy", "Einseitig", "Angeberei", "Keine Rückfragen", "Schlechte Vibes", "Zu spät gekommen", "Ist mir ins Wort gefallen"],
+  "question": {
+    "chemistry": { "label": "Chemie", "hint": "Der Funke", "sub": "Der Funke" },
+    "conversation": { "label": "Gespräch", "hint": "Flow & Tiefe", "sub": "Flow und Tiefe" },
+    "comfort": { "label": "Wohlgefühl & Sicherheit", "hint": "Entspannt?", "sub": "Hast du dich wohlgefühlt" },
+    "fun": { "label": "Spaß", "hint": "Gute Zeit?", "sub": "Hat es dir gefallen" },
+    "mood": { "label": "Stimmungswechsel", "sub": "Erfasse die Veränderung" },
+    "seeAgain": { "label": "Würdest du die Person wiedersehen?", "sub": "Ja / vielleicht / nein" },
+    "whoPaid": { "label": "Wer hat gezahlt?", "sub": "Logistik" },
+    "flags": { "label": "Green & Red Flags", "sub": "Markiere, was aufgefallen ist" }
+  },
+  "badge": {
+    "first-date": { "name": "Erstes Date", "sub": "Eins eingetragen" },
+    "on-a-roll": { "name": "Am Laufen", "sub": "3-Wochen-Streak" },
+    "sky-high": { "name": "Himmelhoch", "sub": "90+ Punkte erreicht" },
+    "second-round": { "name": "Zweite Runde", "sub": "Gleiche Person zweimal" },
+    "open-book": { "name": "Offenes Buch", "sub": "10 Notizen geschrieben" },
+    "honest-eye": { "name": "Ehrlicher Blick", "sub": "Eine Red Flag eingetragen" },
+    "explorer": { "name": "Entdecker", "sub": "5 Personen" },
+    "deep-dive": { "name": "Tiefgang", "sub": "Fünftes Date" },
+    "steady": { "name": "Beständig", "sub": "8-Wochen-Streak" }
+  },
+  "level": {
+    "1": { "name": "Rauskommen", "req": "Erstes Date eingetragen" },
+    "2": { "name": "Warmlaufen", "req": "90 XP" },
+    "3": { "name": "Mittendrin", "req": "190 XP" },
+    "4": { "name": "Im Rhythmus", "req": "320 XP" },
+    "5": { "name": "Deinen Typ kennen", "req": "500 XP" },
+    "6": { "name": "Klarer Blick", "req": "750 XP" }
+  },
+  "grade": {
+    "exceptional": "Außergewöhnlich",
+    "strong": "Stark",
+    "solid": "Solide",
+    "mixed": "Gemischt",
+    "rough": "Holprig"
+  },
+  "verdict": {
+    "title": ["Ein seltener Funke", "Echtes Potenzial", "Nett, aber nicht elektrisierend", "Lauwarm", "Einmal und nie wieder"],
+    "gentle": [
+      "Hier ist etwas, das es wert ist, gepflegt zu werden.",
+      "Ein vielversprechender Anfang — gib ihm Raum.",
+      "Nette Gesellschaft, kein Grund, etwas zu erzwingen.",
+      "Es war okay. Das darf reichen.",
+      "Nicht die richtige Person, und das ist okay."
+    ],
+    "playful": [
+      "Sag deine anderen Pläne ab.",
+      "Eindeutig eine zweite Runde wert.",
+      "Gut, aber das Feuerwerk ist zu Hause geblieben.",
+      "Das Gespräch hat's gerettet. Knapp.",
+      "Vertrau dem Ick und zieh weiter."
+    ],
+    "blunt": [
+      "Diese Person zählt — vermassel's nicht.",
+      "Meld dich innerhalb von 48 Stunden.",
+      "Investier nicht zu viel in ein Vielleicht.",
+      "Du gibst dich mit weniger zufrieden, wenn du noch mal hingehst.",
+      "Lösch die Nummer. Weiter."
+    ]
+  }
+}

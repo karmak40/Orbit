@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
@@ -18,12 +19,13 @@ export type BackButtonProps = {
  * just a small run of coloured text.
  */
 export function BackButton({ label, onPress }: BackButtonProps) {
+  const { t } = useTranslation();
   const iconOnly = Platform.OS === 'android';
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={`Back to ${label}`}
+      accessibilityLabel={t('common.backTo', { label })}
       hitSlop={10}
       style={({ pressed }) => [styles.button, pressed && styles.pressed]}>
       <View style={styles.iconWrap}>

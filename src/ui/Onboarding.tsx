@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Animated, Easing, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -9,24 +10,9 @@ import { ToggleRow } from './Toggle';
 import { alpha, color, radius, space, type } from './theme';
 
 const SLIDES = [
-  {
-    kicker: 'Why bother',
-    title: 'Dating is data you never write down.',
-    body: 'Every date teaches you something — then it evaporates. Orbit catches it in two minutes while it is still fresh.',
-    Art: ArtOrbit,
-  },
-  {
-    kicker: 'How it works',
-    title: 'Answer a few honest questions.',
-    body: 'Chemistry, conversation, comfort, mood. No essays. Tap through it on the walk home and you are done.',
-    Art: ArtDots,
-  },
-  {
-    kicker: 'What you get',
-    title: 'Patterns you cannot see from inside one date.',
-    body: 'Levels and streaks for showing up. Then, once there is enough to read, reflections on what you keep choosing — and why.',
-    Art: ArtChart,
-  },
+  { i18nKey: 'onboarding.slide1', Art: ArtOrbit },
+  { i18nKey: 'onboarding.slide2', Art: ArtDots },
+  { i18nKey: 'onboarding.slide3', Art: ArtChart },
 ] as const;
 
 const LAST_STEP = 4; // 0-2 story, 3 goal, 4 privacy
@@ -40,6 +26,7 @@ export type OnboardingResult = { goal: GoalId; privacy: Settings['privacy'] };
  * than a screen the user ever navigates back to.
  */
 export function Onboarding({ onComplete }: { onComplete: (result: OnboardingResult) => void }) {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [step, setStep] = useState(0);
   const [goal, setGoal] = useState<GoalId | null>(null);
@@ -55,7 +42,11 @@ export function Onboarding({ onComplete }: { onComplete: (result: OnboardingResu
   const isGoal = step === 3;
   const isPrivacy = step === 4;
   const blocked = step === 3 && !goal;
-  const cta = blocked ? 'Pick one to continue' : step === LAST_STEP ? 'Start tracking' : 'Continue';
+  const cta = blocked
+    ? t('onboarding.pickOneToContinue')
+    : step === LAST_STEP
+      ? t('onboarding.startTracking')
+      : t('onboarding.continue');
 
   function finish() {
     onComplete({ goal: goal ?? 'open', privacy });
@@ -84,7 +75,7 @@ export function Onboarding({ onComplete }: { onComplete: (result: OnboardingResu
           ))}
         </View>
         <Pressable onPress={finish} accessibilityRole="button" hitSlop={10}>
-          <Text style={styles.skip}>Skip</Text>
+          <Text style={styles.skip}>{t('onboarding.skip')}</Text>
         </Pressable>
       </View>
 
@@ -99,17 +90,17 @@ export function Onboarding({ onComplete }: { onComplete: (result: OnboardingResu
               <View style={styles.art}>
                 <slideContent.Art />
               </View>
-              <Text style={styles.kicker}>{slideContent.kicker}</Text>
-              <Text style={styles.storyTitle}>{slideContent.title}</Text>
-              <Text style={styles.storyBody}>{slideContent.body}</Text>
+              <Text style={styles.kicker}>{t(`${slideContent.i18nKey}.kicker`)}</Text>
+              <Text style={styles.storyTitle}>{t(`${slideContent.i18nKey}.title`)}</Text>
+              <Text style={styles.storyBody}>{t(`${slideContent.i18nKey}.body`)}</Text>
             </View>
           ) : null}
 
           {isGoal ? (
             <View style={styles.stepPad}>
-              <Text style={styles.kicker}>One question</Text>
-              <Text style={styles.stepTitle}>What are you after right now?</Text>
-              <Text style={styles.stepSub}>This shapes how your score is weighted. You can change it any time.</Text>
+              <Text style={styles.kicker}>{t('onboarding.goal.kicker')}</Text>
+              <Text style={styles.stepTitle}>{t('onboarding.goal.title')}</Text>
+              <Text style={styles.stepSub}>{t('onboarding.goal.sub')}</Text>
               <View style={{ gap: 10 }}>
                 {GOALS.map((g) => {
                   const selected = goal === g.id;
@@ -120,8 +111,10 @@ export function Onboarding({ onComplete }: { onComplete: (result: OnboardingResu
                       accessibilityRole="button"
                       accessibilityState={{ selected }}
                       style={[styles.goalBtn, selected && styles.goalBtnSelected]}>
-                      <Text style={[styles.goalLabel, selected && styles.goalLabelSelected]}>{g.label}</Text>
-                      <Text style={styles.goalSub}>{g.sub}</Text>
+                      <Text style={[styles.goalLabel, selected && styles.goalLabelSelected]}>
+                        {t(`goal.${g.id}.label`)}
+                      </Text>
+                      <Text style={styles.goalSub}>{t(`goal.${g.id}.sub`)}</Text>
                     </Pressable>
                   );
                 })}
@@ -131,33 +124,31 @@ export function Onboarding({ onComplete }: { onComplete: (result: OnboardingResu
 
           {isPrivacy ? (
             <View style={styles.stepPad}>
-              <Text style={styles.kicker}>Last thing</Text>
-              <Text style={styles.stepTitle}>Lock it down?</Text>
-              <Text style={styles.stepSub}>
-                This is honest, private writing about real people. A passcode keeps it that way.
-              </Text>
+              <Text style={styles.kicker}>{t('onboarding.privacy.kicker')}</Text>
+              <Text style={styles.stepTitle}>{t('onboarding.privacy.title')}</Text>
+              <Text style={styles.stepSub}>{t('onboarding.privacy.sub')}</Text>
               <View style={styles.privacyCard}>
                 <ToggleRow
-                  label="Passcode lock"
-                  sub="Ask for a code every time you open Orbit"
+                  label={t('onboarding.privacy.passcodeLock.label')}
+                  sub={t('onboarding.privacy.passcodeLock.sub')}
                   value={privacy.lock}
                   onChange={(v) => setPrivacy((p) => ({ ...p, lock: v }))}
                 />
                 <ToggleRow
-                  label="Hide names"
-                  sub="Show initials only in lists and widgets"
+                  label={t('onboarding.privacy.hideNames.label')}
+                  sub={t('onboarding.privacy.hideNames.sub')}
                   value={privacy.hideNames}
                   onChange={(v) => setPrivacy((p) => ({ ...p, hideNames: v }))}
                 />
                 <ToggleRow
-                  label="Face ID"
-                  sub="Unlock without typing"
+                  label={t('onboarding.privacy.faceId.label')}
+                  sub={t('onboarding.privacy.faceId.sub')}
                   value={privacy.biometric}
                   onChange={(v) => setPrivacy((p) => ({ ...p, biometric: v }))}
                   last
                 />
               </View>
-              <Text style={styles.reassurance}>Everything stays on your device. Nothing is uploaded, ever.</Text>
+              <Text style={styles.reassurance}>{t('onboarding.privacy.reassurance')}</Text>
             </View>
           ) : null}
         </Animated.View>

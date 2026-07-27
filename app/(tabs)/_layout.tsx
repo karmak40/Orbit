@@ -1,4 +1,5 @@
 import { Tabs, useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BottomNav, type NavKey } from '../../src/ui/BottomNav';
@@ -11,16 +12,17 @@ import { color } from '../../src/ui/theme';
  * rather than `router.navigate('/path')`: the router variant updates the URL but
  * leaves the tab navigator on its current screen.
  */
-const SLOTS: readonly { route: string; key: NavKey; label: string }[] = [
-  { route: 'index', key: 'home', label: 'Home' },
-  { route: 'people', key: 'people', label: 'People' },
-  { route: 'timeline', key: 'timeline', label: 'Timeline' },
-  { route: 'awards', key: 'awards', label: 'Awards' },
+const SLOTS: readonly { route: string; key: NavKey; labelKey: string }[] = [
+  { route: 'index', key: 'home', labelKey: 'nav.home' },
+  { route: 'people', key: 'people', labelKey: 'nav.people' },
+  { route: 'timeline', key: 'timeline', labelKey: 'nav.timeline' },
+  { route: 'awards', key: 'awards', labelKey: 'nav.awards' },
 ];
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <Tabs
@@ -38,7 +40,7 @@ export default function TabsLayout() {
             onLogPress={() => router.push('/log')}
             items={SLOTS.map((slot) => ({
               key: slot.key,
-              label: slot.label,
+              label: t(slot.labelKey),
               onPress: () => navigation.navigate(slot.route),
             }))}
           />

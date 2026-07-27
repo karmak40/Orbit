@@ -1,4 +1,5 @@
 import { BlurView } from 'expo-blur';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 
@@ -90,6 +91,7 @@ export type BottomNavProps = {
  * The centre button is not a tab — it opens the log flow as a modal.
  */
 export function BottomNav({ items, active, onLogPress, inset }: BottomNavProps) {
+  const { t } = useTranslation();
   const [left, right] = [items.slice(0, 2), items.slice(2)];
 
   return (
@@ -102,7 +104,7 @@ export function BottomNav({ items, active, onLogPress, inset }: BottomNavProps) 
         <Pressable
           onPress={onLogPress}
           accessibilityRole="button"
-          accessibilityLabel="Log a date"
+          accessibilityLabel={t('nav.logDate')}
           style={styles.logButton}>
           <Svg width={26} height={26} viewBox="0 0 24 24" stroke="#fff" strokeWidth={2.4} strokeLinecap="round">
             <Path d="M12 5v14M5 12h14" />

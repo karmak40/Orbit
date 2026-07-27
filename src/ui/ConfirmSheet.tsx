@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { GhostButton } from './Button';
@@ -14,8 +15,12 @@ export type ConfirmSheetProps = {
 
 /** The design's destructive-confirm bottom sheet ("Delete this date?", "Delete {name}?"). */
 export function ConfirmSheet({ visible, title, body, cta, onConfirm, onCancel }: ConfirmSheetProps) {
+  const { t } = useTranslation();
+  // animationType="none": RN Web's fade/slide transitions only complete via a
+  // native `animationend` event, which doesn't always fire — leaving the sheet
+  // stuck open or never appearing. Instant show/hide is reliable everywhere.
   return (
-    <Modal visible={visible} animationType="fade" transparent onRequestClose={onCancel}>
+    <Modal visible={visible} animationType="none" transparent onRequestClose={onCancel}>
       <View style={styles.backdrop}>
         <View style={styles.sheet}>
           <View style={styles.grabber} />
@@ -25,7 +30,7 @@ export function ConfirmSheet({ visible, title, body, cta, onConfirm, onCancel }:
             <Pressable onPress={onConfirm} accessibilityRole="button" style={styles.dangerButton}>
               <Text style={styles.dangerLabel}>{cta}</Text>
             </Pressable>
-            <GhostButton label="Keep it" onPress={onCancel} />
+            <GhostButton label={t('common.keepIt')} onPress={onCancel} />
           </View>
         </View>
       </View>

@@ -1,9 +1,10 @@
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { flagsValue, seeAgainValue } from '../../src/core/scoring';
-import { QUESTION_IDS } from '../../src/core/model';
+import { ACTIVITIES, GREEN_FLAGS, QUESTION_IDS, RED_FLAGS, SEE_AGAIN, WHO_PAID } from '../../src/core/model';
 import { dayLabel } from '../../src/core/selectors';
 import { useOrbitData } from '../../src/data/store';
 import { BackButton } from '../../src/ui/BackButton';
@@ -11,28 +12,25 @@ import { DarkButton, GhostButton } from '../../src/ui/Button';
 import { Card } from '../../src/ui/Card';
 import { ConfirmSheet } from '../../src/ui/ConfirmSheet';
 import { DotScaleReadOnly } from '../../src/ui/DotScale';
+import { translateEnum } from '../../src/ui/i18nHelpers';
 import { Screen } from '../../src/ui/Screen';
 import { alpha, color, radius, scoreColor, space, type } from '../../src/ui/theme';
 
-const DIMENSION_LABELS: Record<string, string> = {
-  chemistry: 'Chemistry',
-  conversation: 'Conversation',
-  comfort: 'Comfort & safety',
-  fun: 'Fun',
-};
+const DIMENSION_KEYS = ['chemistry', 'conversation', 'comfort', 'fun'] as const;
 
 export default function DateDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const data = useOrbitData();
+  const { t, i18n } = useTranslation();
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const d = data.dates.find((x) => x.id === id);
   if (!d) {
     return (
       <Screen>
-        <BackButton label="Back" onPress={() => router.back()} />
-        <Text style={styles.notFound}>This date was deleted.</Text>
+        <BackButton label={t('dateDetail.back')} onPress={() => router.back()} />
+        <Text style={styles.notFound}>{t('dateDetail.notFound')}</Text>
       </Screen>
     );
   }
@@ -53,30 +51,30 @@ export default function DateDetailScreen() {
 
   return (
     <Screen>
-      <BackButton label="Back" onPress={() => router.back()} />
+      <BackButton label={t('dateDetail.back')} onPress={() => router.back()} />
 
       <View style={styles.headerRow}>
         <View style={{ flex: 1 }}>
-          <Text style={styles.kicker}>{dayLabel(d.day)}</Text>
-          <Text style={styles.title}>{d.activity}</Text>
-          <Text style={styles.withPerson}>with {d.personName}</Text>
+          <Text style={styles.kicker}>{dayLabel(d.day, i18n.language)}</Text>
+          <Text style={styles.title}>{translateEnum(t, 'activity', ACTIVITIES, d.activity)}</Text>
+          <Text style={styles.withPerson}>{t('dateDetail.withPerson', { name: d.personName })}</Text>
         </View>
         <View style={{ alignItems: 'center' }}>
           <Text style={[styles.score, { color: ring }]}>{d.score}</Text>
-          <Text style={styles.scoreLabel}>SCORE</Text>
+          <Text style={styles.scoreLabel}>{t('dateDetail.score')}</Text>
         </View>
       </View>
 
       <Card style={{ marginBottom: space.md }}>
-        <Text style={styles.sectionLabel}>How you rated it</Text>
+        <Text style={styles.sectionLabel}>{t('dateDetail.howYouRatedIt')}</Text>
         <View style={{ gap: 13 }}>
-          {Object.entries(DIMENSION_LABELS).map(([key, label]) => {
+          {DIMENSION_KEYS.map((key) => {
             const a = d.answers[key];
             const value = a?.kind === 'scale5' ? a.value : 0;
             if (!value) return null;
             return (
               <View key={key} style={styles.ratingRow}>
-                <Text style={styles.ratingLabel}>{label}</Text>
+                <Text style={styles.ratingLabel}>{t(`question.${key}.label`)}</Text>
                 <DotScaleReadOnly value={value} />
               </View>
             );
@@ -86,27 +84,31 @@ export default function DateDetailScreen() {
 
       <View style={styles.tileRow}>
         <Card style={{ flex: 1 }}>
-          <Text style={styles.tileKicker}>SEE AGAIN</Text>
-          <Text style={[styles.tileValue, { color: seeAgainColor }]}>{seeAgain ?? '—'}</Text>
+          <Text style={styles.tileKicker}>{t('dateDetail.seeAgain')}</Text>
+          <Text style={[styles.tileValue, { color: seeAgainColor }]}>
+            {seeAgain ? translateEnum(t, 'seeAgainOption', SEE_AGAIN, seeAgain) : t('common.dash')}
+          </Text>
         </Card>
         <Card style={{ flex: 1 }}>
-          <Text style={styles.tileKicker}>WHO PAID</Text>
-          <Text style={styles.tileValue}>{whoPaidValue ?? '—'}</Text>
+          <Text style={styles.tileKicker}>{t('dateDetail.whoPaid')}</Text>
+          <Text style={styles.tileValue}>
+            {whoPaidValue ? translateEnum(t, 'whoPaidOption', WHO_PAID, whoPaidValue) : t('common.dash')}
+          </Text>
         </Card>
       </View>
 
       {green.length || red.length ? (
         <Card style={{ marginTop: space.md }}>
-          <Text style={styles.sectionLabel}>Flags</Text>
+          <Text style={styles.sectionLabel}>{t('dateDetail.flags')}</Text>
           <View style={styles.wrap}>
             {green.map((f) => (
               <View key={f} style={[styles.flag, { backgroundColor: alpha(color.olive, 0.13) }]}>
-                <Text style={[styles.flagText, { color: color.olive }]}>✓ {f}</Text>
+                <Text style={[styles.flagText, { color: color.olive }]}>✓ {translateEnum(t, 'greenFlag', GREEN_FLAGS, f)}</Text>
               </View>
             ))}
             {red.map((f) => (
               <View key={f} style={[styles.flag, { backgroundColor: alpha(color.red, 0.11) }]}>
-                <Text style={[styles.flagText, { color: color.red }]}>⚑ {f}</Text>
+                <Text style={[styles.flagText, { color: color.red }]}>⚑ {translateEnum(t, 'redFlag', RED_FLAGS, f)}</Text>
               </View>
             ))}
           </View>
@@ -114,24 +116,27 @@ export default function DateDetailScreen() {
       ) : null}
 
       <Card style={{ marginTop: space.md, marginBottom: space.xl }}>
-        <Text style={styles.sectionLabel}>Your note</Text>
-        <Text style={styles.note}>{d.note || 'No note on this one.'}</Text>
+        <Text style={styles.sectionLabel}>{t('dateDetail.yourNote')}</Text>
+        <Text style={styles.note}>{d.note || t('dateDetail.noNote')}</Text>
       </Card>
 
       <View style={{ flexDirection: 'row', gap: space.md }}>
         <View style={{ flex: 1 }}>
-          <DarkButton label="Edit answers" onPress={() => router.push({ pathname: '/log', params: { editingId: dateId } })} />
+          <DarkButton
+            label={t('dateDetail.editAnswers')}
+            onPress={() => router.push({ pathname: '/log', params: { editingId: dateId } })}
+          />
         </View>
         <View style={{ flex: 0 }}>
-          <GhostButton label="Delete" tone="danger" onPress={() => setConfirmOpen(true)} />
+          <GhostButton label={t('dateDetail.delete')} tone="danger" onPress={() => setConfirmOpen(true)} />
         </View>
       </View>
 
       <ConfirmSheet
         visible={confirmOpen}
-        title="Delete this date?"
-        body="The answers, notes, and score all go. Your level and streak stay as they are."
-        cta="Delete date"
+        title={t('dateDetail.deleteConfirm.title')}
+        body={t('dateDetail.deleteConfirm.body')}
+        cta={t('dateDetail.deleteConfirm.cta')}
         onConfirm={handleDelete}
         onCancel={() => setConfirmOpen(false)}
       />

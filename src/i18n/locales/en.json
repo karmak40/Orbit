@@ -1,0 +1,325 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "cancel": "Cancel",
+    "done": "Done",
+    "delete": "Delete",
+    "save": "Save",
+    "edit": "Edit",
+    "keepIt": "Keep it",
+    "addPerson": "Add person",
+    "dash": "—",
+    "close": "Close",
+    "backTo": "Back to {{label}}",
+    "ratingOf5": "{{label}}: {{n}} of 5"
+  },
+  "nav": {
+    "home": "Home",
+    "people": "People",
+    "timeline": "Timeline",
+    "awards": "Awards",
+    "logDate": "Log a date",
+    "settings": "Settings"
+  },
+  "splash": {
+    "tagline": "Your dating life, observed"
+  },
+  "onboarding": {
+    "skip": "Skip",
+    "continue": "Continue",
+    "pickOneToContinue": "Pick one to continue",
+    "startTracking": "Start tracking",
+    "slide1": {
+      "kicker": "Why bother",
+      "title": "Dating is data you never write down.",
+      "body": "Every date teaches you something — then it evaporates. Orbit catches it in two minutes while it is still fresh."
+    },
+    "slide2": {
+      "kicker": "How it works",
+      "title": "Answer a few honest questions.",
+      "body": "Chemistry, conversation, comfort, mood. No essays. Tap through it on the walk home and you are done."
+    },
+    "slide3": {
+      "kicker": "What you get",
+      "title": "Patterns you cannot see from inside one date.",
+      "body": "Levels and streaks for showing up. Then, once there is enough to read, reflections on what you keep choosing — and why."
+    },
+    "goal": {
+      "kicker": "One question",
+      "title": "What are you after right now?",
+      "sub": "This shapes how your score is weighted. You can change it any time."
+    },
+    "privacy": {
+      "kicker": "Last thing",
+      "title": "Lock it down?",
+      "sub": "This is honest, private writing about real people. A passcode keeps it that way.",
+      "passcodeLock": { "label": "Passcode lock", "sub": "Ask for a code every time you open Orbit" },
+      "hideNames": { "label": "Hide names", "sub": "Show initials only in lists and widgets" },
+      "faceId": { "label": "Face ID", "sub": "Unlock without typing" },
+      "reassurance": "Everything stays on your device. Nothing is uploaded, ever."
+    }
+  },
+  "home": {
+    "greeting": "Hey there",
+    "greetingNamed": "Hey, {{name}}",
+    "nudge": {
+      "title": "Last night with {{name}}?",
+      "body": "Log it now — memory fades fast, and honest notes are the whole point.",
+      "logIt": "Log it",
+      "notTonight": "Not tonight"
+    },
+    "empty": {
+      "title": "Level 1 starts with one date",
+      "body": "Log your first one and Orbit starts building your picture. Three dates in, patterns appear.",
+      "cta": "Log your first date",
+      "unlocksHeading": "What unlocks as you go",
+      "unlock1": { "title": "Your first result", "sub": "A score and a read on how it went" },
+      "unlock2": { "title": "Streaks and badges", "sub": "Credit for putting yourself out there" },
+      "unlock3": { "title": "Patterns and AI reflections", "sub": "What you keep choosing, and why" },
+      "previewSampleData": "Preview with sample data"
+    },
+    "levelKicker": "Level {{level}}",
+    "xp": "{{xp}} XP",
+    "nextLevelXp": "{{xp}} XP to Level {{level}}",
+    "maxLevel": "Max level",
+    "datingScore": "Dating Score",
+    "datesLogged_one": "{{count}} date logged",
+    "datesLogged_other": "{{count}} dates logged",
+    "streak": "Streak",
+    "weeks": "weeks",
+    "streakActiveSub": "Active & putting yourself out there",
+    "streakInactiveSub": "Log this week to start one",
+    "logCta": "Log a date",
+    "logCtaSub": "Just got back? Capture it while it's fresh",
+    "recentDates": "Recent dates",
+    "seeAll": "See all",
+    "addSomeoneNew": "+ Add someone new",
+    "badges": "Badges"
+  },
+  "log": {
+    "cancel": "Cancel",
+    "newEntry": "New entry",
+    "editing": "Editing",
+    "howWasIt": "How was it?",
+    "updateAnswers": "Update your answers",
+    "beHonestSub": "Be honest — this is just for you.",
+    "changeAnythingSub": "Change anything that no longer feels true.",
+    "whoDidYouSee": "Who did you see?",
+    "newPersonChip": "+ New person",
+    "whereWhat": "Where / what?",
+    "moodShift": "Mood shift",
+    "beforeTheDate": "Before the date",
+    "afterTheDate": "After the date",
+    "wouldSeeAgain": "Would you see them again?",
+    "whoPaid": "Who paid?",
+    "greenFlags": "Green flags ✓",
+    "redFlags": "Red flags ⚑",
+    "anythingElse": "Anything else?",
+    "notePlaceholder": "A moment you want to remember, a thought, an ick...",
+    "revealResult": "Reveal my result →",
+    "pickWhoYouSaw": "Pick who you saw",
+    "rateFirstTwo": "Rate the first two to continue"
+  },
+  "result": {
+    "dateLogged": "Date logged · {{name}}",
+    "someoneNew": "Someone new",
+    "tabScore": "Score",
+    "tabGrade": "Grade",
+    "tabVerdict": "Verdict",
+    "tabRadar": "Radar",
+    "outOf100": "OUT OF 100",
+    "xpEarned": "XP EARNED",
+    "weekStreak": "WEEK STREAK",
+    "badgeUnlocked": "Badge unlocked",
+    "saveToJournal": "Save to journal",
+    "done": "Done"
+  },
+  "people": {
+    "title": "People",
+    "sub": "Everyone you've been keeping track of",
+    "addedByYou": "Added by you",
+    "noDatesYet": "No dates yet",
+    "avg": "AVG",
+    "nobodyHereYet": "Nobody here yet",
+    "nobodyHereBody": "Add someone with the + button, or they'll appear here once you log a date with them.",
+    "dateCount_one": "{{count}} date logged",
+    "dateCount_other": "{{count}} dates logged"
+  },
+  "personProfile": {
+    "back": "People",
+    "edit": "Edit",
+    "updateWhereThingsStand": "Update where things stand",
+    "dates": "DATES",
+    "avg": "AVG",
+    "trend": "TREND",
+    "dateHistory": "Date history",
+    "noDatesLoggedWith": "No dates logged with {{name}} yet.",
+    "notFound": "This person was deleted.",
+    "deleteConfirm": {
+      "title": "Delete {{name}}?",
+      "body": "Every date logged with them is deleted too. This cannot be undone.",
+      "cta": "Delete everything"
+    }
+  },
+  "dateDetail": {
+    "back": "Back",
+    "withPerson": "with {{name}}",
+    "score": "SCORE",
+    "howYouRatedIt": "How you rated it",
+    "seeAgain": "SEE AGAIN",
+    "whoPaid": "WHO PAID",
+    "flags": "Flags",
+    "yourNote": "Your note",
+    "noNote": "No note on this one.",
+    "editAnswers": "Edit answers",
+    "delete": "Delete",
+    "notFound": "This date was deleted.",
+    "deleteConfirm": {
+      "title": "Delete this date?",
+      "body": "The answers, notes, and score all go. Your level and streak stay as they are.",
+      "cta": "Delete date"
+    }
+  },
+  "timeline": {
+    "title": "Timeline",
+    "sub": "Every date, in order",
+    "empty": "Nothing logged yet — your first date will start the timeline."
+  },
+  "awards": {
+    "title": "Awards",
+    "sub": "Progress you've earned by showing up",
+    "levelHeading": "Level {{level}}",
+    "xpOfNext": "{{xp}} / {{next}} XP",
+    "you": "YOU",
+    "badgeCollection": "Badge collection",
+    "badgeCountOf": "{{earned}} of {{total}}",
+    "badgeLocked": "Locked",
+    "streakLast12Weeks": "Streak · last 12 weeks",
+    "weeksAgo12": "12 weeks ago",
+    "thisWeek": "This week",
+    "friends": "Friends",
+    "friendsTitle": "Compare progress with friends",
+    "friendsBody": "Share only your level and streak — never who you dated or how you rated them. Coming once sync is available."
+  },
+  "settings": {
+    "title": "Settings",
+    "whatYouTrack": "What you track",
+    "reminders": "Reminders",
+    "postDateNudge": { "label": "Post-date nudge", "sub": "A gentle ping two hours after an evening out" },
+    "weeklyReflection": { "label": "Weekly reflection", "sub": "Sunday summary of your week" },
+    "privacy": "Privacy",
+    "hideNames": { "label": "Hide names", "sub": "Initials only outside a profile" },
+    "yourIntention": "Your intention",
+    "language": "Language",
+    "languageSystem": "System default",
+    "data": "Data",
+    "previewSampleData": "Preview with sample data",
+    "resetToEmpty": "Reset to empty state",
+    "exportData": "Export my data",
+    "exportDataSub": "Save an unencrypted copy as a file you control",
+    "about": "About",
+    "version": "Version {{version}}",
+    "sendFeedback": "Send feedback",
+    "sendFeedbackSub": "Report a bug or share an idea",
+    "feedbackEmailSubject": "Orbit feedback"
+  },
+  "personSheet": {
+    "editPerson": "Edit person",
+    "newPerson": "New person",
+    "namePlaceholder": "Their name",
+    "whereDidYouMeet": "Where did you meet?",
+    "whereDoThingsStand": "Where do things stand?",
+    "privateNote": "Private note",
+    "notePlaceholder": "Anything you want to remember about them...",
+    "saveChanges": "Save changes",
+    "addPerson": "Add person",
+    "thisPerson": "this person",
+    "deletePersonAndDates": "Delete {{name}} and all their dates"
+  },
+  "goal": {
+    "serious": { "label": "Something serious", "sub": "Looking for a real relationship" },
+    "open": { "label": "Open to anything", "sub": "See where things go" },
+    "casual": { "label": "Dating casually", "sub": "Fun, low pressure" },
+    "rebuilding": { "label": "Getting back out there", "sub": "Rebuilding confidence" }
+  },
+  "goalWeightBlurb": {
+    "serious": "Scores weight comfort and depth higher",
+    "open": "Every question counts equally",
+    "casual": "Scores weight fun and chemistry higher",
+    "rebuilding": "Scores weight how at ease you felt highest"
+  },
+  "status": {
+    "talking": { "label": "Talking", "sub": "Early days, still texting" },
+    "seeing": { "label": "Seeing again", "sub": "Another date on the books" },
+    "exclusive": { "label": "Exclusive?", "sub": "Heading somewhere real" },
+    "fence": { "label": "On the fence", "sub": "Not sure yet" },
+    "faded": { "label": "Faded out", "sub": "It quietly ended" },
+    "ended": { "label": "Ended it", "sub": "You called it" }
+  },
+  "source": ["Hinge", "Bumble", "Tinder", "IRL", "Through friends", "Work", "Coffee shop"],
+  "activity": ["Coffee", "Dinner", "Drinks", "A walk", "Activity", "Movie"],
+  "seeAgainOption": ["Yes", "Maybe", "No"],
+  "whoPaidOption": ["I did", "They did", "Split"],
+  "greenFlag": ["Made me laugh", "Great listener", "On time", "Curious", "Kind to staff", "Good energy", "Honest"],
+  "redFlag": ["On their phone", "One-sided", "Bragging", "No questions", "Bad vibes", "Ran late", "Talked over me"],
+  "question": {
+    "chemistry": { "label": "Chemistry", "hint": "The spark", "sub": "The spark" },
+    "conversation": { "label": "Conversation", "hint": "Flow & depth", "sub": "Flow and depth" },
+    "comfort": { "label": "Comfort & safety", "hint": "At ease?", "sub": "Did you feel at ease" },
+    "fun": { "label": "Fun", "hint": "Good time?", "sub": "Did you enjoy it" },
+    "mood": { "label": "Mood shift", "sub": "Track the lift" },
+    "seeAgain": { "label": "Would you see them again?", "sub": "Yes / maybe / no" },
+    "whoPaid": { "label": "Who paid?", "sub": "Logistics" },
+    "flags": { "label": "Green & red flags", "sub": "Tag what stood out" }
+  },
+  "badge": {
+    "first-date": { "name": "First Date", "sub": "Logged one" },
+    "on-a-roll": { "name": "On a Roll", "sub": "3-week streak" },
+    "sky-high": { "name": "Sky High", "sub": "Scored 90+" },
+    "second-round": { "name": "Second Round", "sub": "Same person twice" },
+    "open-book": { "name": "Open Book", "sub": "10 notes written" },
+    "honest-eye": { "name": "Honest Eye", "sub": "Logged a red flag" },
+    "explorer": { "name": "Explorer", "sub": "5 people" },
+    "deep-dive": { "name": "Deep Dive", "sub": "Date five" },
+    "steady": { "name": "Steady", "sub": "8-week streak" }
+  },
+  "level": {
+    "1": { "name": "Getting out there", "req": "First date logged" },
+    "2": { "name": "Warming up", "req": "90 XP" },
+    "3": { "name": "In the mix", "req": "190 XP" },
+    "4": { "name": "Finding your rhythm", "req": "320 XP" },
+    "5": { "name": "Knowing your type", "req": "500 XP" },
+    "6": { "name": "Clear-eyed", "req": "750 XP" }
+  },
+  "grade": {
+    "exceptional": "Exceptional",
+    "strong": "Strong",
+    "solid": "Solid",
+    "mixed": "Mixed",
+    "rough": "Rough"
+  },
+  "verdict": {
+    "title": ["A rare spark", "Real potential", "Pleasant, not electric", "Lukewarm", "One and done"],
+    "gentle": [
+      "Something worth nurturing here.",
+      "A promising start — give it room.",
+      "Nice company, no pressure to force it.",
+      "It was fine. That is allowed to be enough.",
+      "Not the one, and that is okay."
+    ],
+    "playful": [
+      "Cancel your other plans.",
+      "Worth a second round, clearly.",
+      "Good, but the fireworks stayed home.",
+      "The conversation carried it. Barely.",
+      "Trust the ick and move on."
+    ],
+    "blunt": [
+      "This one matters — do not fumble it.",
+      "Follow up within 48 hours.",
+      "Do not overinvest in a maybe.",
+      "You are settling if you go again.",
+      "Delete the number. Next."
+    ]
+  }
+}

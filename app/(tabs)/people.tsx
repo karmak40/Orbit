@@ -1,10 +1,12 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { STATUSES } from '../../src/core/model';
+import { SOURCES, STATUSES } from '../../src/core/model';
 import { useOrbitData } from '../../src/data/store';
 import { Card } from '../../src/ui/Card';
+import { translateEnum } from '../../src/ui/i18nHelpers';
 import { PersonSheet, type PersonSheetInput } from '../../src/ui/PersonSheet';
 import { Screen } from '../../src/ui/Screen';
 import { color, radius, scoreColor, scoreTint, space, type } from '../../src/ui/theme';
@@ -12,19 +14,20 @@ import { color, radius, scoreColor, scoreTint, space, type } from '../../src/ui/
 export default function PeopleScreen() {
   const router = useRouter();
   const data = useOrbitData();
+  const { t } = useTranslation();
   const [sheetOpen, setSheetOpen] = useState(false);
 
   return (
     <Screen>
       <View style={styles.header}>
         <View>
-          <Text style={styles.title}>People</Text>
-          <Text style={styles.sub}>Everyone you've been keeping track of</Text>
+          <Text style={styles.title}>{t('people.title')}</Text>
+          <Text style={styles.sub}>{t('people.sub')}</Text>
         </View>
         <Pressable
           onPress={() => setSheetOpen(true)}
           accessibilityRole="button"
-          accessibilityLabel="Add person"
+          accessibilityLabel={t('common.addPerson')}
           hitSlop={6}
           style={styles.addButton}>
           <Text style={styles.addButtonText}>+</Text>
@@ -33,8 +36,8 @@ export default function PeopleScreen() {
 
       {data.people.length === 0 ? (
         <View style={styles.emptyCard}>
-          <Text style={styles.emptyTitle}>Nobody here yet</Text>
-          <Text style={styles.emptyBody}>Add someone with the + button, or they'll appear here once you log a date with them.</Text>
+          <Text style={styles.emptyTitle}>{t('people.nobodyHereYet')}</Text>
+          <Text style={styles.emptyBody}>{t('people.nobodyHereBody')}</Text>
         </View>
       ) : (
         <View style={{ gap: space.md }}>
@@ -55,17 +58,21 @@ export default function PeopleScreen() {
                   <View style={styles.nameRow}>
                     <Text style={styles.name}>{p.name}</Text>
                     <View style={styles.tag}>
-                      <Text style={styles.tagText}>{p.source ?? 'Added by you'}</Text>
+                      <Text style={styles.tagText}>
+                        {p.source ? translateEnum(t, 'source', SOURCES, p.source) : t('people.addedByYou')}
+                      </Text>
                     </View>
                   </View>
-                  <Text style={[styles.status, { color: statusDef?.color ?? color.muted }]}>{statusDef?.label ?? p.status}</Text>
-                  <Text style={styles.dates}>{fresh ? 'No dates yet' : `${p.dateCount} date${p.dateCount === 1 ? '' : 's'} logged`}</Text>
+                  <Text style={[styles.status, { color: statusDef?.color ?? color.muted }]}>
+                    {statusDef ? t(`status.${statusDef.id}.label`) : p.status}
+                  </Text>
+                  <Text style={styles.dates}>{fresh ? t('people.noDatesYet') : t('people.dateCount', { count: p.dateCount })}</Text>
                 </View>
                 <View style={{ alignItems: 'center' }}>
                   <Text style={[styles.avg, { color: fresh ? color.fainter : scoreColor(p.avgScore ?? 0) }]}>
-                    {fresh ? '—' : p.avgScore}
+                    {fresh ? t('common.dash') : p.avgScore}
                   </Text>
-                  <Text style={styles.avgLabel}>AVG</Text>
+                  <Text style={styles.avgLabel}>{t('people.avg')}</Text>
                 </View>
               </Pressable>
             );

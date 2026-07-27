@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { color } from './theme';
@@ -14,6 +15,7 @@ export function DotScale({
   color?: string;
   label: string;
 }) {
+  const { t } = useTranslation();
   return (
     <View style={styles.row} accessibilityRole="adjustable" accessibilityLabel={label} accessibilityValue={{ min: 0, max: 5, now: value }}>
       {[1, 2, 3, 4, 5].map((n) => {
@@ -23,7 +25,7 @@ export function DotScale({
             key={n}
             onPress={() => onChange(n)}
             accessibilityRole="button"
-            accessibilityLabel={`${label}: ${n} of 5`}
+            accessibilityLabel={t('common.ratingOf5', { label, n })}
             style={[styles.dot, { borderColor: on ? tint : color.cardBorderStrong, backgroundColor: on ? tint : 'transparent' }]}
           />
         );

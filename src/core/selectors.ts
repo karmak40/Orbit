@@ -15,9 +15,9 @@ function monthLabel(day: string): string {
 }
 
 /** Short date label ("Jul 18") for list rows — the design's `d.date` field. */
-export function dayLabel(day: string): string {
+export function dayLabel(day: string, locale = 'en-US'): string {
   const [y, m, d] = day.split('-').map(Number);
-  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-US', {
+  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString(locale, {
     month: 'short',
     day: 'numeric',
     timeZone: 'UTC',

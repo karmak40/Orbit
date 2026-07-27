@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { BADGES, LEVELS } from '../../src/core/progress';
@@ -8,18 +9,19 @@ import { alpha, color, radius, space, type } from '../../src/ui/theme';
 
 export default function AwardsScreen() {
   const data = useOrbitData();
+  const { t } = useTranslation();
   const earned = new Set(data.earnedBadgeIds);
-  const badgeCount = `${earned.size} of ${BADGES.length}`;
+  const badgeCount = t('awards.badgeCountOf', { earned: earned.size, total: BADGES.length });
 
   return (
     <Screen>
-      <Text style={styles.title}>Awards</Text>
-      <Text style={styles.sub}>Progress you've earned by showing up</Text>
+      <Text style={styles.title}>{t('awards.title')}</Text>
+      <Text style={styles.sub}>{t('awards.sub')}</Text>
 
       <InkCard style={{ marginBottom: space.xxl }}>
         <View style={styles.levelHeader}>
-          <Text style={styles.levelBig}>Level {data.level.level}</Text>
-          <Text style={styles.levelXp}>{data.xp} / {data.level.nextXp ?? data.xp} XP</Text>
+          <Text style={styles.levelBig}>{t('awards.levelHeading', { level: data.level.level })}</Text>
+          <Text style={styles.levelXp}>{t('awards.xpOfNext', { xp: data.xp, next: data.level.nextXp ?? data.xp })}</Text>
         </View>
         <View style={styles.track}>
           <View style={[styles.fill, { width: `${Math.round(data.level.fill * 100)}%` }]} />
@@ -48,11 +50,11 @@ export default function AwardsScreen() {
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.levelName}>{l.name}</Text>
-                  <Text style={styles.levelReq}>{l.req}</Text>
+                  <Text style={styles.levelName}>{t(`level.${l.level}.name`)}</Text>
+                  <Text style={styles.levelReq}>{t(`level.${l.level}.req`)}</Text>
                 </View>
                 <Text style={[styles.levelTag, { color: current ? color.goldLight : 'rgba(242,236,227,.4)' }]}>
-                  {current ? 'YOU' : done ? '✓' : ''}
+                  {current ? t('awards.you') : done ? '✓' : ''}
                 </Text>
               </View>
             );
@@ -61,7 +63,7 @@ export default function AwardsScreen() {
       </InkCard>
 
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionLabel}>Badge collection</Text>
+        <Text style={styles.sectionLabel}>{t('awards.badgeCollection')}</Text>
         <Text style={styles.sectionCount}>{badgeCount}</Text>
       </View>
       <View style={styles.badgeGrid}>
@@ -72,14 +74,14 @@ export default function AwardsScreen() {
               <View style={[styles.badgeIcon, { backgroundColor: alpha(b.color, got ? 0.15 : 0.08) }]}>
                 <Text style={{ color: got ? b.color : color.fainter, fontSize: 16 }}>★</Text>
               </View>
-              <Text style={styles.badgeName}>{b.name}</Text>
-              <Text style={styles.badgeSub}>{got ? b.sub : 'Locked'}</Text>
+              <Text style={styles.badgeName}>{t(`badge.${b.id}.name`)}</Text>
+              <Text style={styles.badgeSub}>{got ? t(`badge.${b.id}.sub`) : t('awards.badgeLocked')}</Text>
             </Card>
           );
         })}
       </View>
 
-      <Text style={styles.sectionLabel}>Streak · last 12 weeks</Text>
+      <Text style={styles.sectionLabel}>{t('awards.streakLast12Weeks')}</Text>
       <Card style={{ marginBottom: space.xxl }}>
         <View style={styles.weekRow}>
           {data.weeklyIntensity.map((w, i) => (
@@ -96,17 +98,15 @@ export default function AwardsScreen() {
           ))}
         </View>
         <View style={styles.weekLabels}>
-          <Text style={styles.weekLabelText}>12 weeks ago</Text>
-          <Text style={styles.weekLabelText}>This week</Text>
+          <Text style={styles.weekLabelText}>{t('awards.weeksAgo12')}</Text>
+          <Text style={styles.weekLabelText}>{t('awards.thisWeek')}</Text>
         </View>
       </Card>
 
-      <Text style={styles.sectionLabel}>Friends</Text>
+      <Text style={styles.sectionLabel}>{t('awards.friends')}</Text>
       <View style={styles.friendsCard}>
-        <Text style={styles.friendsTitle}>Compare progress with friends</Text>
-        <Text style={styles.friendsBody}>
-          Share only your level and streak — never who you dated or how you rated them. Coming once sync is available.
-        </Text>
+        <Text style={styles.friendsTitle}>{t('awards.friendsTitle')}</Text>
+        <Text style={styles.friendsBody}>{t('awards.friendsBody')}</Text>
       </View>
     </Screen>
   );

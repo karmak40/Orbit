@@ -278,7 +278,13 @@ export type Settings = {
   /** Tone of the verdict copy. */
   verdictTone: VerdictTone;
   onboardedAt: string | null;
+  /** `'system'` follows the OS locale (falling back to English); anything else pins it. */
+  language: 'system' | SupportedLocale;
 };
+
+/** The languages Orbit ships translations for — see `src/i18n/`. */
+export const SUPPORTED_LOCALES = ['en', 'de', 'ru', 'uk'] as const;
+export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
 export const RESULT_STYLES = ['score', 'grade', 'verdict', 'radar'] as const;
 export type ResultStyle = (typeof RESULT_STYLES)[number];
@@ -294,6 +300,7 @@ export const DEFAULT_SETTINGS: Settings = {
   resultStyle: 'score',
   verdictTone: 'Playful',
   onboardedAt: null,
+  language: 'system',
 };
 
 // ------------------------------------------------------------- progress

@@ -1,12 +1,15 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { ACTIVITIES } from '../../src/core/model';
 import { BADGES } from '../../src/core/progress';
 import { dayLabel } from '../../src/core/selectors';
 import { useOrbitData } from '../../src/data/store';
 import { PrimaryButton } from '../../src/ui/Button';
 import { Card, InkCard } from '../../src/ui/Card';
+import { translateEnum } from '../../src/ui/i18nHelpers';
 import { PersonSheet, type PersonSheetInput } from '../../src/ui/PersonSheet';
 import { Screen } from '../../src/ui/Screen';
 import { alpha, color, radius, scoreColor, space, type } from '../../src/ui/theme';
@@ -14,12 +17,13 @@ import { alpha, color, radius, scoreColor, space, type } from '../../src/ui/them
 export default function HomeScreen() {
   const router = useRouter();
   const data = useOrbitData();
+  const { t, i18n } = useTranslation();
   const [personSheetOpen, setPersonSheetOpen] = useState(false);
 
-  if (!data.ready) return <Screen><Text style={styles.loading}>Loading…</Text></Screen>;
+  if (!data.ready) return <Screen><Text style={styles.loading}>{t('common.loading')}</Text></Screen>;
 
-  const dateHeading = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-  const greeting = data.settings.userName ? `Hey, ${data.settings.userName}` : 'Hey there';
+  const dateHeading = new Date().toLocaleDateString(i18n.language, { weekday: 'long', month: 'long', day: 'numeric' });
+  const greeting = data.settings.userName ? t('home.greetingNamed', { name: data.settings.userName }) : t('home.greeting');
   const initial = (data.settings.userName.trim()[0] || 'R').toUpperCase();
 
   return (
@@ -29,23 +33,21 @@ export default function HomeScreen() {
           <Text style={styles.dateLabel}>{dateHeading}</Text>
           <Text style={styles.greeting}>{greeting}</Text>
         </View>
-        <Pressable onPress={() => router.push('/settings')} accessibilityRole="button" accessibilityLabel="Settings" style={styles.avatar}>
+        <Pressable onPress={() => router.push('/settings')} accessibilityRole="button" accessibilityLabel={t('nav.settings')} style={styles.avatar}>
           <Text style={styles.avatarText}>{initial}</Text>
         </Pressable>
       </View>
 
       {data.nudgeVisible && data.dates.length > 0 ? (
         <Card style={styles.nudge}>
-          <Text style={styles.nudgeTitle}>Last night with {data.dates[0].personName}?</Text>
-          <Text style={styles.nudgeBody}>
-            Log it now — memory fades fast, and honest notes are the whole point.
-          </Text>
+          <Text style={styles.nudgeTitle}>{t('home.nudge.title', { name: data.dates[0].personName })}</Text>
+          <Text style={styles.nudgeBody}>{t('home.nudge.body')}</Text>
           <View style={styles.nudgeButtons}>
             <Pressable onPress={() => router.push('/log')} accessibilityRole="button" style={styles.nudgeCta}>
-              <Text style={styles.nudgeCtaText}>Log it</Text>
+              <Text style={styles.nudgeCtaText}>{t('home.nudge.logIt')}</Text>
             </Pressable>
             <Pressable onPress={data.dismissNudge} accessibilityRole="button" style={styles.nudgeDismiss}>
-              <Text style={styles.nudgeDismissText}>Not tonight</Text>
+              <Text style={styles.nudgeDismissText}>{t('home.nudge.notTonight')}</Text>
             </Pressable>
           </View>
         </Card>
@@ -69,43 +71,38 @@ export default function HomeScreen() {
   );
 }
 
-const UNLOCK_STEPS = [
-  { n: '1', title: 'Your first result', sub: 'A score and a read on how it went' },
-  { n: '3', title: 'Streaks and badges', sub: 'Credit for putting yourself out there' },
-  { n: '5', title: 'Patterns and AI reflections', sub: 'What you keep choosing, and why' },
-];
+const UNLOCK_STEPS = ['unlock1', 'unlock2', 'unlock3'] as const;
 
 function EmptyHome({ onLog, onDemo }: { onLog: () => void; onDemo: () => void }) {
+  const { t } = useTranslation();
   return (
     <View>
       <InkCard style={{ alignItems: 'center', marginBottom: space.lg }}>
         <View style={styles.levelBadgeDashed}>
           <Text style={styles.levelBadgeDashedText}>1</Text>
         </View>
-        <Text style={styles.emptyTitle}>Level 1 starts with one date</Text>
-        <Text style={styles.emptyBody}>
-          Log your first one and Orbit starts building your picture. Three dates in, patterns appear.
-        </Text>
+        <Text style={styles.emptyTitle}>{t('home.empty.title')}</Text>
+        <Text style={styles.emptyBody}>{t('home.empty.body')}</Text>
       </InkCard>
-      <PrimaryButton label="Log your first date" onPress={onLog} />
+      <PrimaryButton label={t('home.empty.cta')} onPress={onLog} />
 
-      <Text style={styles.sectionLabel}>What unlocks as you go</Text>
+      <Text style={styles.sectionLabel}>{t('home.empty.unlocksHeading')}</Text>
       <View style={{ gap: space.sm }}>
-        {UNLOCK_STEPS.map((s) => (
-          <View key={s.n} style={styles.unlockRow}>
+        {UNLOCK_STEPS.map((key, i) => (
+          <View key={key} style={styles.unlockRow}>
             <View style={styles.unlockNum}>
-              <Text style={styles.unlockNumText}>{s.n}</Text>
+              <Text style={styles.unlockNumText}>{[1, 3, 5][i]}</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={styles.unlockTitle}>{s.title}</Text>
-              <Text style={styles.unlockSub}>{s.sub}</Text>
+              <Text style={styles.unlockTitle}>{t(`home.empty.${key}.title`)}</Text>
+              <Text style={styles.unlockSub}>{t(`home.empty.${key}.sub`)}</Text>
             </View>
           </View>
         ))}
       </View>
 
       <Pressable onPress={onDemo} accessibilityRole="button" style={{ marginTop: space.xl, alignItems: 'center' }}>
-        <Text style={styles.demoLink}>Preview with sample data</Text>
+        <Text style={styles.demoLink}>{t('home.empty.previewSampleData')}</Text>
       </Pressable>
     </View>
   );
@@ -114,6 +111,7 @@ function EmptyHome({ onLog, onDemo }: { onLog: () => void; onDemo: () => void })
 function PopulatedHome({ onNewPerson }: { onNewPerson: () => void }) {
   const router = useRouter();
   const data = useOrbitData();
+  const { t, i18n } = useTranslation();
 
   const earned = new Set(data.earnedBadgeIds);
   const recentBadges = BADGES.slice(0, 3);
@@ -130,8 +128,8 @@ function PopulatedHome({ onNewPerson }: { onNewPerson: () => void }) {
       <InkCard style={{ marginBottom: space.md }}>
         <View style={styles.levelRow}>
           <View>
-            <Text style={styles.levelKicker}>Level {data.level.level}</Text>
-            <Text style={styles.levelName}>{data.level.name}</Text>
+            <Text style={styles.levelKicker}>{t('home.levelKicker', { level: data.level.level })}</Text>
+            <Text style={styles.levelName}>{t(`level.${data.level.level}.name`)}</Text>
           </View>
           <View style={styles.levelDial}>
             <Text style={styles.levelDialText}>{data.level.level}</Text>
@@ -139,8 +137,12 @@ function PopulatedHome({ onNewPerson }: { onNewPerson: () => void }) {
         </View>
         <View style={{ marginTop: space.lg }}>
           <View style={styles.rowBetween}>
-            <Text style={styles.levelXp}>{data.xp} XP</Text>
-            <Text style={styles.levelXp}>{data.level.nextXp ? `${data.level.nextXp} XP to Level ${data.level.level + 1}` : 'Max level'}</Text>
+            <Text style={styles.levelXp}>{t('home.xp', { xp: data.xp })}</Text>
+            <Text style={styles.levelXp}>
+              {data.level.nextXp
+                ? t('home.nextLevelXp', { xp: data.level.nextXp, level: data.level.level + 1 })
+                : t('home.maxLevel')}
+            </Text>
           </View>
           <View style={styles.track}>
             <View style={[styles.fill, { width: `${Math.round(data.level.fill * 100)}%` }]} />
@@ -150,27 +152,27 @@ function PopulatedHome({ onNewPerson }: { onNewPerson: () => void }) {
 
       <View style={styles.statRow}>
         <Card style={{ flex: 1 }}>
-          <Text style={styles.statKicker}>Dating Score</Text>
+          <Text style={styles.statKicker}>{t('home.datingScore')}</Text>
           <View style={styles.rowBaseline}>
             <Text style={styles.statValue}>{datingScore}</Text>
             <Text style={[styles.statDelta, { color: trendUp ? color.olive : color.faint }]}>{trendUp ? '▲' : '—'}</Text>
           </View>
-          <Text style={styles.statSub}>{data.dates.length} date{data.dates.length === 1 ? '' : 's'} logged</Text>
+          <Text style={styles.statSub}>{t('home.datesLogged', { count: data.dates.length })}</Text>
         </Card>
         <Card style={{ flex: 1 }}>
-          <Text style={styles.statKicker}>Streak</Text>
+          <Text style={styles.statKicker}>{t('home.streak')}</Text>
           <View style={styles.rowBaseline}>
             <Text style={styles.statValue}>{data.streakWeeks}</Text>
-            <Text style={[styles.statDelta, { color: color.red }]}>weeks</Text>
+            <Text style={[styles.statDelta, { color: color.red }]}>{t('home.weeks')}</Text>
           </View>
-          <Text style={styles.statSub}>{data.streakWeeks > 0 ? 'Active & putting yourself out there' : 'Log this week to start one'}</Text>
+          <Text style={styles.statSub}>{data.streakWeeks > 0 ? t('home.streakActiveSub') : t('home.streakInactiveSub')}</Text>
         </Card>
       </View>
 
       <View style={{ marginTop: space.lg }}>
         <PrimaryButton
-          label="Log a date"
-          sub="Just got back? Capture it while it's fresh"
+          label={t('home.logCta')}
+          sub={t('home.logCtaSub')}
           onPress={() => router.push('/log')}
           trailing={
             <View style={styles.plusCircle}>
@@ -181,9 +183,9 @@ function PopulatedHome({ onNewPerson }: { onNewPerson: () => void }) {
       </View>
 
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionLabel}>Recent dates</Text>
+        <Text style={styles.sectionLabel}>{t('home.recentDates')}</Text>
         <Pressable onPress={() => router.push('/timeline')} accessibilityRole="button">
-          <Text style={styles.seeAll}>See all</Text>
+          <Text style={styles.seeAll}>{t('home.seeAll')}</Text>
         </Pressable>
       </View>
       <View style={{ gap: space.sm }}>
@@ -198,7 +200,9 @@ function PopulatedHome({ onNewPerson }: { onNewPerson: () => void }) {
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.dateName}>{d.personName}</Text>
-              <Text style={styles.dateMeta}>{d.activity} · {dayLabel(d.day)}</Text>
+              <Text style={styles.dateMeta}>
+                {translateEnum(t, 'activity', ACTIVITIES, d.activity)} · {dayLabel(d.day, i18n.language)}
+              </Text>
             </View>
             <View style={[styles.pill, { backgroundColor: alpha(scoreColor(d.score), 0.12) }]}>
               <Text style={[styles.pillText, { color: scoreColor(d.score) }]}>{d.score}</Text>
@@ -208,13 +212,13 @@ function PopulatedHome({ onNewPerson }: { onNewPerson: () => void }) {
       </View>
 
       <Pressable onPress={onNewPerson} accessibilityRole="button" style={styles.addPersonRow}>
-        <Text style={styles.addPersonText}>+ Add someone new</Text>
+        <Text style={styles.addPersonText}>{t('home.addSomeoneNew')}</Text>
       </Pressable>
 
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionLabel}>Badges</Text>
+        <Text style={styles.sectionLabel}>{t('home.badges')}</Text>
         <Pressable onPress={() => router.push('/awards')} accessibilityRole="button">
-          <Text style={styles.seeAll}>See all</Text>
+          <Text style={styles.seeAll}>{t('home.seeAll')}</Text>
         </Pressable>
       </View>
       <View style={{ flexDirection: 'row', gap: space.md }}>
@@ -225,8 +229,8 @@ function PopulatedHome({ onNewPerson }: { onNewPerson: () => void }) {
               <View style={[styles.badgeIcon, { backgroundColor: alpha(b.color, 0.15) }]}>
                 <Text style={{ color: got ? b.color : color.faint, fontSize: 18 }}>★</Text>
               </View>
-              <Text style={styles.badgeTileName}>{b.name}</Text>
-              <Text style={styles.badgeTileSub}>{got ? b.sub : 'Locked'}</Text>
+              <Text style={styles.badgeTileName}>{t(`badge.${b.id}.name`)}</Text>
+              <Text style={styles.badgeTileSub}>{got ? t(`badge.${b.id}.sub`) : t('awards.badgeLocked')}</Text>
             </Card>
           );
         })}

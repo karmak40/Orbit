@@ -1,5 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle, Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
 
@@ -14,6 +15,7 @@ const ORBIT_BOX = 150;
  * Shown by `app/_layout.tsx` for a minimum hold, gated on real data readiness.
  */
 export function Splash() {
+  const { t } = useTranslation();
   const breathe = useRef(new Animated.Value(0)).current;
   const outerSpin = useRef(new Animated.Value(0)).current;
   const innerSpin = useRef(new Animated.Value(0)).current;
@@ -110,7 +112,7 @@ export function Splash() {
 
         <Animated.View style={{ opacity: textIn, transform: [{ translateY: textTranslate }], alignItems: 'center' }}>
           <Text style={styles.word}>Orbit</Text>
-          <Text style={styles.tagline}>Your dating life, observed</Text>
+          <Text style={styles.tagline}>{t('splash.tagline')}</Text>
         </Animated.View>
       </View>
     </View>

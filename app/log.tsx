@@ -1,5 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -12,12 +13,13 @@ import {
   WHO_PAID,
   type Answer,
 } from '../src/core/model';
-import { grade, gradeWord, revealBlocker, scaleQuestions, verdict } from '../src/core/scoring';
+import { grade, revealBlocker, scaleQuestions } from '../src/core/scoring';
 import { LogDraft, useOrbitData } from '../src/data/store';
 import { DarkButton, PrimaryButton, TextAction } from '../src/ui/Button';
 import { Card, InkCard } from '../src/ui/Card';
 import { Chip, Segmented } from '../src/ui/Chip';
 import { DotScale } from '../src/ui/DotScale';
+import { tGradeWord, tVerdictSub, tVerdictTitle, translateEnum } from '../src/ui/i18nHelpers';
 import { PersonSheet, type PersonSheetInput } from '../src/ui/PersonSheet';
 import { RadarChart } from '../src/ui/RadarChart';
 import { ScoreRing } from '../src/ui/ScoreRing';
@@ -25,17 +27,18 @@ import { color, font, radius, scoreColor, space, type } from '../src/ui/theme';
 
 type Mode = 'form' | 'result';
 type ResultTab = 'score' | 'grade' | 'verdict' | 'radar';
-const RESULT_TABS: readonly { key: ResultTab; label: string }[] = [
-  { key: 'score', label: 'Score' },
-  { key: 'grade', label: 'Grade' },
-  { key: 'verdict', label: 'Verdict' },
-  { key: 'radar', label: 'Radar' },
+const RESULT_TABS: readonly { key: ResultTab; labelKey: string }[] = [
+  { key: 'score', labelKey: 'result.tabScore' },
+  { key: 'grade', labelKey: 'result.tabGrade' },
+  { key: 'verdict', labelKey: 'result.tabVerdict' },
+  { key: 'radar', labelKey: 'result.tabRadar' },
 ];
 
 export default function LogScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const data = useOrbitData();
+  const { t } = useTranslation();
   const params = useLocalSearchParams<{ editingId?: string }>();
   const editing = params.editingId ? data.dates.find((d) => d.id === params.editingId) ?? null : null;
 
@@ -126,15 +129,16 @@ export default function LogScreen() {
   if (mode === 'result' && preview) {
     const seeAgainAnswer = answerOf(QUESTION_IDS.seeAgain);
     const seeAgain = seeAgainAnswer?.kind === 'choice' ? (seeAgainAnswer.value as 'Yes' | 'Maybe' | 'No' | null) : null;
-    const v = verdict(preview.score, seeAgain, data.settings.verdictTone);
+    const title = tVerdictTitle(t, preview.score, seeAgain);
+    const sub = tVerdictSub(t, preview.score, seeAgain, data.settings.verdictTone);
     const ring = scoreColor(preview.score);
     const g = grade(preview.score);
     const radarAxes: [string, number][] = [
-      ['Chem', numOf(draft.answers[QUESTION_IDS.chemistry])],
-      ['Talk', numOf(draft.answers[QUESTION_IDS.conversation])],
-      ['Ease', numOf(draft.answers[QUESTION_IDS.comfort])],
-      ['Fun', numOf(draft.answers[QUESTION_IDS.fun])],
-      ['Mood', moodAfterOf(draft.answers[QUESTION_IDS.mood])],
+      [t('question.chemistry.label'), numOf(draft.answers[QUESTION_IDS.chemistry])],
+      [t('question.conversation.label'), numOf(draft.answers[QUESTION_IDS.conversation])],
+      [t('question.comfort.label'), numOf(draft.answers[QUESTION_IDS.comfort])],
+      [t('question.fun.label'), numOf(draft.answers[QUESTION_IDS.fun])],
+      [t('question.mood.label'), moodAfterOf(draft.answers[QUESTION_IDS.mood])],
     ];
     const badge = preview.newBadges[0];
 
@@ -144,18 +148,20 @@ export default function LogScreen() {
           style={{ flex: 1 }}
           contentContainerStyle={styles.resultScroll}
           showsVerticalScrollIndicator={false}>
-          <Text style={styles.resultKicker}>Date logged · {person?.name ?? 'Someone new'}</Text>
-          <Text style={styles.resultTitle}>{v.title}</Text>
+          <Text style={styles.resultKicker}>
+            {t('result.dateLogged', { name: person?.name ?? t('result.someoneNew') })}
+          </Text>
+          <Text style={styles.resultTitle}>{title}</Text>
 
           <View style={styles.tabRow}>
-            {RESULT_TABS.map((t) => (
+            {RESULT_TABS.map((rt) => (
               <Pressable
-                key={t.key}
-                onPress={() => setResultTab(t.key)}
+                key={rt.key}
+                onPress={() => setResultTab(rt.key)}
                 accessibilityRole="button"
-                accessibilityState={{ selected: resultTab === t.key }}
-                style={[styles.tab, resultTab === t.key && styles.tabActive]}>
-                <Text style={[styles.tabLabel, resultTab === t.key && styles.tabLabelActive]}>{t.label}</Text>
+                accessibilityState={{ selected: resultTab === rt.key }}
+                style={[styles.tab, resultTab === rt.key && styles.tabActive]}>
+                <Text style={[styles.tabLabel, resultTab === rt.key && styles.tabLabelActive]}>{t(rt.labelKey)}</Text>
               </Pressable>
             ))}
           </View>
@@ -165,7 +171,7 @@ export default function LogScreen() {
             <View style={{ alignItems: 'center', paddingVertical: space.md }}>
               <Text style={[styles.gradeHuge, { color: ring }]}>{g}</Text>
               <Text style={styles.gradeSub}>
-                {preview.score} / 100 · {gradeWord(preview.score)}
+                {preview.score} / 100 · {tGradeWord(t, preview.score)}
               </Text>
             </View>
           )}
@@ -174,21 +180,21 @@ export default function LogScreen() {
               <View style={[styles.verdictChip, { backgroundColor: `${ring}1f` }]}>
                 <Text style={[styles.verdictChipText, { color: ring }]}>{g}</Text>
               </View>
-              <Text style={styles.verdictTitle}>{v.title}</Text>
+              <Text style={styles.verdictTitle}>{title}</Text>
             </View>
           )}
           {resultTab === 'radar' && <RadarChart axes={radarAxes} />}
 
-          <Text style={styles.verdictSub}>"{v.sub}"</Text>
+          <Text style={styles.verdictSub}>"{sub}"</Text>
 
           <View style={styles.rewardRow}>
             <Card style={styles.rewardCard}>
               <Text style={[styles.rewardValue, { color: color.gold }]}>+{preview.xp}</Text>
-              <Text style={styles.rewardLabel}>XP EARNED</Text>
+              <Text style={styles.rewardLabel}>{t('result.xpEarned')}</Text>
             </Card>
             <Card style={styles.rewardCard}>
               <Text style={[styles.rewardValue, { color: color.red }]}>{preview.streakWeeks}</Text>
-              <Text style={styles.rewardLabel}>WEEK STREAK</Text>
+              <Text style={styles.rewardLabel}>{t('result.weekStreak')}</Text>
             </Card>
           </View>
 
@@ -198,17 +204,17 @@ export default function LogScreen() {
                 <Text style={{ color: color.goldLight, fontFamily: font.serif, fontSize: 24 }}>★</Text>
               </View>
               <View>
-                <Text style={styles.badgeKicker}>Badge unlocked</Text>
-                <Text style={styles.badgeName}>{badge.name}</Text>
+                <Text style={styles.badgeKicker}>{t('result.badgeUnlocked')}</Text>
+                <Text style={styles.badgeName}>{t(`badge.${badge.id}.name`)}</Text>
               </View>
             </InkCard>
           ) : null}
 
           <View style={{ marginTop: space.xl }}>
-            <DarkButton label="Save to journal" onPress={finish} />
+            <DarkButton label={t('result.saveToJournal')} onPress={finish} />
           </View>
           <View style={{ alignItems: 'center', marginTop: space.md }}>
-            <TextAction label="Done" onPress={finish} color={color.faint} />
+            <TextAction label={t('result.done')} onPress={finish} color={color.faint} />
           </View>
         </ScrollView>
       </View>
@@ -224,15 +230,13 @@ export default function LogScreen() {
         keyboardShouldPersistTaps="handled"
         automaticallyAdjustKeyboardInsets>
         <View style={styles.header}>
-          <TextAction label="Cancel" onPress={cancel} color={color.faint} />
-          <Text style={styles.kicker}>{editing ? 'Editing' : 'New entry'}</Text>
+          <TextAction label={t('log.cancel')} onPress={cancel} color={color.faint} />
+          <Text style={styles.kicker}>{editing ? t('log.editing') : t('log.newEntry')}</Text>
         </View>
-        <Text style={styles.title}>{editing ? 'Update your answers' : 'How was it?'}</Text>
-        <Text style={styles.sub}>
-          {editing ? 'Change anything that no longer feels true.' : 'Be honest — this is just for you.'}
-        </Text>
+        <Text style={styles.title}>{editing ? t('log.updateAnswers') : t('log.howWasIt')}</Text>
+        <Text style={styles.sub}>{editing ? t('log.changeAnythingSub') : t('log.beHonestSub')}</Text>
 
-        <Text style={styles.label}>Who did you see?</Text>
+        <Text style={styles.label}>{t('log.whoDidYouSee')}</Text>
         <View style={styles.wrap}>
           {data.people.map((p) => (
             <Chip
@@ -242,15 +246,15 @@ export default function LogScreen() {
               onPress={() => setDraft((d) => ({ ...d, personId: p.id }))}
             />
           ))}
-          <Chip label="+ New person" tone="gold" selected={false} onPress={() => setPersonSheetOpen(true)} />
+          <Chip label={t('log.newPersonChip')} tone="gold" selected={false} onPress={() => setPersonSheetOpen(true)} />
         </View>
 
-        <Text style={styles.label}>Where / what?</Text>
+        <Text style={styles.label}>{t('log.whereWhat')}</Text>
         <View style={styles.wrap}>
           {ACTIVITIES.map((a) => (
             <Chip
               key={a}
-              label={a}
+              label={translateEnum(t, 'activity', ACTIVITIES, a)}
               tone="gold"
               selected={draft.activity === a}
               onPress={() => setDraft((d) => ({ ...d, activity: a }))}
@@ -262,13 +266,14 @@ export default function LogScreen() {
           {scales.map((q) => {
             const a = answerOf(q.id);
             const value = a?.kind === 'scale5' ? a.value : 0;
+            const label = t(`question.${q.id}.label`);
             return (
               <View key={q.id} style={{ gap: 11 }}>
                 <View style={styles.rowBetween}>
-                  <Text style={styles.rowLabel}>{q.label}</Text>
-                  <Text style={styles.rowHint}>{q.hint}</Text>
+                  <Text style={styles.rowLabel}>{label}</Text>
+                  <Text style={styles.rowHint}>{t(`question.${q.id}.hint`)}</Text>
                 </View>
-                <DotScale label={q.label} value={value} onChange={(v) => setScale(q.id, v)} />
+                <DotScale label={label} value={value} onChange={(v) => setScale(q.id, v)} />
               </View>
             );
           })}
@@ -278,9 +283,10 @@ export default function LogScreen() {
 
         {qEnabled[QUESTION_IDS.seeAgain] ? (
           <View style={{ marginTop: space.xl }}>
-            <Text style={styles.label}>Would you see them again?</Text>
+            <Text style={styles.label}>{t('log.wouldSeeAgain')}</Text>
             <Segmented
               options={SEE_AGAIN}
+              renderLabel={(v) => translateEnum(t, 'seeAgainOption', SEE_AGAIN, v)}
               value={choiceOf(draft.answers[QUESTION_IDS.seeAgain])}
               onChange={(v) => setChoice(QUESTION_IDS.seeAgain, v)}
             />
@@ -289,10 +295,11 @@ export default function LogScreen() {
 
         {qEnabled[QUESTION_IDS.whoPaid] ? (
           <View style={{ marginTop: space.xl }}>
-            <Text style={styles.label}>Who paid?</Text>
+            <Text style={styles.label}>{t('log.whoPaid')}</Text>
             <Segmented
               options={WHO_PAID}
               tone="gold"
+              renderLabel={(v) => translateEnum(t, 'whoPaidOption', WHO_PAID, v)}
               value={choiceOf(draft.answers[QUESTION_IDS.whoPaid])}
               onChange={(v) => setChoice(QUESTION_IDS.whoPaid, v)}
             />
@@ -301,24 +308,24 @@ export default function LogScreen() {
 
         {qEnabled[QUESTION_IDS.flags] ? (
           <View style={{ marginTop: space.xl }}>
-            <Text style={styles.label}>Green flags ✓</Text>
+            <Text style={styles.label}>{t('log.greenFlags')}</Text>
             <View style={styles.wrap}>
               {GREEN_FLAGS.map((g) => (
                 <Chip
                   key={g}
-                  label={g}
+                  label={translateEnum(t, 'greenFlag', GREEN_FLAGS, g)}
                   tone="green"
                   selected={flagsOf(draft.answers[QUESTION_IDS.flags]).green.includes(g)}
                   onPress={() => toggleFlag('green', g)}
                 />
               ))}
             </View>
-            <Text style={[styles.label, { marginTop: space.lg }]}>Red flags ⚑</Text>
+            <Text style={[styles.label, { marginTop: space.lg }]}>{t('log.redFlags')}</Text>
             <View style={styles.wrap}>
               {RED_FLAGS.map((r) => (
                 <Chip
                   key={r}
-                  label={r}
+                  label={translateEnum(t, 'redFlag', RED_FLAGS, r)}
                   tone="red"
                   selected={flagsOf(draft.answers[QUESTION_IDS.flags]).red.includes(r)}
                   onPress={() => toggleFlag('red', r)}
@@ -328,11 +335,11 @@ export default function LogScreen() {
           </View>
         ) : null}
 
-        <Text style={[styles.label, { marginTop: space.xl }]}>Anything else?</Text>
+        <Text style={[styles.label, { marginTop: space.xl }]}>{t('log.anythingElse')}</Text>
         <TextInput
           value={note}
           onChangeText={setNote}
-          placeholder="A moment you want to remember, a thought, an ick..."
+          placeholder={t('log.notePlaceholder')}
           placeholderTextColor={color.faint}
           multiline
           style={styles.noteInput}
@@ -342,7 +349,7 @@ export default function LogScreen() {
 
       <View style={[styles.sticky, { paddingBottom: insets.bottom + space.lg }]}>
         <PrimaryButton
-          label={canReveal ? 'Reveal my result →' : blocker === 'person' ? 'Pick who you saw' : 'Rate the first two to continue'}
+          label={canReveal ? t('log.revealResult') : blocker === 'person' ? t('log.pickWhoYouSaw') : t('log.rateFirstTwo')}
           onPress={reveal}
           disabled={!canReveal}
         />
@@ -354,19 +361,20 @@ export default function LogScreen() {
 }
 
 function MoodCard({ draft, onChange }: { draft: LogDraft; onChange: (before: number, after: number) => void }) {
+  const { t } = useTranslation();
   const mood = draft.answers[QUESTION_IDS.mood];
   const before = mood?.kind === 'moodShift' ? mood.before : 0;
   const after = mood?.kind === 'moodShift' ? mood.after : 0;
   return (
     <Card style={{ gap: 18, marginTop: space.xl }}>
-      <Text style={styles.rowLabel}>Mood shift</Text>
+      <Text style={styles.rowLabel}>{t('log.moodShift')}</Text>
       <View style={{ gap: 11 }}>
-        <Text style={styles.moodLabel}>Before the date</Text>
-        <DotScale label="Mood before" value={before} onChange={(v) => onChange(v, after)} />
+        <Text style={styles.moodLabel}>{t('log.beforeTheDate')}</Text>
+        <DotScale label={t('log.beforeTheDate')} value={before} onChange={(v) => onChange(v, after)} />
       </View>
       <View style={{ gap: 11 }}>
-        <Text style={styles.moodLabel}>After the date</Text>
-        <DotScale label="Mood after" value={after} onChange={(v) => onChange(before, v)} />
+        <Text style={styles.moodLabel}>{t('log.afterTheDate')}</Text>
+        <DotScale label={t('log.afterTheDate')} value={after} onChange={(v) => onChange(before, v)} />
       </View>
     </Card>
   );

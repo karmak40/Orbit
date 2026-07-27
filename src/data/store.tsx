@@ -24,6 +24,7 @@ import { canReveal, computeScore } from '../core/scoring';
 import { datesWithPerson, historyByMonth, peopleWithStats } from '../core/selectors';
 import {
   BUILT_IN_QUESTIONS,
+  DEFAULT_SETTINGS,
   QUESTION_IDS,
   type Answers,
   type DateLog,
@@ -144,15 +145,7 @@ export function OrbitDataProvider({ children }: { children: ReactNode }) {
   const [peopleRaw, setPeopleRaw] = useState<Person[]>([]);
   const [datesRaw, setDatesRaw] = useState<DateLog[]>([]);
   const [questions, setQuestions] = useState<Question[]>(BUILT_IN_QUESTIONS as Question[]);
-  const [settings, setSettings] = useState<Settings>({
-    userName: '',
-    goal: 'open',
-    privacy: { lock: true, hideNames: false, biometric: false },
-    reminders: { postDate: true, weekly: true, calendar: false },
-    resultStyle: 'score',
-    verdictTone: 'Playful',
-    onboardedAt: null,
-  });
+  const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [nudgeDismissed, setNudgeDismissed] = useState(false);
 
   const reload = useCallback(async () => {

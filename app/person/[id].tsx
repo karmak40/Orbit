@@ -1,14 +1,16 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { STATUSES } from '../../src/core/model';
+import { ACTIVITIES, SOURCES, STATUSES } from '../../src/core/model';
 import { dayLabel } from '../../src/core/selectors';
 import { useOrbitData } from '../../src/data/store';
 import { BackButton } from '../../src/ui/BackButton';
 import { GhostButton, TextAction } from '../../src/ui/Button';
 import { Card } from '../../src/ui/Card';
 import { ConfirmSheet } from '../../src/ui/ConfirmSheet';
+import { translateEnum } from '../../src/ui/i18nHelpers';
 import { PersonSheet, type PersonSheetInput } from '../../src/ui/PersonSheet';
 import { Screen } from '../../src/ui/Screen';
 import { alpha, color, radius, scoreColor, scoreTint, space, type } from '../../src/ui/theme';
@@ -17,6 +19,7 @@ export default function PersonProfileScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const data = useOrbitData();
+  const { t, i18n } = useTranslation();
   const [editOpen, setEditOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -24,8 +27,8 @@ export default function PersonProfileScreen() {
   if (!person) {
     return (
       <Screen>
-        <BackButton label="People" onPress={() => router.back()} />
-        <Text style={styles.notFound}>This person was deleted.</Text>
+        <BackButton label={t('personProfile.back')} onPress={() => router.back()} />
+        <Text style={styles.notFound}>{t('personProfile.notFound')}</Text>
       </Screen>
     );
   }
@@ -47,8 +50,8 @@ export default function PersonProfileScreen() {
   return (
     <Screen>
       <View style={styles.header}>
-        <BackButton label="People" onPress={() => router.back()} />
-        <TextAction label="Edit" onPress={() => setEditOpen(true)} color={color.muted} />
+        <BackButton label={t('personProfile.back')} onPress={() => router.back()} />
+        <TextAction label={t('personProfile.edit')} onPress={() => setEditOpen(true)} color={color.muted} />
       </View>
 
       <View style={styles.identity}>
@@ -58,33 +61,34 @@ export default function PersonProfileScreen() {
         <View>
           <Text style={styles.name}>{person.name}</Text>
           <Text style={[styles.status, { color: statusDef?.color ?? color.muted }]}>
-            {statusDef?.label ?? person.status} · {person.source ?? 'Added by you'}
+            {statusDef ? t(`status.${statusDef.id}.label`) : person.status} ·{' '}
+            {person.source ? translateEnum(t, 'source', SOURCES, person.source) : t('people.addedByYou')}
           </Text>
         </View>
       </View>
 
       <View style={{ marginBottom: space.lg }}>
-        <GhostButton label="Update where things stand" onPress={() => setEditOpen(true)} />
+        <GhostButton label={t('personProfile.updateWhereThingsStand')} onPress={() => setEditOpen(true)} />
       </View>
 
       <View style={styles.statRow}>
         <Card style={styles.statCard}>
           <Text style={styles.statValue}>{person.dateCount}</Text>
-          <Text style={styles.statLabel}>DATES</Text>
+          <Text style={styles.statLabel}>{t('personProfile.dates')}</Text>
         </Card>
         <Card style={styles.statCard}>
           <Text style={[styles.statValue, { color: fresh ? color.fainter : scoreColor(person.avgScore ?? 0) }]}>
-            {fresh ? '—' : person.avgScore}
+            {fresh ? t('common.dash') : person.avgScore}
           </Text>
-          <Text style={styles.statLabel}>AVG</Text>
+          <Text style={styles.statLabel}>{t('personProfile.avg')}</Text>
         </Card>
         <Card style={styles.statCard}>
           <Text style={styles.statValue}>{trendGlyph}</Text>
-          <Text style={styles.statLabel}>TREND</Text>
+          <Text style={styles.statLabel}>{t('personProfile.trend')}</Text>
         </Card>
       </View>
 
-      <Text style={styles.sectionLabel}>Date history</Text>
+      <Text style={styles.sectionLabel}>{t('personProfile.dateHistory')}</Text>
       <View style={{ gap: space.sm }}>
         {dates.map((d) => (
           <Pressable
@@ -96,13 +100,15 @@ export default function PersonProfileScreen() {
               <Text style={[styles.pillText, { color: scoreColor(d.score) }]}>{d.score}</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={styles.dateActivity}>{d.activity}</Text>
-              <Text style={styles.dateMeta}>{dayLabel(d.day)}</Text>
+              <Text style={styles.dateActivity}>{translateEnum(t, 'activity', ACTIVITIES, d.activity)}</Text>
+              <Text style={styles.dateMeta}>{dayLabel(d.day, i18n.language)}</Text>
               {d.note ? <Text style={styles.dateNote}>{d.note}</Text> : null}
             </View>
           </Pressable>
         ))}
-        {dates.length === 0 ? <Text style={styles.emptyDates}>No dates logged with {person.name} yet.</Text> : null}
+        {dates.length === 0 ? (
+          <Text style={styles.emptyDates}>{t('personProfile.noDatesLoggedWith', { name: person.name })}</Text>
+        ) : null}
       </View>
 
       <PersonSheet
@@ -120,9 +126,9 @@ export default function PersonProfileScreen() {
       />
       <ConfirmSheet
         visible={confirmOpen}
-        title={`Delete ${person.name}?`}
-        body="Every date logged with them is deleted too. This cannot be undone."
-        cta="Delete everything"
+        title={t('personProfile.deleteConfirm.title', { name: person.name })}
+        body={t('personProfile.deleteConfirm.body')}
+        cta={t('personProfile.deleteConfirm.cta')}
         onConfirm={handleDelete}
         onCancel={() => setConfirmOpen(false)}
       />

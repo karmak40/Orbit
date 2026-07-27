@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { OrbitDataProvider, useOrbitData } from '../src/data/store';
+import i18n, { resolveLocale } from '../src/i18n';
 import { Onboarding, type OnboardingResult } from '../src/ui/Onboarding';
 import { Splash } from '../src/ui/Splash';
 import { color } from '../src/ui/theme';
@@ -37,6 +38,14 @@ function RootNavigator() {
     const timer = setTimeout(() => setHoldElapsed(true), SPLASH_HOLD_MS);
     return () => clearTimeout(timer);
   }, []);
+
+  // Keeps i18next in sync with Settings.language, whichever changed it —
+  // onboarding, the Settings picker, or (on 'system') a fresh OS-locale read.
+  useEffect(() => {
+    if (!data.ready) return;
+    const locale = resolveLocale(data.settings.language);
+    if (i18n.language !== locale) i18n.changeLanguage(locale);
+  }, [data.ready, data.settings.language]);
 
   const showSplash = !holdElapsed || !data.ready;
   const showOnboarding = !showSplash && !data.settings.onboardedAt;

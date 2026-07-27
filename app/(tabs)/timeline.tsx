@@ -1,22 +1,26 @@
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { ACTIVITIES } from '../../src/core/model';
 import { dayLabel } from '../../src/core/selectors';
 import { useOrbitData } from '../../src/data/store';
+import { translateEnum } from '../../src/ui/i18nHelpers';
 import { Screen } from '../../src/ui/Screen';
 import { alpha, color, radius, scoreColor, space, type } from '../../src/ui/theme';
 
 export default function TimelineScreen() {
   const router = useRouter();
   const data = useOrbitData();
+  const { t, i18n } = useTranslation();
 
   return (
     <Screen>
-      <Text style={styles.title}>Timeline</Text>
-      <Text style={styles.sub}>Every date, in order</Text>
+      <Text style={styles.title}>{t('timeline.title')}</Text>
+      <Text style={styles.sub}>{t('timeline.sub')}</Text>
 
       {data.history.length === 0 ? (
-        <Text style={styles.empty}>Nothing logged yet — your first date will start the timeline.</Text>
+        <Text style={styles.empty}>{t('timeline.empty')}</Text>
       ) : (
         data.history.map((group) => (
           <View key={group.month} style={{ marginBottom: space.xxl }}>
@@ -30,7 +34,9 @@ export default function TimelineScreen() {
                     style={styles.row}>
                     <View style={{ flex: 1 }}>
                       <Text style={styles.name}>{d.personName}</Text>
-                      <Text style={styles.meta}>{d.activity} · {dayLabel(d.day)}</Text>
+                      <Text style={styles.meta}>
+                        {translateEnum(t, 'activity', ACTIVITIES, d.activity)} · {dayLabel(d.day, i18n.language)}
+                      </Text>
                     </View>
                     <View style={[styles.pill, { backgroundColor: alpha(scoreColor(d.score), 0.12) }]}>
                       <Text style={[styles.pillText, { color: scoreColor(d.score) }]}>{d.score}</Text>

@@ -44,11 +44,14 @@ export function Segmented({
   value,
   onChange,
   tone = 'coral',
+  renderLabel = (opt) => opt,
 }: {
   options: readonly string[];
   value: string | null;
   onChange: (v: string) => void;
   tone?: ChipTone;
+  /** Translates an option's stored (English) value for display. Defaults to identity. */
+  renderLabel?: (opt: string) => string;
 }) {
   const c = TONE_COLOR[tone];
   return (
@@ -65,7 +68,7 @@ export function Segmented({
               styles.segment,
               { borderColor: selected ? c : color.cardBorder, backgroundColor: selected ? alpha(c, 0.1) : 'transparent' },
             ]}>
-            <Text style={[styles.segLabel, { color: selected ? c : color.textMuted }]}>{opt}</Text>
+            <Text style={[styles.segLabel, { color: selected ? c : color.textMuted }]}>{renderLabel(opt)}</Text>
           </Pressable>
         );
       })}
