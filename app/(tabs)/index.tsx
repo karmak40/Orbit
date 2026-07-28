@@ -1,5 +1,4 @@
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -10,7 +9,6 @@ import { useOrbitData } from '../../src/data/store';
 import { PrimaryButton } from '../../src/ui/Button';
 import { Card, InkCard } from '../../src/ui/Card';
 import { translateEnum } from '../../src/ui/i18nHelpers';
-import { PersonSheet, type PersonSheetInput } from '../../src/ui/PersonSheet';
 import { Screen } from '../../src/ui/Screen';
 import { alpha, color, radius, scoreColor, space, type } from '../../src/ui/theme';
 
@@ -18,7 +16,6 @@ export default function HomeScreen() {
   const router = useRouter();
   const data = useOrbitData();
   const { t, i18n } = useTranslation();
-  const [personSheetOpen, setPersonSheetOpen] = useState(false);
 
   if (!data.ready) return <Screen><Text style={styles.loading}>{t('common.loading')}</Text></Screen>;
 
@@ -56,17 +53,8 @@ export default function HomeScreen() {
       {!data.hasData ? (
         <EmptyHome onLog={() => router.push('/log')} onDemo={data.fillDemo} />
       ) : (
-        <PopulatedHome onNewPerson={() => setPersonSheetOpen(true)} />
+        <PopulatedHome />
       )}
-
-      <PersonSheet
-        visible={personSheetOpen}
-        onCancel={() => setPersonSheetOpen(false)}
-        onSave={async (input: PersonSheetInput) => {
-          await data.addPerson(input);
-          setPersonSheetOpen(false);
-        }}
-      />
     </Screen>
   );
 }
@@ -108,7 +96,7 @@ function EmptyHome({ onLog, onDemo }: { onLog: () => void; onDemo: () => void })
   );
 }
 
-function PopulatedHome({ onNewPerson }: { onNewPerson: () => void }) {
+function PopulatedHome() {
   const router = useRouter();
   const data = useOrbitData();
   const { t, i18n } = useTranslation();
@@ -211,10 +199,6 @@ function PopulatedHome({ onNewPerson }: { onNewPerson: () => void }) {
         ))}
       </View>
 
-      <Pressable onPress={onNewPerson} accessibilityRole="button" style={styles.addPersonRow}>
-        <Text style={styles.addPersonText}>{t('home.addSomeoneNew')}</Text>
-      </Pressable>
-
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionLabel}>{t('home.badges')}</Text>
         <Pressable onPress={() => router.push('/awards')} accessibilityRole="button">
@@ -299,9 +283,6 @@ const styles = StyleSheet.create({
   dateMeta: { ...type.metaSm, color: color.faint },
   pill: { minWidth: 40, paddingVertical: 6, paddingHorizontal: 4, borderRadius: 12, alignItems: 'center' },
   pillText: { ...type.rowTitle, fontSize: 15 },
-
-  addPersonRow: { marginTop: space.md, borderWidth: 1.5, borderColor: color.cardBorderDashed, borderStyle: 'dashed', borderRadius: radius.lg, padding: 14, alignItems: 'center' },
-  addPersonText: { ...type.buttonSm, color: color.muted },
 
   badgeTile: { flex: 1, alignItems: 'center', padding: 14 },
   badgeIcon: { width: 44, height: 44, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginBottom: space.sm },
