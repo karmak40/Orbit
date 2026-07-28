@@ -24,6 +24,31 @@
   "splash": {
     "tagline": "Your dating life, observed"
   },
+  "dataError": {
+    "title": "Something went wrong opening your journal",
+    "body": "Orbit couldn't read what's on your device — this can happen if the app's storage gets out of sync. There's no way to repair it from here, only start fresh. Nothing was ever uploaded, so this is only ever lost locally.",
+    "cta": "Start fresh"
+  },
+  "lock": {
+    "welcomeBack": "Welcome back",
+    "hintWithBiometric": "Face ID or enter your code",
+    "hintCodeOnly": "Enter your code",
+    "wrongCode": "Wrong code, try again",
+    "forgotCode": "Forgot your code?",
+    "forgotConfirm": {
+      "title": "Erase your journal?",
+      "body": "There's no account behind Orbit to verify it's really you, so the only honest recovery is starting over: this permanently deletes every person, date and note. This can't be undone.",
+      "cta": "Erase and start over"
+    }
+  },
+  "passcodeSetup": {
+    "cancel": "Cancel",
+    "createTitle": "Create a passcode",
+    "createSub": "You'll use this to unlock Orbit.",
+    "confirmTitle": "Confirm your passcode",
+    "confirmSub": "Enter it once more.",
+    "mismatch": "Codes didn't match — try again"
+  },
   "onboarding": {
     "skip": "Skip",
     "continue": "Continue",
@@ -163,6 +188,7 @@
   },
   "dateDetail": {
     "back": "Back",
+    "viewResult": "See full result",
     "withPerson": "with {{name}}",
     "score": "SCORE",
     "howYouRatedIt": "How you rated it",
@@ -208,6 +234,10 @@
     "postDateNudge": { "label": "Post-date nudge", "sub": "A gentle ping two hours after an evening out" },
     "weeklyReflection": { "label": "Weekly reflection", "sub": "Sunday summary of your week" },
     "privacy": "Privacy",
+    "passcodeLock": { "label": "Passcode lock", "sub": "Required to open the app" },
+    "faceId": { "label": "Face ID", "sub": "Skip the keypad" },
+    "faceIdUnavailable": "Face ID isn't set up on this device",
+    "changePasscode": "Change passcode",
     "hideNames": { "label": "Hide names", "sub": "Initials only outside a profile" },
     "yourIntention": "Your intention",
     "language": "Language",
@@ -215,6 +245,11 @@
     "data": "Data",
     "previewSampleData": "Preview with sample data",
     "resetToEmpty": "Reset to empty state",
+    "resetConfirm": {
+      "title": "Reset to empty state?",
+      "body": "Every person, date and note gets deleted. This can't be undone.",
+      "cta": "Reset everything"
+    },
     "exportData": "Export my data",
     "exportDataSub": "Save an unencrypted copy as a file you control",
     "about": "About",

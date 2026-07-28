@@ -56,7 +56,7 @@ export function scaleQuestions(questions: readonly Question[]): Question[] {
     .sort((a, b) => a.order - b.order);
 }
 
-function scaleValue(answers: Answers, id: string): number {
+export function scaleValue(answers: Answers, id: string): number {
   const a = answers[id];
   return a?.kind === 'scale5' ? a.value : 0;
 }

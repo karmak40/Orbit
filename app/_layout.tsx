@@ -11,11 +11,15 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { AppState } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { OrbitDataProvider, useOrbitData } from '../src/data/store';
 import i18n, { resolveLocale } from '../src/i18n';
+import { clearPasscode } from '../src/platform/passcode';
+import { DataRecovery } from '../src/ui/DataRecovery';
+import { Lock } from '../src/ui/Lock';
 import { Onboarding, type OnboardingResult } from '../src/ui/Onboarding';
 import { Splash } from '../src/ui/Splash';
 import { color } from '../src/ui/theme';
@@ -33,6 +37,11 @@ const SPLASH_HOLD_MS = 2100;
 function RootNavigator() {
   const data = useOrbitData();
   const [holdElapsed, setHoldElapsed] = useState(false);
+  // Starts locked whenever the lock is on — including right after a cold
+  // start — and only flips open via a correct PIN/Face ID, or right after
+  // Onboarding creates a fresh passcode (no need to immediately re-prompt for
+  // the code the user just typed). Backgrounding the app re-locks it below.
+  const [sessionUnlocked, setSessionUnlocked] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setHoldElapsed(true), SPLASH_HOLD_MS);
@@ -47,8 +56,25 @@ function RootNavigator() {
     if (i18n.language !== locale) i18n.changeLanguage(locale);
   }, [data.ready, data.settings.language]);
 
+  const lockEnabled = data.ready && data.settings.privacy.lock;
+  const lockEnabledRef = useRef(lockEnabled);
+  lockEnabledRef.current = lockEnabled;
+
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (next) => {
+      if (next === 'background' && lockEnabledRef.current) setSessionUnlocked(false);
+    });
+    return () => sub.remove();
+  }, []);
+
   const showSplash = !holdElapsed || !data.ready;
-  const showOnboarding = !showSplash && !data.settings.onboardedAt;
+  // Checked before Onboarding/Lock: a corrupted load leaves `settings` at its
+  // in-memory default, which would otherwise read as "never onboarded" and
+  // silently drop the user into a fresh Onboarding flow over a database it
+  // can't actually use, instead of surfacing the real problem.
+  const showDataError = !showSplash && data.corrupted;
+  const showOnboarding = !showSplash && !showDataError && !data.settings.onboardedAt;
+  const showLock = !showSplash && !showDataError && !showOnboarding && lockEnabled && !sessionUnlocked;
 
   if (showSplash) {
     return (
@@ -59,14 +85,51 @@ function RootNavigator() {
     );
   }
 
+  if (showDataError) {
+    return (
+      <>
+        <StatusBar style="dark" />
+        <DataRecovery onRecover={data.recoverFromCorruption} />
+      </>
+    );
+  }
+
   if (showOnboarding) {
     const finishOnboarding = (result: OnboardingResult) => {
       data.saveSettings({ ...result, onboardedAt: new Date().toISOString() });
+      // Just created the passcode a moment ago — no need to immediately re-ask for it.
+      setSessionUnlocked(true);
     };
     return (
       <>
         <StatusBar style="dark" />
         <Onboarding onComplete={finishOnboarding} />
+      </>
+    );
+  }
+
+  if (showLock) {
+    // No account and nothing to verify identity against in a fully offline
+    // app — there is no safe way to confirm "this is really the owner" other
+    // than the code itself. Letting a forgotten code just wave the user
+    // through would make the lock a no-op: anyone who picks up the phone
+    // could tap the same link. So recovery has to cost the same thing losing
+    // the phone would: the journal itself, via the same wipe as Settings'
+    // "Reset to empty state" (`resetToEmpty` — drops and re-migrates every
+    // table, including `settings`, which is what sends the user back through
+    // Onboarding right after).
+    const forgotPasscode = async () => {
+      await clearPasscode();
+      await data.resetToEmpty();
+    };
+    return (
+      <>
+        <StatusBar style="light" />
+        <Lock
+          biometricEnabled={data.settings.privacy.biometric}
+          onUnlock={() => setSessionUnlocked(true)}
+          onForgotPasscode={forgotPasscode}
+        />
       </>
     );
   }

@@ -24,6 +24,31 @@
   "splash": {
     "tagline": "Dein Dating-Leben, beobachtet"
   },
+  "dataError": {
+    "title": "Beim Öffnen deines Tagebuchs ist etwas schiefgelaufen",
+    "body": "Orbit konnte die Daten auf deinem Gerät nicht lesen — das kann passieren, wenn der Speicher der App aus dem Takt gerät. Reparieren lässt sich das von hier aus nicht, nur neu starten. Es wurde nie etwas hochgeladen, verloren geht das also nur lokal.",
+    "cta": "Neu starten"
+  },
+  "lock": {
+    "welcomeBack": "Willkommen zurück",
+    "hintWithBiometric": "Face ID oder Code eingeben",
+    "hintCodeOnly": "Gib deinen Code ein",
+    "wrongCode": "Falscher Code, versuch's noch mal",
+    "forgotCode": "Code vergessen?",
+    "forgotConfirm": {
+      "title": "Dein Tagebuch löschen?",
+      "body": "Hinter Orbit steht kein Konto, mit dem sich prüfen ließe, dass du es wirklich bist — deshalb bleibt nur der Neustart: Das löscht dauerhaft jede Person, jedes Date und jede Notiz. Das kann nicht rückgängig gemacht werden.",
+      "cta": "Löschen und neu starten"
+    }
+  },
+  "passcodeSetup": {
+    "cancel": "Abbrechen",
+    "createTitle": "Code erstellen",
+    "createSub": "Damit entsperrst du Orbit.",
+    "confirmTitle": "Code bestätigen",
+    "confirmSub": "Gib ihn noch einmal ein.",
+    "mismatch": "Codes stimmen nicht überein — versuch's noch mal"
+  },
   "onboarding": {
     "skip": "Überspringen",
     "continue": "Weiter",
@@ -163,6 +188,7 @@
   },
   "dateDetail": {
     "back": "Zurück",
+    "viewResult": "Ganzes Ergebnis ansehen",
     "withPerson": "mit {{name}}",
     "score": "SCORE",
     "howYouRatedIt": "So hast du es bewertet",
@@ -208,6 +234,10 @@
     "postDateNudge": { "label": "Nach-Date-Erinnerung", "sub": "Ein sanfter Hinweis zwei Stunden nach einem Abend unterwegs" },
     "weeklyReflection": { "label": "Wochenrückblick", "sub": "Sonntags eine Zusammenfassung deiner Woche" },
     "privacy": "Privatsphäre",
+    "passcodeLock": { "label": "Code-Sperre", "sub": "Zum Öffnen der App erforderlich" },
+    "faceId": { "label": "Face ID", "sub": "Ohne Code entsperren" },
+    "faceIdUnavailable": "Face ID ist auf diesem Gerät nicht eingerichtet",
+    "changePasscode": "Code ändern",
     "hideNames": { "label": "Namen verbergen", "sub": "Außerhalb eines Profils nur Initialen" },
     "yourIntention": "Deine Absicht",
     "language": "Sprache",
@@ -215,6 +245,11 @@
     "data": "Daten",
     "previewSampleData": "Mit Beispieldaten ansehen",
     "resetToEmpty": "Auf leeren Zustand zurücksetzen",
+    "resetConfirm": {
+      "title": "Auf leeren Zustand zurücksetzen?",
+      "body": "Jede Person, jedes Date und jede Notiz wird gelöscht. Das kann nicht rückgängig gemacht werden.",
+      "cta": "Alles zurücksetzen"
+    },
     "exportData": "Meine Daten exportieren",
     "exportDataSub": "Speichere eine unverschlüsselte Kopie als Datei, die du selbst kontrollierst",
     "about": "Über",

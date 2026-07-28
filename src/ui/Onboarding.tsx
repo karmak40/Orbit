@@ -4,8 +4,11 @@ import { Animated, Easing, Pressable, ScrollView, StyleSheet, Text, View } from 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { GOALS, type GoalId, type Settings } from '../core/model';
+import { isBiometricAvailable } from '../platform/biometrics';
+import { setPasscode } from '../platform/passcode';
 import { PrimaryButton } from './Button';
 import { ArtChart, ArtDots, ArtOrbit } from './onboardingArt';
+import { PasscodeSetup } from './PasscodeSetup';
 import { ToggleRow } from './Toggle';
 import { alpha, color, radius, space, type } from './theme';
 
@@ -30,8 +33,16 @@ export function Onboarding({ onComplete }: { onComplete: (result: OnboardingResu
   const insets = useSafeAreaInsets();
   const [step, setStep] = useState(0);
   const [goal, setGoal] = useState<GoalId | null>(null);
-  const [privacy, setPrivacy] = useState<Settings['privacy']>({ lock: true, hideNames: false, biometric: false });
+  // Starts off: toggling it on requires actually creating a passcode first (below),
+  // so `privacy.lock` only ever becomes true once one genuinely exists.
+  const [privacy, setPrivacy] = useState<Settings['privacy']>({ lock: false, hideNames: false, biometric: false });
+  const [passcodeSetupOpen, setPasscodeSetupOpen] = useState(false);
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
   const slide = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    isBiometricAvailable().then(setBiometricAvailable);
+  }, []);
 
   useEffect(() => {
     slide.setValue(0);
@@ -65,6 +76,19 @@ export function Onboarding({ onComplete }: { onComplete: (result: OnboardingResu
     transform: [{ translateX: slide.interpolate({ inputRange: [0, 1], outputRange: [18, 0] }) }],
   };
   const slideContent = SLIDES[Math.min(step, 2)];
+
+  if (passcodeSetupOpen) {
+    return (
+      <PasscodeSetup
+        onDone={async (pin) => {
+          await setPasscode(pin);
+          setPrivacy((p) => ({ ...p, lock: true }));
+          setPasscodeSetupOpen(false);
+        }}
+        onCancel={() => setPasscodeSetupOpen(false)}
+      />
+    );
+  }
 
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
@@ -132,7 +156,10 @@ export function Onboarding({ onComplete }: { onComplete: (result: OnboardingResu
                   label={t('onboarding.privacy.passcodeLock.label')}
                   sub={t('onboarding.privacy.passcodeLock.sub')}
                   value={privacy.lock}
-                  onChange={(v) => setPrivacy((p) => ({ ...p, lock: v }))}
+                  onChange={(v) => {
+                    if (v) setPasscodeSetupOpen(true);
+                    else setPrivacy((p) => ({ ...p, lock: false, biometric: false }));
+                  }}
                 />
                 <ToggleRow
                   label={t('onboarding.privacy.hideNames.label')}
@@ -145,6 +172,7 @@ export function Onboarding({ onComplete }: { onComplete: (result: OnboardingResu
                   sub={t('onboarding.privacy.faceId.sub')}
                   value={privacy.biometric}
                   onChange={(v) => setPrivacy((p) => ({ ...p, biometric: v }))}
+                  disabled={!privacy.lock || !biometricAvailable}
                   last
                 />
               </View>

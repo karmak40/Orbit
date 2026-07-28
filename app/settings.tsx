@@ -1,14 +1,19 @@
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Linking, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { GOALS, type Settings } from '../src/core/model';
 import { GOAL_WEIGHT_BLURB } from '../src/core/scoring';
 import { useOrbitData } from '../src/data/store';
+import { isBiometricAvailable } from '../src/platform/biometrics';
 import { exportDataToFile } from '../src/platform/exportData';
+import { clearPasscode, setPasscode } from '../src/platform/passcode';
 import { BackButton } from '../src/ui/BackButton';
 import { Card } from '../src/ui/Card';
+import { ConfirmSheet } from '../src/ui/ConfirmSheet';
+import { PasscodeSetup } from '../src/ui/PasscodeSetup';
 import { Screen } from '../src/ui/Screen';
 import { SelectField } from '../src/ui/SelectField';
 import { ToggleRow } from '../src/ui/Toggle';
@@ -35,6 +40,31 @@ export default function SettingsScreen() {
   const { t } = useTranslation();
   const goal = GOALS.find((g) => g.id === data.settings.goal);
   const version = Constants.expoConfig?.version ?? '1.0.0';
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [passcodeModal, setPasscodeModal] = useState<'create' | 'change' | null>(null);
+  const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
+
+  useEffect(() => {
+    isBiometricAvailable().then(setBiometricAvailable);
+  }, []);
+
+  async function handlePasscodeToggle(enable: boolean) {
+    if (enable) {
+      setPasscodeModal('create');
+      return;
+    }
+    await clearPasscode();
+    await data.saveSettings({ privacy: { ...data.settings.privacy, lock: false, biometric: false } });
+  }
+
+  async function handlePasscodeSetupDone(pin: string) {
+    await setPasscode(pin);
+    if (passcodeModal === 'create') {
+      await data.saveSettings({ privacy: { ...data.settings.privacy, lock: true } });
+    }
+    setPasscodeModal(null);
+  }
+
   const languageOptions = [
     { value: 'system' as const, label: t('settings.languageSystem') },
     ...(Object.entries(LANGUAGE_NAMES) as [Exclude<Settings['language'], 'system'>, string][]).map(([value, label]) => ({
@@ -96,13 +126,35 @@ export default function SettingsScreen() {
       <Text style={styles.sectionLabel}>{t('settings.privacy')}</Text>
       <Card style={{ marginBottom: space.xl, gap: 0 }}>
         <ToggleRow
+          label={t('settings.passcodeLock.label')}
+          sub={t('settings.passcodeLock.sub')}
+          value={data.settings.privacy.lock}
+          onChange={handlePasscodeToggle}
+        />
+        <ToggleRow
+          label={t('settings.faceId.label')}
+          sub={biometricAvailable ? t('settings.faceId.sub') : t('settings.faceIdUnavailable')}
+          value={data.settings.privacy.biometric}
+          disabled={!data.settings.privacy.lock || !biometricAvailable}
+          onChange={(v) => data.saveSettings({ privacy: { ...data.settings.privacy, biometric: v } })}
+        />
+        <ToggleRow
           label={t('settings.hideNames.label')}
           sub={t('settings.hideNames.sub')}
           value={data.settings.privacy.hideNames}
           onChange={(v) => data.saveSettings({ privacy: { ...data.settings.privacy, hideNames: v } })}
-          last
+          last={!data.settings.privacy.lock}
         />
+        {data.settings.privacy.lock ? (
+          <Pressable onPress={() => setPasscodeModal('change')} accessibilityRole="button" style={styles.linkItem}>
+            <Text style={styles.itemLabel}>{t('settings.changePasscode')}</Text>
+          </Pressable>
+        ) : null}
       </Card>
+
+      <Modal visible={passcodeModal !== null} animationType="none" onRequestClose={() => setPasscodeModal(null)}>
+        <PasscodeSetup onDone={handlePasscodeSetupDone} onCancel={() => setPasscodeModal(null)} />
+      </Modal>
 
       <Text style={styles.sectionLabel}>{t('settings.yourIntention')}</Text>
       <Card style={{ marginBottom: space.xl }}>
@@ -129,10 +181,22 @@ export default function SettingsScreen() {
         <Pressable onPress={data.fillDemo} accessibilityRole="button" style={[styles.linkItem, styles.divider]}>
           <Text style={styles.itemLabel}>{t('settings.previewSampleData')}</Text>
         </Pressable>
-        <Pressable onPress={data.resetToEmpty} accessibilityRole="button" style={styles.linkItem}>
+        <Pressable onPress={() => setResetConfirmOpen(true)} accessibilityRole="button" style={styles.linkItem}>
           <Text style={[styles.itemLabel, { color: color.red }]}>{t('settings.resetToEmpty')}</Text>
         </Pressable>
       </Card>
+
+      <ConfirmSheet
+        visible={resetConfirmOpen}
+        title={t('settings.resetConfirm.title')}
+        body={t('settings.resetConfirm.body')}
+        cta={t('settings.resetConfirm.cta')}
+        onConfirm={() => {
+          setResetConfirmOpen(false);
+          data.resetToEmpty();
+        }}
+        onCancel={() => setResetConfirmOpen(false)}
+      />
 
       <Text style={styles.sectionLabel}>{t('settings.about')}</Text>
       <Card style={{ marginBottom: space.xl, gap: 0 }}>

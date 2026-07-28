@@ -1,20 +1,20 @@
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { flagsValue, seeAgainValue } from '../../src/core/scoring';
-import { ACTIVITIES, GREEN_FLAGS, QUESTION_IDS, RED_FLAGS, SEE_AGAIN, WHO_PAID } from '../../src/core/model';
-import { dayLabel } from '../../src/core/selectors';
-import { useOrbitData } from '../../src/data/store';
-import { BackButton } from '../../src/ui/BackButton';
-import { DarkButton, GhostButton } from '../../src/ui/Button';
-import { Card } from '../../src/ui/Card';
-import { ConfirmSheet } from '../../src/ui/ConfirmSheet';
-import { DotScaleReadOnly } from '../../src/ui/DotScale';
-import { translateEnum } from '../../src/ui/i18nHelpers';
-import { Screen } from '../../src/ui/Screen';
-import { alpha, color, radius, scoreColor, space, type } from '../../src/ui/theme';
+import { flagsValue, seeAgainValue } from '../../../src/core/scoring';
+import { ACTIVITIES, GREEN_FLAGS, QUESTION_IDS, RED_FLAGS, SEE_AGAIN, WHO_PAID } from '../../../src/core/model';
+import { dayLabel } from '../../../src/core/selectors';
+import { useOrbitData } from '../../../src/data/store';
+import { BackButton } from '../../../src/ui/BackButton';
+import { DarkButton, GhostButton } from '../../../src/ui/Button';
+import { Card } from '../../../src/ui/Card';
+import { ConfirmSheet } from '../../../src/ui/ConfirmSheet';
+import { DotScaleReadOnly } from '../../../src/ui/DotScale';
+import { translateEnum } from '../../../src/ui/i18nHelpers';
+import { Screen } from '../../../src/ui/Screen';
+import { alpha, color, radius, scoreColor, space, type } from '../../../src/ui/theme';
 
 const DIMENSION_KEYS = ['chemistry', 'conversation', 'comfort', 'fun'] as const;
 
@@ -59,11 +59,21 @@ export default function DateDetailScreen() {
           <Text style={styles.title}>{translateEnum(t, 'activity', ACTIVITIES, d.activity)}</Text>
           <Text style={styles.withPerson}>{t('dateDetail.withPerson', { name: d.personName })}</Text>
         </View>
-        <View style={{ alignItems: 'center' }}>
+        <Pressable
+          onPress={() => router.push({ pathname: '/date/[id]/result', params: { id: dateId } })}
+          accessibilityRole="button"
+          style={{ alignItems: 'center' }}>
           <Text style={[styles.score, { color: ring }]}>{d.score}</Text>
           <Text style={styles.scoreLabel}>{t('dateDetail.score')}</Text>
-        </View>
+        </Pressable>
       </View>
+
+      <Pressable
+        onPress={() => router.push({ pathname: '/date/[id]/result', params: { id: dateId } })}
+        accessibilityRole="button"
+        style={styles.viewResultRow}>
+        <Text style={styles.viewResultText}>{t('dateDetail.viewResult')} →</Text>
+      </Pressable>
 
       <Card style={{ marginBottom: space.md }}>
         <Text style={styles.sectionLabel}>{t('dateDetail.howYouRatedIt')}</Text>
@@ -146,12 +156,14 @@ export default function DateDetailScreen() {
 
 const styles = StyleSheet.create({
   notFound: { ...type.body, color: color.muted, marginTop: space.xl },
-  headerRow: { flexDirection: 'row', alignItems: 'flex-start', gap: space.lg, marginTop: space.lg, marginBottom: space.xl },
+  headerRow: { flexDirection: 'row', alignItems: 'flex-start', gap: space.lg, marginTop: space.lg, marginBottom: space.md },
   kicker: { ...type.metaXs, letterSpacing: 0.8, textTransform: 'uppercase', color: color.faint, marginBottom: 4 },
   title: { ...type.title, color: color.ink },
   withPerson: { ...type.label, color: color.muted, marginTop: 4 },
   score: { ...type.metric },
   scoreLabel: { ...type.metaXs, letterSpacing: 0.8, color: color.faint, marginTop: 2 },
+  viewResultRow: { alignSelf: 'flex-start', marginBottom: space.xl },
+  viewResultText: { ...type.action, color: color.red },
   sectionLabel: { ...type.metaXs, letterSpacing: 0.8, textTransform: 'uppercase', color: color.faint, marginBottom: space.md },
   ratingRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   ratingLabel: { ...type.label, color: color.ink },

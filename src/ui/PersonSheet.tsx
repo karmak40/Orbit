@@ -90,23 +90,30 @@ export function PersonSheet({ visible, initial, onCancel, onSave, onDelete }: Pe
 
   return (
     <Modal visible={visible} animationType="none" transparent onRequestClose={onCancel}>
-      {/* Tapping the dim backdrop dismisses, same as dragging the sheet down. */}
-      <Pressable style={styles.backdrop} onPress={onCancel} accessibilityLabel={t('common.close')}>
+      {/*
+        The backdrop and the sheet are siblings, not parent/child — a tap
+        inside the sheet (including on a TextInput) must never be able to
+        bubble up into the backdrop's `onPress`. An earlier version wrapped
+        the sheet inside the backdrop Pressable and relied on
+        `onStartShouldSetResponder` to "swallow" taps before they reached it;
+        that doesn't reliably stop a real DOM click from bubbling on web, and
+        a tap that starts on a TextInput could still dismiss the whole sheet.
+        Sibling layout makes that class of bug structurally impossible: the
+        sheet paints over the backdrop in the region it occupies, so nothing
+        underneath it ever receives the tap.
+      */}
+      <View style={styles.root}>
+        <Pressable
+          style={StyleSheet.absoluteFillObject}
+          onPress={onCancel}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.close')}
+        />
         <Animated.View style={[styles.sheet, { transform: [{ translateY }] }]}>
-          {/*
-            The drag handle is a sibling of the swallow-claim below, not a
-            descendant — putting `onStartShouldSetResponder` on a shared
-            ancestor of both would claim the touch the instant it starts,
-            before the PanResponder ever saw movement, which silently killed
-            the drag-to-dismiss gesture entirely.
-          */}
           <View {...panResponder.panHandlers} style={styles.dragZone}>
             <View style={styles.grabber} />
           </View>
-          <View
-            style={styles.scrollWrap}
-            // Claims taps on scroll content so they don't fall through to the backdrop's onPress.
-            onStartShouldSetResponder={() => true}>
+          <View style={styles.scrollWrap}>
             <ScrollView
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
@@ -189,13 +196,13 @@ export function PersonSheet({ visible, initial, onCancel, onSave, onDelete }: Pe
             </ScrollView>
           </View>
         </Animated.View>
-      </Pressable>
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  backdrop: { flex: 1, backgroundColor: 'rgba(20,16,13,.5)', justifyContent: 'flex-end' },
+  root: { flex: 1, backgroundColor: 'rgba(20,16,13,.5)', justifyContent: 'flex-end' },
   sheet: {
     maxHeight: '88%',
     backgroundColor: color.surface,

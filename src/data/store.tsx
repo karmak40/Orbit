@@ -55,8 +55,23 @@ import {
   updateSettings as updateSettingsRepo,
 } from './index';
 
+/**
+ * Deliberately not `Crypto.randomUUID()` — on web that delegates to the
+ * browser's `crypto.randomUUID()`, which throws outside a secure context
+ * (https, or exactly `localhost`). Testing over a LAN IP (`http://192.168.x.x`,
+ * a normal way to preview an Expo web build on a phone) is exactly such a
+ * context, and the throw happens inside `addPerson`/`saveDateLog` with no
+ * visible error — saving a new person or date silently does nothing.
+ * `getRandomBytes` is the older, ungated WebCrypto primitive; hand-assembling
+ * a v4-shaped id from it works in every context on every platform. It only
+ * needs to be unique, not a spec-perfect UUID.
+ */
 function newId(): string {
-  return Crypto.randomUUID();
+  const bytes = Crypto.getRandomBytes(16);
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
 /** "Today" as a local calendar day — every date belongs to a day, never a timestamp. */
@@ -135,6 +150,19 @@ type OrbitData = {
   fillDemo: () => Promise<void>;
   resetToEmpty: () => Promise<void>;
 
+  /**
+   * Set if the initial load couldn't decrypt something on disk — the
+   * encryption key (`secureKey.ts`) and the SQLite file have gone out of
+   * sync, e.g. a key regenerated without the matching data, or vice versa.
+   * There's nothing to repair (that's what the tamper check is for), only
+   * `recoverFromCorruption` to wipe and start over. Checked before `ready` in
+   * `app/_layout.tsx` — without this, the failure was an uncaught exception
+   * during the first render, permanently blocking the app with no in-app way
+   * out (only clearing app storage from the OS, which most people won't find).
+   */
+  corrupted: boolean;
+  recoverFromCorruption: () => Promise<void>;
+
   freshLogDraft: () => LogDraft;
 };
 
@@ -142,6 +170,7 @@ const Ctx = createContext<OrbitData | null>(null);
 
 export function OrbitDataProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
+  const [corrupted, setCorrupted] = useState(false);
   const [peopleRaw, setPeopleRaw] = useState<Person[]>([]);
   const [datesRaw, setDatesRaw] = useState<DateLog[]>([]);
   const [questions, setQuestions] = useState<Question[]>(BUILT_IN_QUESTIONS as Question[]);
@@ -158,10 +187,23 @@ export function OrbitDataProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     (async () => {
-      await seedQuestionsIfEmpty();
-      await reload();
-      setReady(true);
+      try {
+        await seedQuestionsIfEmpty();
+        await reload();
+        setReady(true);
+      } catch {
+        setCorrupted(true);
+        setReady(true);
+      }
     })();
+  }, [reload]);
+
+  const recoverFromCorruption: OrbitData['recoverFromCorruption'] = useCallback(async () => {
+    await resetDatabase();
+    await seedQuestionsIfEmpty();
+    setNudgeDismissed(false);
+    await reload();
+    setCorrupted(false);
   }, [reload]);
 
   const people = useMemo(() => peopleWithStats(peopleRaw, datesRaw), [peopleRaw, datesRaw]);
@@ -342,6 +384,8 @@ export function OrbitDataProvider({ children }: { children: ReactNode }) {
 
   const value: OrbitData = {
     ready,
+    corrupted,
+    recoverFromCorruption,
     people,
     dates,
     questions,

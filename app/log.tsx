@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
@@ -21,18 +21,10 @@ import { Chip, Segmented } from '../src/ui/Chip';
 import { DotScale } from '../src/ui/DotScale';
 import { tGradeWord, tVerdictSub, tVerdictTitle, translateEnum } from '../src/ui/i18nHelpers';
 import { PersonSheet, type PersonSheetInput } from '../src/ui/PersonSheet';
-import { RadarChart } from '../src/ui/RadarChart';
-import { ScoreRing } from '../src/ui/ScoreRing';
+import { ResultTabs, type ResultTab } from '../src/ui/ResultTabs';
 import { color, font, radius, scoreColor, space, type } from '../src/ui/theme';
 
 type Mode = 'form' | 'result';
-type ResultTab = 'score' | 'grade' | 'verdict' | 'radar';
-const RESULT_TABS: readonly { key: ResultTab; labelKey: string }[] = [
-  { key: 'score', labelKey: 'result.tabScore' },
-  { key: 'grade', labelKey: 'result.tabGrade' },
-  { key: 'verdict', labelKey: 'result.tabVerdict' },
-  { key: 'radar', labelKey: 'result.tabRadar' },
-];
 
 export default function LogScreen() {
   const router = useRouter();
@@ -153,39 +145,18 @@ export default function LogScreen() {
           </Text>
           <Text style={styles.resultTitle}>{title}</Text>
 
-          <View style={styles.tabRow}>
-            {RESULT_TABS.map((rt) => (
-              <Pressable
-                key={rt.key}
-                onPress={() => setResultTab(rt.key)}
-                accessibilityRole="button"
-                accessibilityState={{ selected: resultTab === rt.key }}
-                style={[styles.tab, resultTab === rt.key && styles.tabActive]}>
-                <Text style={[styles.tabLabel, resultTab === rt.key && styles.tabLabelActive]}>{t(rt.labelKey)}</Text>
-              </Pressable>
-            ))}
-          </View>
-
-          {resultTab === 'score' && <ScoreRing score={preview.score} displayScore={displayScore} ringColor={ring} />}
-          {resultTab === 'grade' && (
-            <View style={{ alignItems: 'center', paddingVertical: space.md }}>
-              <Text style={[styles.gradeHuge, { color: ring }]}>{g}</Text>
-              <Text style={styles.gradeSub}>
-                {preview.score} / 100 · {tGradeWord(t, preview.score)}
-              </Text>
-            </View>
-          )}
-          {resultTab === 'verdict' && (
-            <View style={{ alignItems: 'center', paddingVertical: space.sm }}>
-              <View style={[styles.verdictChip, { backgroundColor: `${ring}1f` }]}>
-                <Text style={[styles.verdictChipText, { color: ring }]}>{g}</Text>
-              </View>
-              <Text style={styles.verdictTitle}>{title}</Text>
-            </View>
-          )}
-          {resultTab === 'radar' && <RadarChart axes={radarAxes} />}
-
-          <Text style={styles.verdictSub}>"{sub}"</Text>
+          <ResultTabs
+            tab={resultTab}
+            onTabChange={setResultTab}
+            score={preview.score}
+            displayScore={displayScore}
+            ringColor={ring}
+            gradeLetter={g}
+            gradeWord={tGradeWord(t, preview.score)}
+            verdictTitle={title}
+            verdictSub={sub}
+            radarAxes={radarAxes}
+          />
 
           <View style={styles.rewardRow}>
             <Card style={styles.rewardCard}>
@@ -428,17 +399,6 @@ const styles = StyleSheet.create({
   },
   resultKicker: { ...type.kicker, color: color.gold, marginTop: space.md, marginBottom: space.sm },
   resultTitle: { ...type.titleSm, color: color.ink, marginBottom: space.xl, textAlign: 'center' },
-  tabRow: { flexDirection: 'row', gap: 6, backgroundColor: color.chipAlt, borderRadius: 14, padding: 4, marginBottom: space.xl },
-  tab: { flex: 1, paddingVertical: 9, paddingHorizontal: 4, borderRadius: 10, alignItems: 'center' },
-  tabActive: { backgroundColor: color.card },
-  tabLabel: { ...type.metaSm, color: color.muted },
-  tabLabelActive: { color: color.ink },
-  gradeHuge: { ...type.gradeHuge },
-  gradeSub: { ...type.meta, color: color.faint },
-  verdictChip: { width: 80, height: 80, borderRadius: radius.xl, alignItems: 'center', justifyContent: 'center', marginBottom: space.lg },
-  verdictChipText: { ...type.titleSm, fontSize: 40, lineHeight: 46 },
-  verdictTitle: { ...type.title, color: color.ink, textAlign: 'center', maxWidth: 280 },
-  verdictSub: { ...type.body, color: color.textSoft, fontStyle: 'italic', textAlign: 'center', marginTop: space.lg, maxWidth: 270 },
   rewardRow: { flexDirection: 'row', gap: space.md, width: '100%', marginTop: space.xxl, marginBottom: space.sm },
   rewardCard: { flex: 1, alignItems: 'flex-start' },
   rewardValue: { ...type.titleSm, fontSize: 30, lineHeight: 35 },
