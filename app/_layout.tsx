@@ -12,12 +12,15 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AppState } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { OrbitDataProvider, useOrbitData } from '../src/data/store';
 import i18n, { resolveLocale } from '../src/i18n';
+import { schedulePostDateNudge, scheduleWeeklyReflection } from '../src/platform/notifications';
 import { clearPasscode } from '../src/platform/passcode';
+import { AppErrorScreen } from '../src/ui/AppErrorScreen';
 import { DataRecovery } from '../src/ui/DataRecovery';
 import { Lock } from '../src/ui/Lock';
 import { Onboarding, type OnboardingResult } from '../src/ui/Onboarding';
@@ -36,6 +39,7 @@ const SPLASH_HOLD_MS = 2100;
  */
 function RootNavigator() {
   const data = useOrbitData();
+  const { t } = useTranslation();
   const [holdElapsed, setHoldElapsed] = useState(false);
   // Starts locked whenever the lock is on — including right after a cold
   // start — and only flips open via a correct PIN/Face ID, or right after
@@ -66,6 +70,23 @@ function RootNavigator() {
     });
     return () => sub.remove();
   }, []);
+
+  // Re-arms reminders on every cold start — scheduled local notifications
+  // don't survive a reinstall, but `Settings.reminders` does, so a fresh
+  // process needs to bring the OS back in sync with what's already been
+  // chosen rather than waiting for the user to re-toggle it in Settings.
+  // Skipped while `corrupted`, when `settings` is just the in-memory default
+  // rather than the user's real, unreadable choice.
+  useEffect(() => {
+    if (!data.ready || data.corrupted) return;
+    if (data.settings.reminders.postDate) {
+      schedulePostDateNudge({ title: t('notifications.postDateNudge.title'), body: t('notifications.postDateNudge.body') });
+    }
+    if (data.settings.reminders.weekly) {
+      scheduleWeeklyReflection({ title: t('notifications.weeklyReflection.title'), body: t('notifications.weeklyReflection.body') });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data.ready, data.corrupted]);
 
   const showSplash = !holdElapsed || !data.ready;
   // Checked before Onboarding/Lock: a corrupted load leaves `settings` at its
@@ -146,6 +167,10 @@ function RootNavigator() {
       </Stack>
     </>
   );
+}
+
+export function ErrorBoundary({ error, retry }: { error: Error; retry: () => Promise<void> }) {
+  return <AppErrorScreen error={error} retry={retry} />;
 }
 
 export default function RootLayout() {

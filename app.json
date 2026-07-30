@@ -10,10 +10,12 @@
     "backgroundColor": "#f2ece3",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "app.orbit.tracker"
+      "bundleIdentifier": "app.orbit.tracker",
+      "buildNumber": "1"
     },
     "android": {
       "package": "app.orbit.tracker",
+      "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#241f1b",
         "foregroundImage": "./assets/android-icon-foreground.png",

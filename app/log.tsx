@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
@@ -14,7 +14,9 @@ import {
   type Answer,
 } from '../src/core/model';
 import { grade, revealBlocker, scaleQuestions } from '../src/core/scoring';
-import { LogDraft, useOrbitData } from '../src/data/store';
+import { dayLabel } from '../src/core/selectors';
+import { LogDraft, today, useOrbitData } from '../src/data/store';
+import { recentCalendarEvents, type CalendarEventSummary } from '../src/platform/calendar';
 import { DarkButton, PrimaryButton, TextAction } from '../src/ui/Button';
 import { Card, InkCard } from '../src/ui/Card';
 import { Chip, Segmented } from '../src/ui/Chip';
@@ -30,7 +32,7 @@ export default function LogScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const data = useOrbitData();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const params = useLocalSearchParams<{ editingId?: string }>();
   const editing = params.editingId ? data.dates.find((d) => d.id === params.editingId) ?? null : null;
 
@@ -39,8 +41,20 @@ export default function LogScreen() {
     if (!editing) return fresh;
     return { personId: editing.personId, activity: editing.activity, answers: { ...fresh.answers, ...editing.answers } };
   });
+  // "Other" is a UI mode, not a stored value — `draft.activity` stays a plain
+  // string either way. Starts on if we're editing a date whose activity was
+  // never one of the preset chips (i.e. it's already free-typed text).
+  const [otherActivity, setOtherActivity] = useState(
+    () => !!draft.activity && !ACTIVITIES.includes(draft.activity as (typeof ACTIVITIES)[number])
+  );
   const [note, setNote] = useState(editing?.note ?? '');
   const [personSheetOpen, setPersonSheetOpen] = useState(false);
+  // Only ever set for a brand-new entry imported from a calendar event that
+  // wasn't today (e.g. logging last night's date the morning after) — an
+  // edit already has its own fixed `editing.day`.
+  const [logDay, setLogDay] = useState<string | null>(null);
+  const [calendarSheetOpen, setCalendarSheetOpen] = useState(false);
+  const [calendarEvents, setCalendarEvents] = useState<CalendarEventSummary[] | null>(null);
   const [mode, setMode] = useState<Mode>('form');
   const [displayScore, setDisplayScore] = useState(0);
   const [resultTab, setResultTab] = useState<ResultTab>(data.settings.resultStyle);
@@ -87,7 +101,7 @@ export default function LogScreen() {
 
   function reveal() {
     if (!canReveal) return;
-    const p = data.previewProgress(draft, editing?.day);
+    const p = data.previewProgress(draft, logDay ?? editing?.day);
     setPreview(p);
     setMode('result');
     setResultTab(data.settings.resultStyle);
@@ -104,7 +118,7 @@ export default function LogScreen() {
   }
 
   async function finish() {
-    await data.saveDateLog(draft, { note, day: editing?.day, editingId: editing?.id });
+    await data.saveDateLog(draft, { note, day: logDay ?? editing?.day, editingId: editing?.id });
     router.replace(editing ? { pathname: '/date/[id]', params: { id: editing.id } } : '/');
   }
 
@@ -116,6 +130,28 @@ export default function LogScreen() {
     const p = await data.addPerson(input);
     setDraft((d) => ({ ...d, personId: p.id }));
     setPersonSheetOpen(false);
+  }
+
+  async function openCalendarImport() {
+    setCalendarSheetOpen(true);
+    if (calendarEvents === null) setCalendarEvents(await recentCalendarEvents());
+  }
+
+  function importCalendarEvent(event: CalendarEventSummary) {
+    // A loose title/location match against existing people — a real match
+    // beats forcing the user to re-pick someone they already told their
+    // calendar about, but there's no reliable link between a calendar
+    // attendee and a Person, so this is a best-effort guess, never a given.
+    const haystack = `${event.title} ${event.location ?? ''}`.toLowerCase();
+    const matchedPerson = data.people.find((p) => p.name.length > 1 && haystack.includes(p.name.toLowerCase()));
+    setOtherActivity(true);
+    setDraft((d) => ({
+      ...d,
+      activity: event.title || d.activity,
+      personId: matchedPerson?.id ?? d.personId,
+    }));
+    setLogDay(event.day === today() ? null : event.day);
+    setCalendarSheetOpen(false);
   }
 
   if (mode === 'result' && preview) {
@@ -207,6 +243,20 @@ export default function LogScreen() {
         <Text style={styles.title}>{editing ? t('log.updateAnswers') : t('log.howWasIt')}</Text>
         <Text style={styles.sub}>{editing ? t('log.changeAnythingSub') : t('log.beHonestSub')}</Text>
 
+        {!editing && data.settings.reminders.calendar ? (
+          <Pressable onPress={openCalendarImport} accessibilityRole="button" style={styles.calendarLink}>
+            <Text style={styles.calendarLinkText}>{t('log.importFromCalendar')}</Text>
+          </Pressable>
+        ) : null}
+        {logDay ? (
+          <View style={styles.loggingForRow}>
+            <Text style={styles.loggingForText}>{t('log.loggingForDay', { day: dayLabel(logDay, i18n.language) })}</Text>
+            <Pressable onPress={() => setLogDay(null)} accessibilityRole="button">
+              <Text style={styles.resetToTodayText}>{t('log.resetToToday')}</Text>
+            </Pressable>
+          </View>
+        ) : null}
+
         <Text style={styles.label}>{t('log.whoDidYouSee')}</Text>
         <View style={styles.wrap}>
           {data.people.map((p) => (
@@ -227,11 +277,33 @@ export default function LogScreen() {
               key={a}
               label={translateEnum(t, 'activity', ACTIVITIES, a)}
               tone="gold"
-              selected={draft.activity === a}
-              onPress={() => setDraft((d) => ({ ...d, activity: a }))}
+              selected={!otherActivity && draft.activity === a}
+              onPress={() => {
+                setOtherActivity(false);
+                setDraft((d) => ({ ...d, activity: a }));
+              }}
             />
           ))}
+          <Chip
+            label={t('log.otherActivity')}
+            tone="gold"
+            selected={otherActivity}
+            onPress={() => {
+              setOtherActivity(true);
+              setDraft((d) => ({ ...d, activity: ACTIVITIES.includes(d.activity as (typeof ACTIVITIES)[number]) ? '' : d.activity }));
+            }}
+          />
         </View>
+        {otherActivity ? (
+          <TextInput
+            value={draft.activity ?? ''}
+            onChangeText={(activity) => setDraft((d) => ({ ...d, activity }))}
+            placeholder={t('log.otherActivityPlaceholder')}
+            placeholderTextColor={color.faint}
+            autoFocus
+            style={styles.otherInput}
+          />
+        ) : null}
 
         <Card style={{ gap: 20 }}>
           {scales.map((q) => {
@@ -327,6 +399,44 @@ export default function LogScreen() {
       </View>
 
       <PersonSheet visible={personSheetOpen} onCancel={() => setPersonSheetOpen(false)} onSave={handleNewPerson} />
+
+      {/* animationType="none": see the PersonSheet/ConfirmSheet fix — RN Web's
+          fade/slide transitions depend on a native animationend event that
+          doesn't always fire, leaving a sheet stuck open or never appearing. */}
+      <Modal
+        visible={calendarSheetOpen}
+        animationType="none"
+        transparent
+        onRequestClose={() => setCalendarSheetOpen(false)}>
+        <View style={styles.calendarBackdrop}>
+          <Pressable style={StyleSheet.absoluteFillObject} onPress={() => setCalendarSheetOpen(false)} accessibilityRole="button" />
+          <View style={styles.calendarSheet}>
+            <View style={styles.grabber} />
+            <Text style={styles.calendarSheetTitle}>{t('log.calendarSheetTitle')}</Text>
+            <ScrollView showsVerticalScrollIndicator={false} style={{ maxHeight: 360 }}>
+              {calendarEvents === null ? (
+                <Text style={styles.calendarEmpty}>{t('common.loading')}</Text>
+              ) : calendarEvents.length === 0 ? (
+                <Text style={styles.calendarEmpty}>{t('log.calendarEmpty')}</Text>
+              ) : (
+                calendarEvents.map((event) => (
+                  <Pressable
+                    key={event.id}
+                    onPress={() => importCalendarEvent(event)}
+                    accessibilityRole="button"
+                    style={styles.calendarEventRow}>
+                    <Text style={styles.calendarEventTitle}>{event.title || t('log.otherActivity')}</Text>
+                    <Text style={styles.calendarEventMeta}>
+                      {dayLabel(event.day, i18n.language)}
+                      {event.location ? ` · ${event.location}` : ''}
+                    </Text>
+                  </Pressable>
+                ))
+              )}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -378,6 +488,16 @@ const styles = StyleSheet.create({
   rowLabel: { ...type.label, color: color.ink },
   rowHint: { ...type.meta, color: color.faint },
   moodLabel: { ...type.bodySm, color: color.muted },
+  otherInput: {
+    backgroundColor: color.card,
+    borderWidth: 1.5,
+    borderColor: color.cardBorderStrong,
+    borderRadius: radius.md,
+    padding: 14,
+    ...type.bodyXs,
+    color: color.ink,
+    marginBottom: space.xl,
+  },
   noteInput: {
     minHeight: 80,
     backgroundColor: color.card,
@@ -389,6 +509,42 @@ const styles = StyleSheet.create({
     color: color.ink,
     textAlignVertical: 'top',
   },
+  calendarLink: { alignSelf: 'flex-start', marginBottom: space.md },
+  calendarLinkText: { ...type.action, color: color.red },
+  loggingForRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: color.chip,
+    borderRadius: radius.md,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    marginBottom: space.lg,
+  },
+  loggingForText: { ...type.metaSm, color: color.muted },
+  resetToTodayText: { ...type.action, color: color.red },
+  calendarBackdrop: { flex: 1, backgroundColor: 'rgba(20,16,13,.5)', justifyContent: 'flex-end' },
+  calendarSheet: {
+    maxHeight: '70%',
+    backgroundColor: '#f7f2ea',
+    borderTopLeftRadius: radius.sheet,
+    borderTopRightRadius: radius.sheet,
+    paddingHorizontal: space.gutter,
+    paddingBottom: space.xxl,
+  },
+  grabber: {
+    width: 38,
+    height: 4,
+    borderRadius: radius.pill,
+    backgroundColor: color.cardBorderStrong,
+    alignSelf: 'center',
+    marginVertical: space.md,
+  },
+  calendarSheetTitle: { ...type.title, fontSize: 20, color: color.ink, marginBottom: space.md },
+  calendarEmpty: { ...type.bodySm, color: color.faint, paddingVertical: space.lg, textAlign: 'center' },
+  calendarEventRow: { paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: color.cardBorder },
+  calendarEventTitle: { ...type.rowTitle, color: color.ink },
+  calendarEventMeta: { ...type.metaSm, color: color.faint, marginTop: 2 },
   sticky: {
     position: 'absolute',
     left: 0,

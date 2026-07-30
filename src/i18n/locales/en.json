@@ -29,6 +29,13 @@
     "body": "Orbit couldn't read what's on your device — this can happen if the app's storage gets out of sync. There's no way to repair it from here, only start fresh. Nothing was ever uploaded, so this is only ever lost locally.",
     "cta": "Start fresh"
   },
+  "appError": {
+    "title": "Something went wrong",
+    "body": "This screen hit a snag — your journal itself wasn't touched. Try again, or send the details if it keeps happening.",
+    "retry": "Try again",
+    "sendReport": "Send error details",
+    "reportSubject": "Orbit crash report"
+  },
   "lock": {
     "welcomeBack": "Welcome back",
     "hintWithBiometric": "Face ID or enter your code",
@@ -131,6 +138,13 @@
     "whoDidYouSee": "Who did you see?",
     "newPersonChip": "+ New person",
     "whereWhat": "Where / what?",
+    "otherActivity": "Other",
+    "otherActivityPlaceholder": "Type what you did...",
+    "importFromCalendar": "Import from calendar",
+    "calendarSheetTitle": "Recent events",
+    "calendarEmpty": "No recent events found.",
+    "loggingForDay": "Logging for {{day}}",
+    "resetToToday": "Reset to today",
     "moodShift": "Mood shift",
     "beforeTheDate": "Before the date",
     "afterTheDate": "After the date",
@@ -226,12 +240,17 @@
     "friendsTitle": "Compare progress with friends",
     "friendsBody": "Share only your level and streak — never who you dated or how you rated them. Coming once sync is available."
   },
+  "notifications": {
+    "postDateNudge": { "title": "How was last night?", "body": "Log it now, while it's still fresh." },
+    "weeklyReflection": { "title": "Your week in dating", "body": "Take a moment to look back before it blurs together." }
+  },
   "settings": {
     "title": "Settings",
     "whatYouTrack": "What you track",
     "reminders": "Reminders",
     "postDateNudge": { "label": "Post-date nudge", "sub": "A gentle ping two hours after an evening out" },
     "weeklyReflection": { "label": "Weekly reflection", "sub": "Sunday summary of your week" },
+    "readCalendar": { "label": "Read my calendar", "sub": "Auto-detect dates and pre-fill who and where" },
     "privacy": "Privacy",
     "passcodeLock": { "label": "Passcode lock", "sub": "Required to open the app" },
     "faceId": { "label": "Face ID", "sub": "Skip the keypad" },

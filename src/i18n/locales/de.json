@@ -29,6 +29,13 @@
     "body": "Orbit konnte die Daten auf deinem Gerät nicht lesen — das kann passieren, wenn der Speicher der App aus dem Takt gerät. Reparieren lässt sich das von hier aus nicht, nur neu starten. Es wurde nie etwas hochgeladen, verloren geht das also nur lokal.",
     "cta": "Neu starten"
   },
+  "appError": {
+    "title": "Etwas ist schiefgelaufen",
+    "body": "Dieser Bildschirm hatte einen Aussetzer — dein Tagebuch selbst wurde nicht angetastet. Versuch es noch mal, oder sende die Details, falls es weiter passiert.",
+    "retry": "Noch mal versuchen",
+    "sendReport": "Fehlerdetails senden",
+    "reportSubject": "Orbit-Absturzbericht"
+  },
   "lock": {
     "welcomeBack": "Willkommen zurück",
     "hintWithBiometric": "Face ID oder Code eingeben",
@@ -131,6 +138,13 @@
     "whoDidYouSee": "Wen hast du getroffen?",
     "newPersonChip": "+ Neue Person",
     "whereWhat": "Wo / was?",
+    "otherActivity": "Sonstiges",
+    "otherActivityPlaceholder": "Was habt ihr gemacht...",
+    "importFromCalendar": "Aus dem Kalender importieren",
+    "calendarSheetTitle": "Letzte Termine",
+    "calendarEmpty": "Keine kürzlichen Termine gefunden.",
+    "loggingForDay": "Eintrag für {{day}}",
+    "resetToToday": "Auf heute zurücksetzen",
     "moodShift": "Stimmungswechsel",
     "beforeTheDate": "Vor dem Date",
     "afterTheDate": "Nach dem Date",
@@ -226,12 +240,17 @@
     "friendsTitle": "Fortschritt mit Freunden vergleichen",
     "friendsBody": "Teile nur dein Level und deinen Streak — nie, mit wem du warst oder wie du sie bewertet hast. Kommt, sobald Sync verfügbar ist."
   },
+  "notifications": {
+    "postDateNudge": { "title": "Wie war der gestrige Abend?", "body": "Log ihn jetzt, solange er noch frisch ist." },
+    "weeklyReflection": { "title": "Deine Dating-Woche", "body": "Wirf einen Blick zurück, bevor alles verschwimmt." }
+  },
   "settings": {
     "title": "Einstellungen",
     "whatYouTrack": "Was du trackst",
     "reminders": "Erinnerungen",
     "postDateNudge": { "label": "Nach-Date-Erinnerung", "sub": "Ein sanfter Hinweis zwei Stunden nach einem Abend unterwegs" },
     "weeklyReflection": { "label": "Wochenrückblick", "sub": "Sonntags eine Zusammenfassung deiner Woche" },
+    "readCalendar": { "label": "Meinen Kalender lesen", "sub": "Dates automatisch erkennen und wer/wo vorausfüllen" },
     "privacy": "Privatsphäre",
     "passcodeLock": { "label": "Code-Sperre", "sub": "Zum Öffnen der App erforderlich" },
     "faceId": { "label": "Face ID", "sub": "Ohne Code entsperren" },

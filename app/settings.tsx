@@ -8,7 +8,14 @@ import { GOALS, type Settings } from '../src/core/model';
 import { GOAL_WEIGHT_BLURB } from '../src/core/scoring';
 import { useOrbitData } from '../src/data/store';
 import { isBiometricAvailable } from '../src/platform/biometrics';
+import { requestCalendarAccess } from '../src/platform/calendar';
 import { exportDataToFile } from '../src/platform/exportData';
+import {
+  cancelPostDateNudge,
+  cancelWeeklyReflection,
+  schedulePostDateNudge,
+  scheduleWeeklyReflection,
+} from '../src/platform/notifications';
 import { clearPasscode, setPasscode } from '../src/platform/passcode';
 import { BackButton } from '../src/ui/BackButton';
 import { Card } from '../src/ui/Card';
@@ -28,11 +35,12 @@ const LANGUAGE_NAMES: Record<Exclude<Settings['language'], 'system'>, string> = 
 };
 
 /**
- * Deliberately minimal for this pass: question toggles, reminders and the
- * passcode/biometric switches persist to `Settings`, but nothing yet *enforces*
- * them (no lock screen gating app launch, no scheduled notifications). That's
- * the "Privacy & platform" phase in docs/01-analysis.md §9 — a distinct piece
- * of work from the persistence + log/result/home loop this pass covers.
+ * Question toggles, reminders, and the passcode/biometric switches all
+ * enforce what they say: reminders schedule/cancel real local notifications
+ * (`src/platform/notifications.ts`), the passcode lock actually gates app
+ * launch (`app/_layout.tsx`), and "Read my calendar" only grants the
+ * permission — the actual pre-fill happens in the log flow's "Import from
+ * calendar" (`app/log.tsx`), read-only and on-demand.
  */
 export default function SettingsScreen() {
   const router = useRouter();
@@ -63,6 +71,40 @@ export default function SettingsScreen() {
       await data.saveSettings({ privacy: { ...data.settings.privacy, lock: true } });
     }
     setPasscodeModal(null);
+  }
+
+  async function handlePostDateToggle(enable: boolean) {
+    if (enable) {
+      const ok = await schedulePostDateNudge({
+        title: t('notifications.postDateNudge.title'),
+        body: t('notifications.postDateNudge.body'),
+      });
+      if (!ok) return; // permission denied (or web) — leave the toggle off
+    } else {
+      await cancelPostDateNudge();
+    }
+    await data.saveSettings({ reminders: { ...data.settings.reminders, postDate: enable } });
+  }
+
+  async function handleWeeklyToggle(enable: boolean) {
+    if (enable) {
+      const ok = await scheduleWeeklyReflection({
+        title: t('notifications.weeklyReflection.title'),
+        body: t('notifications.weeklyReflection.body'),
+      });
+      if (!ok) return;
+    } else {
+      await cancelWeeklyReflection();
+    }
+    await data.saveSettings({ reminders: { ...data.settings.reminders, weekly: enable } });
+  }
+
+  async function handleCalendarToggle(enable: boolean) {
+    if (enable) {
+      const granted = await requestCalendarAccess();
+      if (!granted) return; // permission denied (or web) — leave the toggle off
+    }
+    await data.saveSettings({ reminders: { ...data.settings.reminders, calendar: enable } });
   }
 
   const languageOptions = [
@@ -112,13 +154,19 @@ export default function SettingsScreen() {
           label={t('settings.postDateNudge.label')}
           sub={t('settings.postDateNudge.sub')}
           value={data.settings.reminders.postDate}
-          onChange={(v) => data.saveSettings({ reminders: { ...data.settings.reminders, postDate: v } })}
+          onChange={handlePostDateToggle}
         />
         <ToggleRow
           label={t('settings.weeklyReflection.label')}
           sub={t('settings.weeklyReflection.sub')}
           value={data.settings.reminders.weekly}
-          onChange={(v) => data.saveSettings({ reminders: { ...data.settings.reminders, weekly: v } })}
+          onChange={handleWeeklyToggle}
+        />
+        <ToggleRow
+          label={t('settings.readCalendar.label')}
+          sub={t('settings.readCalendar.sub')}
+          value={data.settings.reminders.calendar}
+          onChange={handleCalendarToggle}
           last
         />
       </Card>
