@@ -1,14 +1,18 @@
 import { useRouter } from 'expo-router';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { MIN_DATES_FOR_PATTERNS } from '../../src/core/features';
+import { localReflect } from '../../src/core/insightHeuristics';
+import { buildReflectionInput } from '../../src/core/insights';
 import { ACTIVITIES } from '../../src/core/model';
 import { BADGES } from '../../src/core/progress';
 import { dayLabel } from '../../src/core/selectors';
 import { useOrbitData } from '../../src/data/store';
 import { PrimaryButton } from '../../src/ui/Button';
 import { Card, InkCard } from '../../src/ui/Card';
-import { translateEnum } from '../../src/ui/i18nHelpers';
+import { tReflectionText, translateEnum } from '../../src/ui/i18nHelpers';
 import { Screen } from '../../src/ui/Screen';
 import { alpha, color, radius, scoreColor, space, type } from '../../src/ui/theme';
 
@@ -111,6 +115,12 @@ function PopulatedHome() {
     : 0;
   const trendUp = data.dates.length > 1 && data.dates[0].score >= data.dates[1].score;
 
+  const teaserReflection = useMemo(() => {
+    if (data.dates.length < MIN_DATES_FOR_PATTERNS) return null;
+    const input = buildReflectionInput(data.dates, data.people.length, data.questions, data.settings.goal);
+    return localReflect(input);
+  }, [data.dates, data.people.length, data.questions, data.settings.goal]);
+
   return (
     <View>
       <InkCard style={{ marginBottom: space.md }}>
@@ -199,6 +209,20 @@ function PopulatedHome() {
         ))}
       </View>
 
+      {teaserReflection ? (
+        <Pressable onPress={() => router.push('/insights')} accessibilityRole="button" style={styles.insightTeaser}>
+          <View style={styles.insightTeaserHeader}>
+            <View style={styles.insightTeaserKickerRow}>
+              <View style={styles.insightDot} />
+              <Text style={styles.insightTeaserKicker}>{t('home.insightTeaser.kicker')}</Text>
+            </View>
+            <Text style={styles.insightTeaserChevron}>›</Text>
+          </View>
+          <Text style={styles.insightTeaserBody}>{tReflectionText(t, teaserReflection.body, teaserReflection.bodyParams)}</Text>
+          <Text style={styles.insightTeaserCta}>{t('home.insightTeaser.cta')}</Text>
+        </Pressable>
+      ) : null}
+
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionLabel}>{t('home.badges')}</Text>
         <Pressable onPress={() => router.push('/awards')} accessibilityRole="button">
@@ -283,6 +307,22 @@ const styles = StyleSheet.create({
   dateMeta: { ...type.metaSm, color: color.faint },
   pill: { minWidth: 40, paddingVertical: 6, paddingHorizontal: 4, borderRadius: 12, alignItems: 'center' },
   pillText: { ...type.rowTitle, fontSize: 15 },
+
+  insightTeaser: {
+    marginTop: space.lg,
+    backgroundColor: color.chipAlt,
+    borderWidth: 1,
+    borderColor: color.cardBorder,
+    borderRadius: radius.xxl,
+    padding: space.xl,
+  },
+  insightTeaserHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: space.sm },
+  insightTeaserKickerRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  insightDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: color.gold },
+  insightTeaserKicker: { ...type.kicker, color: color.muted },
+  insightTeaserChevron: { ...type.rowTitleLg, color: color.faint },
+  insightTeaserBody: { ...type.quote, color: color.text },
+  insightTeaserCta: { ...type.action, color: color.red, marginTop: space.sm },
 
   badgeTile: { flex: 1, alignItems: 'center', padding: 14 },
   badgeIcon: { width: 44, height: 44, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginBottom: space.sm },

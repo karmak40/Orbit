@@ -57,10 +57,18 @@ export type ReflectionInput = {
 
 export type Reflection = {
   id: string;
-  /** The observation, in the app's voice. */
+  /**
+   * The observation, in the app's voice. For an on-device adapter
+   * (`fromModel: false`) this is an i18n key, resolved with `bodyParams` by
+   * the UI's `t()` — a heuristic can't produce language-specific prose
+   * itself. A remote model (`fromModel: true`) returns finished text here
+   * instead, with no params.
+   */
   body: string;
-  /** Optional suggested action. */
+  bodyParams?: Record<string, string | number>;
+  /** Optional suggested action, same key/params convention as `body`. */
   suggestion?: string;
+  suggestionParams?: Record<string, string | number>;
   /** True once a remote model produced it; false for on-device heuristics. */
   fromModel: boolean;
 };
@@ -71,7 +79,7 @@ export interface InsightProvider {
   submitFeedback(reflectionId: string, helpful: boolean): Promise<void>;
 }
 
-/** Placeholder until `LocalHeuristicInsights` lands with the Insights screen. */
+/** Used before `MIN_DATES_FOR_REFLECTIONS`, or wherever no provider is wired up. */
 export const NullInsightProvider: InsightProvider = {
   async reflect() {
     return null;

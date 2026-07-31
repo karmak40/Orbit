@@ -107,7 +107,7 @@
       "unlocksHeading": "Was du unterwegs freischaltest",
       "unlock1": { "title": "Dein erstes Ergebnis", "sub": "Eine Punktzahl und eine Einschätzung, wie's gelaufen ist" },
       "unlock2": { "title": "Streaks und Abzeichen", "sub": "Anerkennung dafür, dass du dich traust" },
-      "unlock3": { "title": "Muster und KI-Reflexionen", "sub": "Wofür du dich immer wieder entscheidest, und warum" },
+      "unlock3": { "title": "Muster und Reflexionen", "sub": "Wofür du dich immer wieder entscheidest, und warum" },
       "previewSampleData": "Mit Beispieldaten ansehen"
     },
     "levelKicker": "Level {{level}}",
@@ -125,7 +125,11 @@
     "logCtaSub": "Gerade zurück? Halt's fest, solange es frisch ist",
     "recentDates": "Letzte Dates",
     "seeAll": "Alle ansehen",
-    "badges": "Abzeichen"
+    "badges": "Abzeichen",
+    "insightTeaser": {
+      "kicker": "Muster des Monats",
+      "cta": "Alle Einblicke ansehen"
+    }
   },
   "log": {
     "cancel": "Abbrechen",
@@ -239,6 +243,49 @@
     "friends": "Freunde",
     "friendsTitle": "Fortschritt mit Freunden vergleichen",
     "friendsBody": "Teile nur dein Level und deinen Streak — nie, mit wem du warst oder wie du sie bewertet hast. Kommt, sobald Sync verfügbar ist."
+  },
+  "insights": {
+    "title": "Einblicke",
+    "sub_one": "Was {{count}} eingetragenes Date über dich verrät",
+    "sub_other": "Was {{count}} eingetragene Dates über dich verraten",
+    "locked": {
+      "title": "Muster brauchen ein paar Dates",
+      "body": "Trage {{count}} weitere ein, und Orbit fängt an, Wiederholungen zu finden."
+    },
+    "reflectionsLocked": "Tiefere Reflexionen schalten sich ab {{count}} eingetragenen Dates frei.",
+    "scoreOverTime": "Punktzahl im Verlauf",
+    "vsLastMonth_positive": "▲ {{delta}} Punkte gegenüber letztem Monat",
+    "vsLastMonth_negative": "▼ {{delta}} Punkte gegenüber letztem Monat",
+    "vsLastMonth_flat": "Unverändert gegenüber letztem Monat",
+    "vsLastMonth_none": "Noch nicht genug Verlauf, um Monate zu vergleichen",
+    "averageByActivity": "Durchschnitt nach Aktivität",
+    "yourAverages": "Deine Durchschnittswerte",
+    "topGreenFlags": "Top Green Flags",
+    "recurringRedFlags": "Wiederkehrende Red Flags",
+    "noFlagsYet": "Noch keine eingetragen",
+    "moodLiftTitle": "Stimmungsaufschwung",
+    "before": "VORHER",
+    "after": "NACHHER",
+    "moodTakeaway_positive": "Dating hebt deine Stimmung — im Schnitt von {{before}} vorher auf {{after}} nachher.",
+    "moodTakeaway_negative": "Deine Stimmung sinkt in letzter Zeit über ein Date hinweg — im Schnitt von {{before}} vorher auf {{after}} nachher.",
+    "moodTakeaway_flat": "Deine Stimmung bleibt über ein Date hinweg ziemlich stabil, {{before}} zu {{after}}.",
+    "reflection": {
+      "kicker": "Muster erkannt",
+      "helpful": "Hilfreich",
+      "notForMe": "Nicht für mich",
+      "thanks": "Danke — notiert.",
+      "dimensionRising": "Deine Bewertungen für {{dimension}} steigen zuletzt — neuere Dates liegen im Schnitt bei {{recent}} gegenüber {{overall}} insgesamt.",
+      "dimensionFalling": "Deine Bewertungen für {{dimension}} sind zuletzt gesunken — neuere Dates liegen im Schnitt bei {{recent}} gegenüber {{overall}} insgesamt.",
+      "dimensionFallingSuggestion": "Achte beim nächsten Mal darauf: Liegt es an den Dates oder daran, wie du selbst auftrittst?",
+      "activitySpread": "{{best}}-Dates schneiden im Schnitt um {{delta}} Punkte besser ab als {{worst}}.",
+      "activitySpreadSuggestion": "Nutze, was schon funktioniert — plane mehr {{best}}-Dates.",
+      "thirdDateRise": "Deine Bewertungen steigen tendenziell bis zum dritten Date mit jemandem — im Schnitt um {{delta}} Punkte.",
+      "thirdDateDip": "Deine Bewertungen sinken tendenziell bis zum dritten Date mit jemandem — im Schnitt um {{delta}} Punkte.",
+      "thirdDateDipSuggestion": "Das Muster bedeutet oft, dass der erste Funke verfliegt, sobald die Inszenierung aufhört — beobachte das.",
+      "moodLift": "Dating hebt deine Stimmung — im Schnitt von {{before}} vorher auf {{after}} nachher.",
+      "moodDip": "Deine Stimmung sinkt in letzter Zeit über ein Date hinweg — im Schnitt von {{before}} vorher auf {{after}} nachher.",
+      "cadence": "Du trägst etwa alle {{days}} Tage ein neues Date ein."
+    }
   },
   "notifications": {
     "postDateNudge": { "title": "Wie war der gestrige Abend?", "body": "Log ihn jetzt, solange er noch frisch ist." },

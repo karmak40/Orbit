@@ -1,5 +1,6 @@
 import type { TFunction } from 'i18next';
 
+import { ACTIVITIES } from '../core/model';
 import type { VerdictTone } from '../core/model';
 import { gradeWord as gradeWordEn, verdictBand } from '../core/scoring';
 
@@ -49,4 +50,23 @@ export function tVerdictSub(
   const band = verdictBand(score, seeAgain);
   const key = tone.toLowerCase();
   return tArray(t, `verdict.${key}`)[band] ?? tArray(t, 'verdict.playful')[band] ?? '';
+}
+
+/**
+ * Renders a `Reflection.body`/`.suggestion` i18n key (see `core/features.ts`
+ * and `core/insightHeuristics.ts`) against its raw params, translating the
+ * two params that name a domain value (`dimensionId` → a question label,
+ * `best`/`worst` → an activity) rather than a plain number/string.
+ */
+export function tReflectionText(
+  t: TFunction,
+  key: string | undefined,
+  params: Record<string, string | number> | undefined
+): string | null {
+  if (!key) return null;
+  const resolved: Record<string, string | number> = { ...params };
+  if (params?.dimensionId) resolved.dimension = t(`question.${params.dimensionId}.label`);
+  if (params?.best) resolved.best = translateEnum(t, 'activity', ACTIVITIES, String(params.best));
+  if (params?.worst) resolved.worst = translateEnum(t, 'activity', ACTIVITIES, String(params.worst));
+  return t(key, resolved);
 }

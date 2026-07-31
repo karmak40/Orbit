@@ -107,7 +107,7 @@
       "unlocksHeading": "What unlocks as you go",
       "unlock1": { "title": "Your first result", "sub": "A score and a read on how it went" },
       "unlock2": { "title": "Streaks and badges", "sub": "Credit for putting yourself out there" },
-      "unlock3": { "title": "Patterns and AI reflections", "sub": "What you keep choosing, and why" },
+      "unlock3": { "title": "Patterns and reflections", "sub": "What you keep choosing, and why" },
       "previewSampleData": "Preview with sample data"
     },
     "levelKicker": "Level {{level}}",
@@ -125,7 +125,11 @@
     "logCtaSub": "Just got back? Capture it while it's fresh",
     "recentDates": "Recent dates",
     "seeAll": "See all",
-    "badges": "Badges"
+    "badges": "Badges",
+    "insightTeaser": {
+      "kicker": "This month's pattern",
+      "cta": "See all insights"
+    }
   },
   "log": {
     "cancel": "Cancel",
@@ -239,6 +243,49 @@
     "friends": "Friends",
     "friendsTitle": "Compare progress with friends",
     "friendsBody": "Share only your level and streak — never who you dated or how you rated them. Coming once sync is available."
+  },
+  "insights": {
+    "title": "Insights",
+    "sub_one": "What {{count}} logged date says about you",
+    "sub_other": "What {{count}} logged dates say about you",
+    "locked": {
+      "title": "Patterns take a few dates to show",
+      "body": "Log {{count}} more and Orbit starts finding what repeats."
+    },
+    "reflectionsLocked": "Deeper reflections unlock at {{count}} logged dates.",
+    "scoreOverTime": "Score over time",
+    "vsLastMonth_positive": "▲ {{delta}} points vs last month",
+    "vsLastMonth_negative": "▼ {{delta}} points vs last month",
+    "vsLastMonth_flat": "Flat vs last month",
+    "vsLastMonth_none": "Not enough history yet to compare months",
+    "averageByActivity": "Average by activity",
+    "yourAverages": "Your averages",
+    "topGreenFlags": "Top green flags",
+    "recurringRedFlags": "Recurring red flags",
+    "noFlagsYet": "None logged yet",
+    "moodLiftTitle": "Mood lift",
+    "before": "BEFORE",
+    "after": "AFTER",
+    "moodTakeaway_positive": "Dating is lifting your mood — {{before}} before to {{after}} after, on average.",
+    "moodTakeaway_negative": "Your mood tends to dip over a date lately — {{before}} before to {{after}} after, on average.",
+    "moodTakeaway_flat": "Your mood holds pretty steady across a date, {{before}} to {{after}}.",
+    "reflection": {
+      "kicker": "Pattern spotted",
+      "helpful": "Helpful",
+      "notForMe": "Not for me",
+      "thanks": "Thanks — noted.",
+      "dimensionRising": "Your {{dimension}} ratings have been climbing lately — recent dates average {{recent}} vs {{overall}} overall.",
+      "dimensionFalling": "Your {{dimension}} ratings have dropped recently — recent dates average {{recent}} vs {{overall}} overall.",
+      "dimensionFallingSuggestion": "Worth noticing next time: is it the dates, or how you're showing up to them?",
+      "activitySpread": "{{best}} dates score {{delta}} points higher on average than {{worst}}.",
+      "activitySpreadSuggestion": "Lean into what's already working — plan more {{best}} dates.",
+      "thirdDateRise": "Your ratings tend to climb by the third date with someone — up {{delta}} points on average.",
+      "thirdDateDip": "Your ratings tend to drop by the third date with someone — down {{delta}} points on average.",
+      "thirdDateDipSuggestion": "That pattern often means the early spark fades once the performance stops — worth watching for.",
+      "moodLift": "Dating lifts your mood — {{before}} before to {{after}} after, on average.",
+      "moodDip": "Your mood tends to dip over a date lately — {{before}} before to {{after}} after, on average.",
+      "cadence": "You log a new date roughly every {{days}} days."
+    }
   },
   "notifications": {
     "postDateNudge": { "title": "How was last night?", "body": "Log it now, while it's still fresh." },
