@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Animated,
@@ -52,17 +52,24 @@ export function PersonSheet({ visible, initial, onCancel, onSave, onDelete }: Pe
   const onCancelRef = useRef(onCancel);
   onCancelRef.current = onCancel;
 
-  // The entrance/exit slide is driven entirely by this Animated.Value rather
-  // than the RN Modal's own `animationType="slide"` — on web that CSS
-  // animation only completes via a native `animationend` event, which some
-  // browser/webview states never fire, leaving the sheet stuck off-screen
-  // (looks like the modal "doesn't come up") or stuck open (drag-to-dismiss
-  // silently doing nothing).
-  useEffect(() => {
+  // The sheet appears at rest immediately — no animated entrance. An earlier
+  // version slid it up from an offscreen Animated.Value on open, timed to
+  // start the moment `visible` became true; that depends on the
+  // Animated.View's underlying node already being attached when `.start()`
+  // fires, which races the Modal's own mount (a separate native
+  // Dialog/Window on Android, a UIViewController presentation on iOS, a
+  // portal on web) closely enough to silently no-op — reported stuck
+  // permanently offscreen (invisible) on Android and iOS, not just web, on
+  // enough of a fraction of opens to make "Add person" look broken.
+  // `useLayoutEffect`, not `useEffect`: applies before the browser/native
+  // paints, so there's no single-frame flash at the wrong position either.
+  // The drag-to-dismiss animations below are untouched — those only ever
+  // start once a real touch gesture is already moving the (already-mounted,
+  // already-attached) sheet, so they were never subject to this race.
+  useLayoutEffect(() => {
     if (visible) {
       setDraft(initial ?? EMPTY);
-      translateY.setValue(800);
-      Animated.timing(translateY, { toValue: 0, duration: 220, useNativeDriver: true }).start();
+      translateY.setValue(0);
     }
   }, [visible, initial, translateY]);
 
