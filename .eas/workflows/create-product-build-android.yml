@@ -1,4 +1,4 @@
-name: Create Production Builds
+name: Create Production Android Build
 
 jobs:
   build_android:
