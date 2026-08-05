@@ -18,7 +18,7 @@
     },
     "android": {
       "package": "app.orbit.tracker",
-      "versionCode": 1,
+      "versionCode": 11,
       "adaptiveIcon": {
         "backgroundColor": "#241f1b",
         "foregroundImage": "./assets/android-icon-foreground.png",

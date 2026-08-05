@@ -18,6 +18,12 @@ expo-env.d.ts
 *.key
 *.mobileprovision
 
+# Local build artifacts (scripts/eas-build-local.js writes these under builds/<platform>/<profile>/)
+/builds/
+*.aab
+*.apk
+*.ipa
+
 # Metro
 .metro-health-check*
 
