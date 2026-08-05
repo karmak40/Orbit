@@ -26,6 +26,8 @@ import { SelectField } from '../src/ui/SelectField';
 import { ToggleRow } from '../src/ui/Toggle';
 import { color, space, type } from '../src/ui/theme';
 
+const SUPPORT_EMAIL = 'konstantin.hordx@gmail.com';
+
 /** Language names are shown in their own language, never translated. */
 const LANGUAGE_NAMES: Record<Exclude<Settings['language'], 'system'>, string> = {
   en: 'English',
@@ -253,7 +255,11 @@ export default function SettingsScreen() {
           <Text style={styles.itemSub}>{t('settings.version', { version })}</Text>
         </View>
         <Pressable
-          onPress={() => Linking.openURL(`mailto:?subject=${encodeURIComponent(t('settings.feedbackEmailSubject'))}`)}
+          onPress={() =>
+            Linking.openURL(
+              `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(t('settings.feedbackEmailSubject'))}`
+            )
+          }
           accessibilityRole="button"
           style={styles.linkItem}>
           <Text style={styles.itemLabel}>{t('settings.sendFeedback')}</Text>

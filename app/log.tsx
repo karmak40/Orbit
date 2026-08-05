@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -60,6 +60,16 @@ export default function LogScreen() {
   const [resultTab, setResultTab] = useState<ResultTab>(data.settings.resultStyle);
   const [preview, setPreview] = useState<ReturnType<typeof data.previewProgress> | null>(null);
   const raf = useRef<number | null>(null);
+
+  // `reveal()`'s count-up animation has no natural end-of-life hook of its
+  // own — without this, navigating away mid-count-up (Cancel, a fast tap
+  // through to Result-and-back) leaves the rAF loop running and calling
+  // `setDisplayScore` on an unmounted screen.
+  useEffect(() => {
+    return () => {
+      if (raf.current !== null) cancelAnimationFrame(raf.current);
+    };
+  }, []);
 
   const scales = useMemo(() => scaleQuestions(data.questions), [data.questions]);
   const qEnabled = useMemo(

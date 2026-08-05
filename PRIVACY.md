@@ -1,6 +1,6 @@
 # Privacy Policy — Orbit
 
-_Last updated: [FILL IN DATE BEFORE PUBLISHING]_
+_Last updated: August 4, 2026_
 
 Orbit is a private, offline dating journal. This policy explains what the app
 does and does not do with your information, in plain language.
@@ -90,4 +90,4 @@ it. Material changes will be reflected in the app's release notes.
 
 Questions about this policy or how Orbit handles data can be sent to:
 
-**[FILL IN YOUR CONTACT EMAIL BEFORE PUBLISHING]**
+**konstantin.hordx@gmail.com**
